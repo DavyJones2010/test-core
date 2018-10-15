@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration SYSTEM 
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="hibernate.connection.url">jdbc:p6spy:mysql://localhost/hibernate</property>
+		<property name="hibernate.connection.driver_class">com.p6spy.engine.spy.P6SpyDriver</property>
+		<property name="hibernate.connection.username">root</property>
+		<!-- <property name="hibernate.connection.password">root</property> -->
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+		<property name="hibernate.hbm2ddl.auto">update</property>
+		<property name="show_sql">false</property>
+		<property name="hibernate.cache.use_second_level_cache">false</property>
+		<property name="hibernate.cache.use_query_cache">false</property>
+		<property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property>
+		<property name="hibernate.generate_statistics">true</property>
+		<property name="net.sf.ehcache.configurationResourceName">hibernate/ehcache.xml</property>
+
+		<!-- Sample for simple CRUD -->
+		<mapping resource="edu/xmu/test/hibernate/model/User.hbm.xml" />
+		<mapping resource="edu/xmu/test/hibernate/model/UserWithNativeID.hbm.xml" />
+
+		<!-- Sample for many-to-one mapping -->
+		<!-- <mapping resource="edu/xmu/test/hibernate/model/Person.hbm.xml" /> -->
+		<!-- <mapping resource="edu/xmu/test/hibernate/model/PersonGroup.hbm.xml" /> -->
+
+		<!-- Sample for uni-directional one-to-one mapping -->
+		<!-- <mapping resource="edu/xmu/test/hibernate/model/People.hbm.xml" /> -->
+		<!-- <mapping resource="edu/xmu/test/hibernate/model/IDCard.hbm.xml" /> -->
+
+		<!-- Sample for bi-directional one-to-one mapping with Primary Key Assoc -->
+		<!-- <mapping resource="edu/xmu/test/hibernate/model/Husband.hbm.xml" /> -->
+		<!-- <mapping resource="edu/xmu/test/hibernate/model/Wife.hbm.xml" /> -->
+
+		<!-- Sample for bi-directional one-to-one mapping with Foreign Key Assoc -->
+		<!-- <mapping resource="edu/xmu/test/hibernate/model/Husband-2.hbm.xml" /> -->
+		<!-- <mapping resource="edu/xmu/test/hibernate/model/Wife-2.hbm.xml" /> -->
+
+		<!-- Sample for bi-directional many-to-one mapping with Foreign Key Assoc -->
+		<!-- <mapping resource="edu/xmu/test/hibernate/model/Student.hbm.xml" /> -->
+		<!-- <mapping resource="edu/xmu/test/hibernate/model/ClassRoom.hbm.xml" /> -->
+
+		<!-- Sample for uni-directional many-to-one mapping with Foreign Key Assoc -->
+		<!-- <mapping resource="edu/xmu/test/hibernate/model/Many.hbm.xml" /> -->
+		<!-- <mapping resource="edu/xmu/test/hibernate/model/One.hbm.xml" /> -->
+
+		<!-- Sample for second-level cache -->
+		<!-- <mapping resource="edu/xmu/test/hibernate/model/CachedObject.hbm.xml" /> -->
+
+		<!-- Sample for optimistic lock version approach -->
+		<mapping resource="edu/xmu/test/hibernate/model/OptimisticLockVersionBean.hbm.xml" />
+		<mapping resource="edu/xmu/test/hibernate/model/OptimisticLockTimeStampBean.hbm.xml" />
+
+		<!-- Sample for eventListener -->
+		<event type="load">
+			<listener class="edu.xmu.test.hibernate.service.MyLoadListener" />
+		</event>
+		<listener class="edu.xmu.test.hibernate.service.MySaveUpdateEventListener" type="save-update" />
+	</session-factory>
+</hibernate-configuration>

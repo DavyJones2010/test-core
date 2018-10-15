@@ -1,0 +1,87 @@
+ORM (Object Relational Mapping)
+包括了映射,缓存等机制
+
+轻量级框架：侵入性低（Spring/Hibernate/Guice）->业务逻辑、领域对象有或者没有这些框架都会work，没有显式地依赖这些框架。
+重量级框架：侵入性高（Struts2）->业务逻辑、领域对象必须显式地声明依赖这些框架，没有这些框架就会不work
+
+Hibernate并不适合数据的批量（Batch）的CRUD操作,性能并不好
+iBatis更适合批量（Batch）的CRUD操作
+
+hibernate:
+1> New Java Project
+2> Add hibernate dependency
+3> Create hibernate.cfg.xml config file
+	1> JDBC conn url
+	2> JDBC driver name
+	3> username/password
+4> Create domain object
+5> Create object-relational mapping file
+	1> Class to Table mapping
+	2> ID field & generation strategy
+	3> property to column mapping
+6> Import orm file into hibernate.cfg.xml
+7> Create table from domain object using org.hibernate.tool.hbm2ddl.SchemaExport util class
+8> Create service that using domain object
+	1> Get Configuration obj that represents hibernate.cfg.xml
+	2> Get SessionFactory obj, one SessionFactory instance represents one db datasource, it is related to Secondary Cache at os process level.
+	3> Open session -> Begin transaction -> Commit/Rollback transaction -> Close session
+
+	
+Note:
+	1> SessionFactory is closely related to process level secondary cache
+	2> SessionFactory is heavyweight object, it is recommanded created only once.
+	3> SessionFactory is threadsafe. It can be used by multiple thread concurrently. 
+
+	4> Session 不同于 Connection. Open session 的时候并不一定open了一个connection. 只有在真正进行操作的时候它才会到连接池(connection pool)中拿connection.
+	5>　Hibernate默认实现了一个connection pool,也允许采用第三方connection pool.
+	6> session用完之后必须关闭,并且不是线程安全的.通常是一个业务请求过来,新建一个session,结束之后close掉.
+
+	session跟sessionFactory都有缓存的概念:
+	session的缓存:一级缓存.
+	
+	JNDI
+	JTA: Java Transaction API: 可以实现跨数据库之间的事务处理.
+		两阶段提交事务:第一阶段:记录日志 第二阶段:执行更新操作
+		JTA是一个容器，它的下层有其他的：JATS, OTS.
+		EJB默认使用了JTA事务
+	
+	7> interface: "Validatable" and "LifeCycle" are deprecated, they are tightly coupled with our bean making it not a pojo and closely bound to hibernate.
+	   interface: "Interceptor" is recommanded instead of "LifeCycle".
+	 
+Persistent Object State:
+	1> Transient Objects:使用new操作符初始化的对象不是立刻就持久的,它的状态是瞬时的,也就是说它没有跟任何数据库表相关联,只要应用不再引用这些对象,它就会被JVM垃圾回收
+		1） 数据库没有与之对应的数据
+		2） 它没有纳入session的缓存管理中
+	2> Persist Objects:持久化对象是具有数据库标识的实例．它由持久化管理器session统一管理,持久实例是在事务中进行操作的：它们的状态在事务结束时与数据库同步．当事务提交时，通过执行SQL的CUD等把内存的状态同步到DB
+		1） 数据库有与之对应的数据
+		2） 纳入了session的缓存管理中
+		3） 在清理缓存的时候（提交事务），进行脏数据检查，会与数据库同步	
+	3> Detached Objects:SESSION关闭后,持久化对象就变为了离线对象．这个对象不能再与数据库保持同步,它们不再受session管理(不在session缓存中)．
+		1） 数据库中有与之对应的数据(我们甚至可以手动new出来一个detached对象)
+		2） 它没有纳入session的缓存管理中
+	
+	Transient Object 与 Detached Object 区别: Detached Object是可以从DB里找到一条与之对应的记录的.
+	
+	1> Persistent Object: 当它的属性变化时,hibernate会相应地改变数据库中对应的字段值.在transaction.commit()的时候统一进行操作(采用数据版本的方式来知晓属性的变化).
+		1) persistent　object的每个操作session都会为它创建一个snapshot+版本,当tx.commit()时，会对比并且清理内存中的脏数据．
+		2) 对persistent object 来说，它的属性修改不需要显式地调用session.update()。
+
+Session query:
+	1> Difference between session.get() [Eager load] and session.load() [Lazy load].
+		session.get():  当执行该语句的时候,就立刻进行了一次select操作.
+						当查找不到时，会返回一个null。
+		session.load(): 会返回一个代理(空壳)对象,只有在使用到该对象属性时(例如需要toString(), 或者其他显式调用属性的方法),才会进行select操作.
+						如果数据库中不存在相应数据，那么在使用到该对象时会抛出ObjectNotFoundException.
+						代理类是由CGLib库生成的，它与java本身的动态代理的区别是：被代理的对象可以不实现接口。它采用的继承的方式生成代理类。
+
+Session update:
+	1> 当将对象(persistent/detached) update的时候，该对象就变为了persistent状态。
+	1> 当我们手动new一个对象，并且把其id赋值为已知数据库中的一个id的时候。那么该对象其实是detached状态，而不是transient状态。我们update该对象的时候是可以update成功的。
+	2> 通常的方法是先将对象load出来，变为persistent状态，然后再改变对象属性。
+
+Session delete:
+	1> 当将对象(persistent/detached) delete的时候，该对象就变为了transient状态。
+
+Session query(HQL):
+
+	

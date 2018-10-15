@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.2.xsd">
+
+	<bean name="transactionManager" class="org.springframework.batch.support.transaction.ResourcelessTransactionManager" />
+	<bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+	<bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+		<property name="jobRepository" ref="jobRepository" />
+	</bean>
+
+	<batch:job id="chunkJob" job-repository="jobRepository" restartable="false">
+		<batch:step id="chunkStep">
+			<batch:tasklet>
+				<batch:chunk reader="chunkReader" processor="chunkProcessor" writer="chunkItemWriter" commit-interval="4" />
+			</batch:tasklet>
+		</batch:step>
+	</batch:job>
+	<bean id="chunkReader" class="edu.xmu.test.spring.batch.chunk.ChunkReader" />
+	<bean id="chunkProcessor" class="edu.xmu.test.spring.batch.chunk.ChunkProcessor" />
+	<bean id="chunkItemWriter" class="edu.xmu.test.spring.batch.chunk.ChunkWriter" />
+</beans>

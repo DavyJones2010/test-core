@@ -1,0 +1,41 @@
+Seen from a DTD point of view, all XML docs are made up by:P
+1> Elements
+2> Attributes
+3> Entities: &lt; &gt; &amp; &quot; &apos;
+4> PCDATA (Parsed Charater DATA)
+5> CDATA (Character DATA)
+Character is text found between the start tag and the end tag of an XML element.
+
+<br/> ELEMENT:
+<!ELEMENT note (to,from+,heading*,body?,(signature|tail))>
+1> +: 1 or more
+2> *: 0 or more
+3> ?: 0 or 1
+4> (A|B): A or B
+
+<br/> ATTRIBUTE:
+<!ATTLIST element-name attribute-name attribute-type attribute-value>
+1> attribute-name:
+CDATA	The value is character data
+(en1|en2|..)	The value must be one from an enumerated list
+ID	The value is a unique id
+IDREF	The value is the id of another element
+IDREFS	The value is a list of other ids
+NMTOKEN	The value is a valid XML name
+NMTOKENS	The value is a list of valid XML names
+ENTITY	The value is an entity
+ENTITIES	The value is a list of entities
+NOTATION	The value is a name of a notation
+xml:	The value is a predefined xml value
+2> attribute-value: 
+value	The default value of the attribute
+#REQUIRED	The attribute is required
+#IMPLIED	The attribute is optional
+#FIXED value	The attribute value is fixed
+
+<br/> ENTITY
+<!ENTITY entity-name "entity-value">
+1> Entities are used to define shotcuts to special characters.
+
+
+

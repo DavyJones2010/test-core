@@ -1,0 +1,62 @@
+A sample of HTTP Post request:
+==========================================
+POST /servlet/SampleServlet HTTP/1.1
+Accept: text/plain; text/html
+Accetp-Language: en-gb
+Connection: Keep-Alive
+Host: localhost
+User-Agent: Mozilla/4.0 (***)
+Content-Length: 33
+Content-Type application/x-www-form-urlencoded
+Accept-Encoding: gzip, deflate
+Cookie: jsessionid=dummy_id;password=dummy_pwd
+
+lastName=Frank&firstName=Michael
+==========================================
+It is composed by 3 parts:
+1) Request Line
+2) Request Header (cookie is sent to server via request header and seprated by ";")
+3) Entity(Request Body) 
+==========================================
+
+A sample of HTTP response:
+==========================================
+HTTP/1.1 200 OK
+Date: Fri, 17 Jul 2015 07:23:10 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Vary: Accept-Encoding
+Cache-Control: private
+
+<html>...</html>
+==========================================
+It is composed by 3 parts:
+1) Status Line
+2) Response Header
+3) Response Body
+
+
+Bootstrap & Connector & Processor & Container 
+1) Connector: 
+	1> A connector must always create instance of javax.servlet.http.HttpServletRequest and javax.servlet.http.HttpServletResponse;
+	2> Containers could only run servlets that impl javax.servlet.Servlet/ServletRequest/ServletResponse;
+	Parsing an HTTP request involves expensive string operations, the connector can save lots of CPU cycles if it parses only values that will be needed by the sevlet.
+	Tomcat's parameters tries to be more efficient by leaving tha parameter parsing until it is really needed by the servlet.
+2) The task of creating request and response objects is assigned to HttpProcessor instance;
+   The task of waiting for HTTP requests is given to the HttpConnector instance;
+3) HTTP 1.1 New Features:
+	1> Persistent Connections: Establishing and tearing down HTTP connections are expensive operations.
+		connection: keep-alive
+	2> Chunked Encoding: 
+4) Connector Thread and Processor Thread
+5) Container:
+	Types:
+	1> Engine
+	2> Host
+	3> Context: is a webapp(web.xml), an instance may contains multiple Wrapper 
+	4> Wrapper: is a Servlet Wrapper manages lifecycle of corresponding Servlet(init(), service(), destroy())
+	Related Interface:
+	1> Pipeline: just like FilterChain in Servlet
+	2> Valve: just like Filter in Servlet
+	3> ValveContext
+	4> Contained

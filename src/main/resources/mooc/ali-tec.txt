@@ -1,0 +1,80 @@
+遇到的困难:
+##havanaclub:
+###环境问题:
+####本地安装Alitomcat
+####eclipse安装tomcat4e插件
+####本地安装pandora容器<版本问题>
+###代码提交:
+####git-m插件安装
+####修改email,username(有约束)
+###提交测试:
+####需要在acl中配置该页面的权限
+####预发环境的测试需要更改hosts文件
+```shell
+sudo vi /etc/hosts
+```
+
+
+##CIC:
+###环境问题:
+###
+
+
+##工作流:
+###流程配置
+###需求变更
+###工作流框架的约束与局限
+###前端页面
+
+##其他:
+*主干开发模式
+
+1. 每次新建日常都会从trunk中新checkout下来一份构建一个新的branch.
+2. 开发代码就在当前新的branch下进行
+3. 提交代码在该branch下执行日常构建
+4. 测试结束,发布线上完毕之后,关闭该日常,该branch会被删除并且merge到trunk中.
+
+## Alimonitor
+* 监控类型:
+	* 系统级别监控: ping, ntp, system, ssh, disk等
+		* CHECK_DISK
+		* disk_io
+	* HSF监控: 
+	* java应用级别监控: jvm相关信息,异常日志,web url, spring, sql, 连接池监控:
+		* Alimonitor_JVM相关: 根据MXBean
+			* Alimonitor_JVM_Info
+			* Alimonitor_JVM_Memory
+			* Alimonitor_JVM_THREAD
+			* Alimonitor_JVM_GC
+		* Alimonitor_Spring: 
+		* Alimonitor_SQL: 针对SQL的监控(SQL执行次数,SQL报错次数等),必须使用Druid作为数据库连接池.
+	* 自定义监控: 编写符合相应输出格式的脚本
+* 角色:
+	* 监控对象: 目标机器
+	* 采集指令: 监控脚本
+	* 监控项: 
+	* 报警项: critical-cpu>70%
+	* 通知项: 旺旺/短信/邮件
+* 步骤:
+	* 采集
+	* 判断
+	* 通知
+
+各种项目:
+	* (Druid)[https://github.com/alibaba/druid/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98]: 支持监控的数据库连接池, Alimonitor利用此来监控SQL执行情况
+	* (Tsar)[https://github.com/kongjian/tsar]: Taobao System Activity Reporter, 将采集到的监控信息存在磁盘上或者记录到MySQL或者送到Nagios中
+		* 采集系统信息: CPU,MEM,LOAD,TRAFFIC,TCP,IO,PARTITION,PCSW
+		* 采集应用信息: NGINX,squid,haproxy,lvs,apache
+	* (Dragoon)[http://www.atatech.org/articles/1230]: 通过MXBean监控JVM
+
+```
+ntp(Network Time Protocol): 主要用来同步机器时间.
+```
+
+***
+* (duboo)[http://dubbo.io/User+Guide-zh.htm#UserGuide-zh-入门]
+
+
+
+
+

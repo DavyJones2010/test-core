@@ -1,0 +1,63 @@
+Hibernate Mapping:
+
+Entity Class --> Table
+Simple Property of Entity Class --> Column of Table
+普通属性:不包括自定义类,数组,集合等
+
+采用class标签映射成数据库表.
+采用property标签将普通属性映射成表字段.
+
+
+1) <hibernate-mapping>标签属性:
+	1) auto-import="true"
+	将auto-import设置成true,我们在写HQL的时候,不需要指定class的包名.
+	Query query = session.createQuery("from User");
+	而不需要session.createQuery("from edu.xmu.test.hibernate.model.User");
+	2) package如果被指定,那么接下来的class子标签声明的类名就不需要添加包名.
+	<hibernate-mapping auto-import="true" package="edu.xmu.test.hibernate.model">
+		<class name="User" table="USER">
+		</class>
+	</hibernate-mapping>
+
+2) <class>标签属性:
+	1) name: 类名
+	2) table: 对应表名(默认跟对象名相同,但全为小写),需要注意防止与数据库关键字冲突.
+	3) dynamic-update/dynamic-insert: 在更新persistent对象属性时,会生成update语句,而且是全部属性都update了,包括没有改变的属性.
+		如果设置为false那么形成的update语句只会有更改的属性.未更改的属性不会包含在其中.
+		缺点:每次的SQL可能都不同,因此无法重用之.
+	4) batch-size
+	5) optimistic-lock
+	6) lazy: 设置这个class是lazy或者不是.默认false.
+
+3) <id>标签属性:
+	1) name: 属性
+	2) column: 对应列名
+	3) type: hibernate类型,如果不配置,hibernate会进行默认类型转换(java->db).
+		hibernate类型参见: http://docs.jboss.org/hibernate/orm/4.3/manual/en-US/html/ch05.html#mapping-types
+	4) length: 如果转换成varchar,默认长度是:255.我们可以改变.
+4) <generator>标签属性:
+	1)　class: 
+		1> increment: id will auto increase, from 1 to n. 缺点:在做集群的时候,无法协调不同JVM上边的id.<int>
+		2> identity: mysql/db2/sybase等数据库层面的自增策略; sequence: 是oracle数据库的自增.<int>
+		3> uuid: 32位的字符串.一般情况下不会重复.是hibernate来生成的.<varchar>
+		4> native: 会根据后台数据库来自动选择或者identity/sequence
+		5> assigned: 手动分配主键.
+		6> selected: 通过建立触发器来建立主键.
+		7> foreign: 使用另外一个相关联的对象的标识符,会把另外相关联的表的主键拿出来作为自己的主键.通常与<one-to-one>标签对应起来.
+		uuid效率和并发性会比native好一些.因为native需要数据库自己维护另外表(加锁).缺点是字符串查询会比int慢.
+5) <property>标签属性:
+	1) name: 实体bean的属性名
+	2) column: ...
+	3) type: 同<id>标签的type属性
+	4) update/insert(false): 这个属性是否参与到insert/update语句中去
+	5) lazy(false):
+	6) unique(false): true的话,保证该字段不会有重复值.
+	7) not-null(false): 
+	8) optimistic-lock(false):
+
+实体类的设计原则:
+	1) 要有一个无参的构造方法.
+	2) 要有一个标识属性(identifier property),如果不显式写出,默认与属性名相同.
+	3) 类不能是final的,属性不能是final的.因为hibernate中有lazy选项.如果开启,hibernate会采用cglib来动态构造类的子类。
+	4) provide getter/setter
+		

@@ -1,0 +1,92 @@
+{"feed" : {
+	"link" : "http://localhost:8080/test-core/home.json",
+	"description": "Spring Batch Admin is a web UI and JSON service for running and monitoring batch jobs.  The following URLs are available, and while they are not all capable of serving JSON content you can request JSON by adding '.json' to the URL (and if it is not supported the result will be HTML).",
+	"resources" : {
+		"/files" : {
+			"uri" : "http://localhost:8080/test-core/files.json",
+			"method" : "GET",
+			"description" : "List uploaded data files "
+	 	},
+		"/home" : {
+			"uri" : "http://localhost:8080/test-core/home.json",
+			"method" : "GET",
+			"description" : "List the resources available"
+	 	},
+		"/job-configuration" : {
+			"uri" : "http://localhost:8080/test-core/job-configuration.json",
+			"method" : "POST",
+			"description" : "Upload a Job configuration file as a String request body"
+	 	},
+		"/job-restarts" : {
+			"uri" : "http://localhost:8080/test-core/job-restarts.json",
+			"method" : "POST",
+			"description" : ""
+	 	},
+		"/jobs" : {
+			"uri" : "http://localhost:8080/test-core/jobs.json",
+			"method" : "GET",
+			"description" : "List the jobs known to the application.  If they are configured in this application they are launchable, otherwise not (i.e. if they have been executed offline)"
+	 	},
+		"/jobs/executions" : {
+			"uri" : "http://localhost:8080/test-core/jobs/executions.json",
+			"method" : "GET",
+			"description" : "List all the job executions, in order of most recent to least."
+	 	},
+		"/jobs/executions" : {
+			"uri" : "http://localhost:8080/test-core/jobs/executions.json",
+			"method" : "DELETE",
+			"description" : "Stop all job executions"
+	 	},
+		"/jobs/executions/{jobExecutionId}" : {
+			"uri" : "http://localhost:8080/test-core/jobs/executions/{jobExecutionId}.json",
+			"method" : "GET",
+			"description" : "Show the JobExecution with the id provided"
+	 	},
+		"/jobs/executions/{jobExecutionId}" : {
+			"uri" : "http://localhost:8080/test-core/jobs/executions/{jobExecutionId}.json",
+			"method" : "DELETE",
+			"description" : "Stop the JobExecution with the id provided.  Add abort=true parameter to abort an already stopped or failed job."
+	 	},
+		"/jobs/executions/{jobExecutionId}/execution-context" : {
+			"uri" : "http://localhost:8080/test-core/jobs/executions/{jobExecutionId}/execution-context.json",
+			"method" : "GET",
+			"description" : ""
+	 	},
+		"/jobs/executions/{jobExecutionId}/steps/{stepExecutionId}" : {
+			"uri" : "http://localhost:8080/test-core/jobs/executions/{jobExecutionId}/steps/{stepExecutionId}.json",
+			"method" : "GET",
+			"description" : "Inspect the StepExecution with the id provided"
+	 	},
+		"/jobs/executions/{jobExecutionId}/steps/{stepExecutionId}/execution-context" : {
+			"uri" : "http://localhost:8080/test-core/jobs/executions/{jobExecutionId}/steps/{stepExecutionId}/execution-context.json",
+			"method" : "GET",
+			"description" : ""
+	 	},
+		"/jobs/{jobName}" : {
+			"uri" : "http://localhost:8080/test-core/jobs/{jobName}.json",
+			"method" : "GET",
+			"description" : "List the JobInstances of the job name provided"
+	 	},
+		"/jobs/{jobName}" : {
+			"uri" : "http://localhost:8080/test-core/jobs/{jobName}.json",
+			"method" : "POST",
+			"description" : "Execute the job with the name provided and parameters provided as a String (stringified Properties as per the CommandLineJobRunner)"
+	 	},
+		"/jobs/{jobName}/executions" : {
+			"uri" : "http://localhost:8080/test-core/jobs/{jobName}/executions.json",
+			"method" : "GET",
+			"description" : "List the JobExecutions for the job name provided"
+	 	},
+		"/jobs/{jobName}/{jobInstanceId}" : {
+			"uri" : "http://localhost:8080/test-core/jobs/{jobName}/{jobInstanceId}.json",
+			"method" : "GET",
+			"description" : ""
+	 	},
+		"/jobs/{jobName}/{jobInstanceId}/executions" : {
+			"uri" : "http://localhost:8080/test-core/jobs/{jobName}/{jobInstanceId}/executions.json",
+			"method" : "POST",
+			"description" : "Stop the JobExecutions for the job instance with the id provided"
+	 	}
+	}
+  }
+}

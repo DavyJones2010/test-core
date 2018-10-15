@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.2.xsd">
+	<import resource="database.xml" />
+
+	<bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+		<property name="transactionManager">
+			<bean class="org.springframework.batch.support.transaction.ResourcelessTransactionManager" />
+		</property>
+	</bean>
+	<bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+		<property name="jobRepository" ref="jobRepository" />
+	</bean>
+
+	<batch:job id="partitionJob" job-repository="jobRepository" restartable="false">
+		<batch:step id="partitionStep">
+			<batch:partition step="readWriteTradeStep" partitioner="partitioner">
+				<batch:handler task-executor="taskExecutor" />
+			</batch:partition>
+		</batch:step>
+	</batch:job>
+
+	<bean id="partitioner" class="edu.xmu.test.spring.batch.task.TradeCustomerPartitioner">
+		<constructor-arg ref="dataSource" />
+	</bean>
+	<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="3" />
+	</bean>
+	<batch:step id="readWriteTradeStep">
+		<batch:tasklet>
+			<batch:chunk reader="reader" writer="writer" commit-interval="1" />
+		</batch:tasklet>
+	</batch:step>
+	<bean id="reader" class="org.springframework.batch.item.database.JdbcCursorItemReader" scope="step">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sql" value="SELECT ISIN, QUANTITY, PRICE, CUSTOMER_NAME FROM TRADE WHERE CUSTOMER_NAME = ?" />
+		<property name="verifyCursorPosition" value="false" />
+		<property name="rowMapper">
+			<bean class="edu.xmu.test.spring.batch.model.TradeRowMapper" />
+		</property>
+		<property name="preparedStatementSetter">
+			<bean class="org.springframework.jdbc.core.ArgumentPreparedStatementSetter">
+				<constructor-arg value="#{stepExecutionContext['customer']}" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="writer" class="org.springframework.batch.item.file.FlatFileItemWriter" scope="step">
+		<property name="resource" value="file:src/test/resources/csv/trades_#{stepExecutionContext['customer']}.csv" />
+		<property name="lineAggregator">
+			<bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+				<property name="fieldExtractor">
+					<bean class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+						<property name="names" value="isin,quantity,price,customer" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>
+</beans>

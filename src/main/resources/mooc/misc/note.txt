@@ -1,0 +1,23 @@
+1) How can we measure if a number i equals 2^N?
+	1> if (0 == i & (i-1))
+		then i is a 2^N
+	   else
+	   	then i is not a 2^N
+
+2) Difference between 301 and 302? 
+http://www.stepforth.com/blog/2008/redirects-permanent-301-vs-temporary-302/
+
+3) Difference between classpath:res_folder and classpath*:res_folder?
+http://stackoverflow.com/questions/3294423/spring-classpath-prefix-difference
+-- The classpath*:conf/appContext.xml simply means that all appContext.xml files under conf folders in all your jars on the classpath will be picked up and joined into one big application context.
+-- In contrast, classpath:conf/appContext.xml will load only one such file... the first one found on your classpath.
+-- If you use the * and Spring finds no matches, it will not complain.
+-- If you don't use the * and there are no matches, the context will not start up.
+
+4) 幂等性:
+	幂等性是系统的接口对外一种承诺(而不是实现), 承诺只要调用接口成功, 外部多次调用对系统的影响是一致的.
+	声明为幂等的接口会认为外部调用失败是常态, 并且失败之后必然会有重试.
+
+5) HashMap.get(null) 返回null; ConcurrentHashMap.get(null)会抛出NPE
+
+6) org.apache.commons.collections.MapUtils.verbosePrint(PrintStream, Object, Map) 更方便打印map

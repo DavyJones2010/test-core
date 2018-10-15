@@ -1,0 +1,12 @@
+1.常用的解析XML的Java类库：
+	1> SAX
+	2> DOM4J(可以直接传入XPath来找到相应的元素，缺点是大文件性能差)，在真正的webservice中dom4j用得很少
+	3> XStream是现在使用的最多的，由oracle提供的，在java里封装成了Stax，基于流的操作
+	4> XStream,Jackson都可以完成json<->java之间的互相转化。
+	5> java标准api也提供了JAXB，来实现Java<->XML转化。其中Java->XML叫做Marshal,XML->Java叫做Unmarshal, 参见edu.xmu.test.xml.beans包下相应例子
+2. Stax/XStream 可以有:
+	1> 基于Stream的操作
+	2> 
+	3> 
+	4> 
+	5> 

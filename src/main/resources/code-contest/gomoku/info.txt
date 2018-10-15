@@ -1,0 +1,17 @@
+http://www.aiexp.info/gomoku-renju-resources-an-overview.html
+
+The rules:
+
+1. What you need is to implement the AI part by implement five.player.Player. Check details from the source code in the jar.
+
+2. We play the original game rule: five pieces at one line marks a win! No additional rules.
+
+3. If no winner after the board is fulfilled, the 2nd player wins.
+
+4. If the player give invalid step, or throws exception, or no return in 5 seconds. The player lose the game!
+
+5. Each player play with every other player and match twice - as first player and second player respectively.
+
+6. Winner got score. Loser got zero.
+
+7. The rules here may subject to change later on in the final game.

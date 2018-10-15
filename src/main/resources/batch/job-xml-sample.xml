@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:batch="http://www.springframework.org/schema/batch" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.2.xsd
+						http://www.springframework.org/schema/util http://www.springframework.org/schema/batch/spring-util-2.5.xsd">
+	<import resource="database.xml" />
+
+	<bean id="jobRepository"
+		class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+
+	<bean id="jobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+		<property name="jobRepository" ref="jobRepository" />
+	</bean>
+
+	<batch:job id="tradeTransformJob" job-repository="jobRepository"
+		restartable="false">
+		<batch:step id="step1">
+			<batch:tasklet>
+				<batch:chunk reader="xmlFileItemReader" writer="xmlFileItemWriter"
+					commit-interval="1" />
+			</batch:tasklet>
+		</batch:step>
+	</batch:job>
+
+	<bean id="xmlFileItemReader" class="org.springframework.batch.item.xml.StaxEventItemReader">
+		<property name="resource" value="classpath:batch/xml/trade.xml" />
+		<property name="fragmentRootElementNames" value="trade" />
+		<property name="unmarshaller" ref="tradeUnmarshaller" />
+	</bean>
+	<bean id="tradeMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller">
+		<property name="aliases">
+			<util:map>
+				<entry key="trade" value="edu.xmu.test.spring.batch.model.Trade" />
+				<entry key="price" value="java.math.BigDecimal" />
+				<entry key="name" value="java.lang.String" />
+			</util:map>
+		</property>
+	</bean>
+	<bean id="xmlFileItemWriter" class="org.springframework.batch.item.xml.StaxEventItemWriter">
+		<property name="resource" value="classpath:batch/xml/trade-generated.xml" />
+		<property name="overwriteOutput" value="true" />
+		<property name="rootTagName" value="" />
+		<property name="marshaller" ref="tradeMarshaller" />
+	</bean>
+</beans>

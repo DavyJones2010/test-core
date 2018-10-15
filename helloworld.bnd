@@ -1,0 +1,2 @@
+Private-Package: edu.xmu.test.j2ee.osgi
+Bundle-Activator: edu.xmu.test.j2ee.osgi.HelloWorldActivator

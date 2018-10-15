@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<person id="1">
+    <address>
+        <city>Shanghai</city>
+        <country>China</country>
+        <province>Shanghai</province>
+        <streetName>Guanglan. RD</streetName>
+        <streetNo>1000</streetNo>
+    </address>
+    <age>25</age>
+    <name>Yang</name>
+    <pets>
+        <pet>
+            <age>1</age>
+            <name>Woofee</name>
+        </pet>
+        <pet>
+            <age>2</age>
+            <name>Doggy</name>
+        </pet>
+    </pets>
+</person>

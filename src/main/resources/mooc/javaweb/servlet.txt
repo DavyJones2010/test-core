@@ -1,0 +1,65 @@
+1. Servlet Life Cycle:
+	1) The servlet is initialized by calling the init() method.
+	2) The servlet calls service() method to process a client's request.
+	3) The servlet is terminated by calling the destroy() method.
+	4) Finally, servlet is garbage collected by the garbage collector of the JVM.
+2. HttpServletRequest:
+	1) req.getHeader("referer");
+	2) req.getRequestURL();
+	3) req.getRequestDispatcher(URI).forward(req, resp);
+3. HttpServletResponse:
+	1) resp.sendRedirect(URI);// String site = "http://www.newpage.com"; response.setStatus(response.SC_MOVED_TEMPORARILY); response.setHeader("Location", site); 
+	2) resp.addCookie(Cookie);
+	3) resp.setIntHeader("Refresh", 5); // refresh every 5 seconds
+4. Filter
+	1) intercept requests/ manipulate responses
+	2) types:
+		1> Authentication Filters
+		2> Data Compression Filters
+		3> Encryption Filters
+		4> Filters that trigger resource access events.
+		5> Image Conversion Filters
+		6> Logging and Auditing Filters
+		7> MIME-TYPE Chain Filters
+		8> Tokenizing Filters
+		9> XSL/T Filters That Transform XML Content
+	3) The order of filter-mapping elements in web.xml determines the order in which the web container applies the filter to the servlet.
+	To reverse the order of the filter, you just need to reverse the filter-mapping elements in the web.xml file.
+5. Listener
+	1) Listener category:
+		1> Servlet Context Level(application level) event
+		2> Session Level event
+	2) each of these two levels has two event categories:
+		1> Lifecycle changes -> ServletContextListener & HttpSessionListener
+		2> Attribute changes -> ServletContextAttributeListener & HttpSessionAttributeListener
+	3) Typical Event Listener Scenario:
+		1> ServletContextListener monitor application startup and create DB connection pool, release connection when shutdown.
+6. Cookie:
+	1) How to delete cookie:
+		if((cookie.getName( )).compareTo("first_name") == 0 ){
+             cookie.setMaxAge(0);
+             response.addCookie(cookie);
+             out.print("Deleted cookie : " + 
+                          cookie.getName( ) + "<br/>");
+        }
+7. Session:
+	1) Cookie based session
+	2) Hidden Form Fields
+		1> <input type="hidden" name="sessionid" value="12345">
+		2> clicking on a regular (<A HREF...>) hypertext link does not result in a form submission
+	3) URL Rewriting: 
+		1> http://tutorialspoint.com/file.htm?sessionid=12345, the session identifier is attached as sessionid=12345 which can be accessed at the web server to identify the client.
+		2> drawback is that you would have generate every URL dynamically to assign a session ID though page is simple static HTML page.
+	
+8. Context:
+	1) ServletContext (container level)
+		1> How to get servletContext?
+			request.getSession().getServletContext(); or getServletContext();
+	2) SessionContext (session level)
+	3) RequestContext (request level)
+
+Sample:
+	1) How to implement a page hit count: Add hitCount property in corresponding Servlet.
+	2) How to implement a site hit count: Add hitCount property in a Filter that intercepts all requests 
+
+

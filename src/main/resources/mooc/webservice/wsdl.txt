@@ -1,0 +1,70 @@
+wsdl分为5部分:（参见wsdl.xml)
+1. types：用来定义访问的类型（参数，返回值）
+<types>
+	<xsd:schema>
+		<xsd:import namespace="http://ws.j2ee.test.xmu.edu/" schemaLocation="http://localhost:12345/ns?xsd=1"></xsd:import>
+	</xsd:schema>
+</types>
+2. message：SOAP消息
+<message name="add">
+	<part name="parameters" element="tns:add"></part>
+</message>
+3. porttype：指明服务器的接口，并且通过operation绑定相应的in/out消息，其中in表示传到服务端的参数消息，out表示方法调用返回消息
+<portType name="IMyService">
+	<operation name="add">
+		<input wsam:Action="http://ws.j2ee.test.xmu.edu/IMyService/addRequest" message="tns:add"></input>
+		<output wsam:Action="http://ws.j2ee.test.xmu.edu/IMyService/addResponse" message="tns:addResponse"></output>
+	</operation>
+</portType>
+4. binding：指定传递消息所使用的格式（literal）
+5. service：指定我们提供的接口，也就是服务发布的基本信息
+<service name="MyServiceImplService">
+	<port name="MyServiceImplPort" binding="tns:MyServiceImplPortBinding">
+		<soap:address location="http://localhost:12345/ns"></soap:address>
+	</port>
+</service>
+
+
+soap: simple object access protocol
+soap是一种协议，用来传输对象。可以从sample.xsd中看到相应的类型定义。
+<xs:complexType name="add">
+	<xs:sequence>
+		<xs:element name="arg0" type="xs:int"></xs:element>
+		<xs:element name="arg1" type="xs:int"></xs:element>
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="addResponse">
+	<xs:sequence>
+		<xs:element name="return" type="xs:int"></xs:element>
+	</xs:sequence>
+</xs:complexType>
+然后在客户端真正请求以及服务端相应的时候，发送的soap消息将严格遵循这里的规范：
+<S:Body>
+	<ns2:add>
+		<arg0>29</arg0>
+		<arg1>11</arg1>
+	</ns2:add>
+</S:Body>
+但是这里arg0,arg1命名不方便理解。我们可以在SEI上边定义annotation来标示，从而改变生成的WSDL。
+@WebResult(name="addResult")
+int add(@WebParam(name="a") int a, @WebParam(name="b") int b);
+这样生成的wsdl的xsd会变成：
+<xs:complexType name="add">
+	<xs:sequence>
+		<xs:element name="a" type="xs:int"></xs:element>
+		<xs:element name="b" type="xs:int"></xs:element>
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="addResponse">
+	<xs:sequence>
+		<xs:element name="addResult" type="xs:int"></xs:element>
+	</xs:sequence>
+</xs:complexType>
+需要重新根据wsdl重新通过wsimport生成.class文件。
+从而在客户端服务端交互的时候soap消息会变成：
+<S:Body>
+	<ns2:add>
+		<a>29</a>
+		<b>11</b>
+	</ns2:add>
+</S:Body>

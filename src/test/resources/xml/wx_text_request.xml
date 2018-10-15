@@ -1,0 +1,8 @@
+<xml>
+	<ToUserName id="toUserName"><![CDATA[toUser]]></ToUserName>
+	<FromUserName id="fromUserName"><![CDATA[fromUser]]></FromUserName>
+	<CreateTime id="createTime">1348831860</CreateTime>
+	<MsgType id="msgType"><![CDATA[text]]></MsgType>
+	<Content id="content"><![CDATA[this is a test]]></Content>
+	<MsgId id="msgId">1234567890123456</MsgId>
+</xml>

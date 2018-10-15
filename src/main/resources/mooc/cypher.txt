@@ -1,0 +1,30 @@
+散列函数：
+用途：通常用于验证数据的完整性
+特点：长度不受限制，哈希值容易计算，散列运算过程不可逆（单向函数）
+包括：消息摘要算法（MD5）等，安全散列算法（SHA），消息认证码算法（MAC）
+
+数字签名：
+用途：处理以数字的形式存储的消息
+
+OSI(Open System Interconnection)安全体系：
+网络分层：物理层，数据链路层，网络层，传输层，会话层，表示层，应用层
+安全机制：加密机制，数字签名机制，访问控制机制，数据完整性机制，认证机制，业务流填充机制，路由控制机制，公正机制
+安全服务：认证（鉴别）服务，访问控制服务，数据保密性服务，数据完整性服务
+
+TCP/IP安全体系：
+网络分层：网络接口层，网路层，传输层，应用层
+安全机制：网络接口层安全，网络层安全，传输层安全，应用层安全
+
+Java安全组成：
+JCA(Java Cryptography Architecture)
+JCE(Java Cryptography Extension)
+JSSE(Java Secure Socket Extension)
+JAAS(Java Authentication and Authentication Service)
+
+JSSE提供基于SSL的加密功能，主要用于网络传输
+
+Code can always read a file from the same directory it is in (or a subdirectory of that directory);
+it does not need explicit permission to do so.
+Code can always the pathname of the directory it is executed from, and this pathname may contain sensitive information.
+
+

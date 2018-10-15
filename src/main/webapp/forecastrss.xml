@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+		<rss version="2.0" xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+			<channel>
+		
+<title>Yahoo! Weather - Beijing, CH</title>
+<link>http://us.rd.yahoo.com/dailynews/rss/weather/Beijing__CH/*http://weather.yahoo.com/forecast/CHXX0008_f.html</link>
+<description>Yahoo! Weather for Beijing, CH</description>
+<language>en-us</language>
+<lastBuildDate>Tue, 12 May 2015 1:59 pm CST</lastBuildDate>
+<ttl>60</ttl>
+<yweather:location city="Beijing" region=""   country="CH"/>
+<yweather:units temperature="F" distance="mi" pressure="in" speed="mph"/>
+<yweather:wind chill="73"   direction="180"   speed="9" />
+<yweather:atmosphere humidity="31"  visibility=""  pressure="29.24"  rising="0" />
+<yweather:astronomy sunrise="5:04 am"   sunset="7:19 pm"/>
+<image>
+<title>Yahoo! Weather</title>
+<width>142</width>
+<height>18</height>
+<link>http://weather.yahoo.com</link>
+<url>http://l.yimg.com/a/i/brand/purplelogo//uh/us/news-wea.gif</url>
+</image>
+<item>
+<title>Conditions for Beijing, CH at 1:59 pm CST</title>
+<geo:lat>39.93</geo:lat>
+<geo:long>116.28</geo:long>
+<link>http://us.rd.yahoo.com/dailynews/rss/weather/Beijing__CH/*http://weather.yahoo.com/forecast/CHXX0008_f.html</link>
+<pubDate>Tue, 12 May 2015 1:59 pm CST</pubDate>
+<yweather:condition  text="Mostly Cloudy"  code="28"  temp="73"  date="Tue, 12 May 2015 1:59 pm CST" />
+<description><![CDATA[
+<img src="http://l.yimg.com/a/i/us/we/52/28.gif"/><br />
+<b>Current Conditions:</b><br />
+Mostly Cloudy, 73 F<BR />
+<BR /><b>Forecast:</b><BR />
+Tue - Partly Cloudy. High: 83 Low: 52<br />
+Wed - Partly Cloudy. High: 90 Low: 62<br />
+Thu - Sunny. High: 83 Low: 58<br />
+Fri - Partly Cloudy. High: 80 Low: 52<br />
+Sat - Mostly Sunny. High: 84 Low: 58<br />
+<br />
+<a href="http://us.rd.yahoo.com/dailynews/rss/weather/Beijing__CH/*http://weather.yahoo.com/forecast/CHXX0008_f.html">Full Forecast at Yahoo! Weather</a><BR/><BR/>
+(provided by <a href="http://www.weather.com" >The Weather Channel</a>)<br/>
+]]></description>
+<yweather:forecast day="Tue" date="12 May 2015" low="52" high="83" text="Partly Cloudy" code="30" />
+<yweather:forecast day="Wed" date="13 May 2015" low="62" high="90" text="Partly Cloudy" code="30" />
+<yweather:forecast day="Thu" date="14 May 2015" low="58" high="83" text="Sunny" code="32" />
+<yweather:forecast day="Fri" date="15 May 2015" low="52" high="80" text="Partly Cloudy" code="30" />
+<yweather:forecast day="Sat" date="16 May 2015" low="58" high="84" text="Mostly Sunny" code="34" />
+<guid isPermaLink="false">CHXX0008_2015_05_16_7_00_CST</guid>
+</item>
+</channel>
+</rss>
+
+<!-- fan1638.sports.bf1.yahoo.com Tue May 12 00:06:32 PDT 2015 -->

@@ -1,0 +1,34 @@
+Notes from
+http://tutorials.jenkov.com/java-concurrency/non-blocking-algorithms.html
+http://ximeng1234.iteye.com/blog/2224735
+* Non-Blocking vs Blocking Algorithms
+	Blocking: 
+		A: Performs the action requested by the thread -OR
+		B: Blocks the thread until the action can be performed safely
+	Non-Blocking:
+		A: Performs the action requested by the thread -OR
+		B: Notifies the requesting thread that the action could not be performed
+* In a multithreaded system, threads communicate via some kind of data structure. 
+  Such data structures can be anything from simple variables to more advanced data structures like queues, maps, stakes etc.
+  To facilitate correct, concurrent access to the data structures by multiple threads, the data structures must be guarded by some concurrent algorithm.  
+* Optimistic Locking vs Pessimistic Locking
+	Optimistic Locking: (CAS Operation)
+		Optimistic locking allows all threads to create a copy of the shared memory without any blocking. 
+		The threads may then make modifications to their copy, and attempt to write thir modified version back into the shared memory.
+		<Under the optimistic assumption that no other thread will have made changes to the shred memory in the meantime>
+	Pessimistic Locking: (synchronized)
+		Pessimistic locking blocks the access to the shared memory with a synchronized block. 
+		A synchronized block or lock may result in threads being suspended.
+	Optimistic locking tends to work best with low to medium contention on the shared memory.
+	If the contention is very high on the shread memory, threads will waste a lot of CPU cycles copying and modifying the shared memory only to fail writing the changes back to the shread memory. 
+* Amdahl's Law: Amdahl's law can be used to calculate how much a computation can be sped up by running part of it in parallel.
+  * A part which cannot be parallelized
+  * A part which can be parallelized
+  T = TOtal time of serial execution
+  B = Total time of non-parallizable part
+  T - B = Total time of parallizable part (when executed seriall, not parallel)
+  N = The number of threads or CPUs
+  Then: T = B + (T - B)
+  T(N) = B + (T - B) / N
+  T(N) = B + (T(1) - B) / N
+  

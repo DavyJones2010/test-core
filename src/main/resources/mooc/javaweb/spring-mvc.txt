@@ -1,0 +1,39 @@
+1) APIs:
+	1> DisptatcherServlet -> FrameworkServlet -> HttpServetBean -> HttpServlet -> GenericServlet
+	
+	2> HandlerMapping: SimpleUrlHandlerMapping; DefaultAnnotationHandlerMapping
+	3> HandlerAdapter
+	4> HandlerInterceptor
+	5> HandlerExceptionResover: SimpleMappingExceptionResolver
+	
+	6> Controller: We can simply add @Controller
+	7> ViewResolver: UrlBasedViewResolver; InternalResourceViewResolver(added JSTL support)
+	
+	8> View: JstlView;
+	9> ModelAndView: ...
+	
+2) How to use spring-mvc
+	1> Config DispatcherServlet in web.xml; by default, DispatcherServlet will find [servlet-name]-servlet.xml under WEB-INF folder.
+	2> 
+
+3) Inside spring-mvc
+	1> Spring will create an instance of org.springframework.web.context.WebApplicationContext in ServletContext with key WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE
+	   We can fetch this context using WebApplicationContextUtils.getWebApplicationContext(ServletContext).
+	   It is the parent container.
+	2> Each DispatcherServlet has its own org.springframework.web.context.WebApplicationContext instance in ServletContext with key "org.springframework.web.servlet.FrameworkServlet.CONTEXT" + servletName.
+	   This context will also be stored in HttpRequest object with key DispatcherServlet.class.getName() + ".CONTEXT";
+	   We can fetch this context using RequestContextUtils.getWebApplicationContext(ServletRequest). 
+	   It is the child container. Child container can fetch data from parent container, but parent can NEVER fetch data from child container.
+
+4) Spring mvc practice:
+	1> Traditional approach: 
+		* save dataSource, service, dao, transaction bean in parent container;
+		* save action bean into child container;
+		* use transaction in service layer;
+		We cannot add transaction for Action which is embedded in child container because transaction bean in parent container and cannnot access child container.
+	2> Radical approach:
+		* elevate transaction management into Action layer, and retire service layer.
+		
+		
+		
+	 

@@ -1,0 +1,51 @@
+webservice主要为了解决不同平台之间的异构问题，例如.net,php,python,perl之间的交互。
+webservice的实现：JAX-WS,CXF,Axis,Metro
+
+
+* webservice的标准:
+	* JAX-WS(Java API For XML-WebService): 位于javax.xml.ws.*包,其底层支持为JAXB,基于SOAP 的Web 服务
+	* JAXM&SAAJ(JAVA API For XML Message, SOAP With Attachment API For Java): 基于SOAP 的Web 服务,
+	相比之下JAXM&SAAJ 暴漏了SOAP更多的底层细节，编码比较麻烦，而JAX-WS 更加抽象，隐藏了更多的细节，更加面向对象，实现起来你基本上不需要关心SOAP 的任何细节。那么如果你想控制SOAP 消息的更多细节，可以使用JAXM&SAAJ。
+	* JAX-RS:是JAVA 针对REST(Representation State Transfer)风格制定的一套Web 服务规范
+
+SEI(Service Endpoint Interface)
+SIB(Service Implementation Bean)
+
+1) 如何实现一个基于Jws的webservice项目?
+	1> 服务器建立
+		1. 创建接口
+		2. 实现类
+		3. 开启服务
+	2> 客户端建立
+	3> wsimport的使用
+		1. 此时客户端仍然依赖于服务端的接口，通过使用wsimport来生成可以从wsdl生成出需要的接口包
+		wsimport -d target_dir -keep -verbose wsdl_addr(http://localhost:12345/ns?wsdl
+		说明：-d 指定生成路径，-keep 是否生成.java源文件，-verbose 是否显示详细信息
+	4> wsdl的简单讲解: 参见wsdl.txt
+	5> soap的使用和TCPMon
+		TCPMon工作原理：作为客户端的代理，如果服务器监听12345端口，TCPMon监听54321端口并且配置为转发到12345端口。
+		正常情况下客户端需要将webservice请求发送到12345端口。
+		但是加入TCPMon之后，客户端需要将webservice请求发送到54321端口。TCPMon拦截到客户端的请求，然后再进行发送。
+	6> 代码优先还是契约优先
+		代码优先：直接通过wsimport生成wsdl文件。
+		契约优先：在多个异构系统之间先定义好数据模型（wsdl），然后再根据模型进行通信。要进行契约优先，首先要学会编写WSDL（XML&schema）。
+		基于实体的服务：比如学生管理系统，学生奖惩系统，招生就业系统之间，都是基于学生，专业等一些实体进行开发的服务。
+		基于功能的服务：比如天气预报等。
+		基于流程的服务：基于业务流程，是不同的业务系统之间进行交互的流程（ERP）。BPM(business process management)是SOA的核心。
+		业务流程与工作流程区别：工作流程是业务系统内的，范围比业务流程小，有JBMP软件可以解决。
+2) XML的DTD和Schema
+	java & xml:
+		1> jaxb处理xml
+		2> Stax处理xml
+			1. 基于光标的查找
+			2. 基于迭代模型的查找
+			3. 过滤器的使用
+			4. XPath的使用
+			5. 
+3) SOAP消息操作SAAJ
+	SAAJ(SOAP Attachment API for Java): 直接传递SOAP消息，而不使用JWS生成封装好的类、接口通信。
+	参见：edu.xmu.test.j2ee.ws.SoapTest
+4) JAX-WS详解
+5) 契约优先的编写方式
+6) CXF的使用
+7) REST

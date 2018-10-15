@@ -1,0 +1,8 @@
+1) EntityManagerFactory -> SessionFactory
+   EntityManager -> Session
+   EntityTransaction -> Transaction
+   Query -> Criteria
+   Entity -> JavaBean
+
+2) Phase 1: Object Data Phase, define POJO, DAO/Service.
+   Phase 2: Mapping/Persistence, contains JPA provider(Hibernate, Toplink, Eclipselink, etc), Mapping FIle, JPA Loader, Object Grid(like hibernate session cache)

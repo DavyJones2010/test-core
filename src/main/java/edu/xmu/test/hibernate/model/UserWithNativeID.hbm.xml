@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="true">
+	<!-- Stored in table "user" by default -->
+	<class name="edu.xmu.test.hibernate.model.UserWithNativeID" table="user_2">
+		<id name="id" column="user_id">
+			<generator class="native" />
+		</id>
+		<property name="name" column="user_name" />
+		<property name="password" />
+		<property name="dateCreated" />
+		<property name="dateExpired" />
+	</class>
+
+
+</hibernate-mapping>

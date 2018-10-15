@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-4.1.xsd">
+	<!-- <bean id="sleeperPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut"> -->
+	<bean id="sleeperPointcut" class="org.springframework.aop.aspectj.AspectJExpressionPointcut">
+		<property name="expression" value="execution(* edu.xmu.test.spring.aop.Sleepable.sleep() )"></property>
+	</bean>
+	<bean id="sleeperAdvice" class="edu.xmu.test.spring.aop.SleeperAdvice" />
+	<bean id="sleeperAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="advice" ref="sleeperAdvice" />
+		<property name="pointcut" ref="sleeperPointcut" />
+	</bean>
+
+	<bean id="human" class="edu.xmu.test.spring.aop.Human" />
+	<bean id="humanProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="human" />
+		<property name="interceptorNames" value="sleeperAdvisor" />
+		<property name="proxyInterfaces" value="edu.xmu.test.spring.aop.Sleepable" />
+	</bean>
+
+	<bean id="person" class="edu.xmu.test.spring.aop.Person" />
+	<bean id="personProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="person" />
+		<property name="interceptorNames" value="sleeperAdvisor" />
+		<property name="proxyInterfaces" value="edu.xmu.test.spring.aop.Sleepable" />
+	</bean>
+</beans>

@@ -1,0 +1,14 @@
+java集群之session共享解决方案:
+
+1. 客户端cookie加密
+2. web server的session复制
+	1. 实现方式:
+		1. IP多点传送: 主要用于1对多的服务器通讯，通过广播服务和 heartbeats消息的可用来显示服务器的有效
+		2. IP sockets: 主要用于在集群的服务器例程中进行P2P服务器通讯
+	2. 实现手段:
+		1. sticky sessions: 存在单机服务器中的接受网络请求的SESSION，其他集群成员对该服务器的SESSION状态完全不清楚，如果存有SESSION的服务器失败的话，用户必须再次登陆网站，重新输入所有存储在SESSION中的数据
+		2. replicated sessions: 一台服务器中SESSION状态被复制到集群中的其他所有服务器上，无论何时，只要SESSION 被改变，SESSION数据都要重新被复制
+3. 使用共享存储保存session
+	1. 使用数据库保存session
+	2. 使用nfs或windows文件共享
+	3. 使用memcached保存session

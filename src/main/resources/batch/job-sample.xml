@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.2.xsd">
+
+	<bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+		<!-- <property name="dataSource" ref="dataSource" /> -->
+		<!-- <property name="databaseType" value="derby" /> -->
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+	
+	<bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+		<property name="jobRepository" ref="jobRepository" />
+	</bean>
+
+	<batch:job id="helloWorldJob" job-repository="jobRepository" restartable="false">
+		<batch:step id="step1">
+			<batch:tasklet>
+				<batch:chunk reader="cvsFileItemReader" processor="itemProcessor" writer="xmlItemWriter"
+					commit-interval="1" />
+			</batch:tasklet>
+			<batch:next on="COMPLETED" to="step2" />
+			<batch:next on="ERROR" to="errorStep" />
+			<batch:next on="*" to="step2" />
+		</batch:step>
+		<batch:step id="step2">
+			<batch:tasklet ref="noActionTasklet" />
+		</batch:step>
+		<batch:step id="errorStep">
+			<batch:tasklet ref="errorTasklet" />
+		</batch:step>
+	</batch:job>
+
+	<bean id="report" class="edu.xmu.test.spring.batch.model.Report" />
+	<bean id="itemProcessor" class="edu.xmu.test.spring.batch.CustomItemProcessor" />
+	<bean id="cvsFileItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">
+		<property name="resource" value="classpath:batch/csv/report.csv" />
+		<property name="lineMapper">
+			<bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+				<property name="lineTokenizer">
+					<bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+						<property name="names" value="id,sales,qty,staffName,date" />
+					</bean>
+				</property>
+				<property name="fieldSetMapper">
+					<bean class="edu.xmu.test.spring.batch.model.ReportFieldSetMapper" />
+					<!-- if no data type conversion, use BeanWrapperFieldSetMapper to map by name <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper"> 
+						<property name="prototypeBeanName" value="report" /> </bean> -->
+				</property>
+			</bean>
+		</property>
+	</bean>
+	<bean id="xmlItemWriter" class="org.springframework.batch.item.xml.StaxEventItemWriter">
+		<property name="resource" value="file:src/main/resources/batch/xml/report.xml" />
+		<property name="marshaller" ref="reportMarshaller" />
+		<property name="rootTagName" value="report" />
+		<property name="shouldDeleteIfEmpty" value="true" />
+		<property name="overwriteOutput" value="true" />
+	</bean>
+	<bean id="reportMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="classesToBeBound">
+			<list>
+				<value>edu.xmu.test.spring.batch.model.Report</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="noActionTasklet" class="edu.xmu.test.spring.batch.task.NoActionTasklet" />
+	<bean id="errorTasklet" class="edu.xmu.test.spring.batch.task.ErrorTasklet" />
+</beans>

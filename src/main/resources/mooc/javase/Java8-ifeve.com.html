@@ -1,0 +1,1224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!-- saved from url=(0024)http://ifeve.com/stream/ -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head profile="http://gmpg.org/xfn/11"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script src="./Java8-ifeve.com_files/id.php" charset="utf-8"></script><script src="./Java8-ifeve.com_files/shares.php" charset="utf-8"></script>
+
+
+<title>Java8初体验（二）Stream语法详解 | 并发编程网 - ifeve.com</title>
+<meta name="description" content="让天下没有难学的技术">
+
+<link rel="alternate" type="application/rss+xml" title="并发编程网 – ifeve.com RSS Feed" href="http://ifeve.com/feed/">
+<link rel="alternate" type="application/atom+xml" title="并发编程网 – ifeve.com Atom Feed" href="http://ifeve.com/feed/atom/"> 
+<link rel="pingback" href="http://ifeve.com/xmlrpc.php">
+
+<link rel="stylesheet" href="./Java8-ifeve.com_files/style.css" type="text/css">
+<link rel="stylesheet" href="./Java8-ifeve.com_files/comment-style.css" type="text/css">
+
+ 
+
+<!-- All in One SEO Pack 2.2.6.2 by Michael Torbert of Semper Fi Web Design[258,312] -->
+<meta name="description" itemprop="description" content="感谢同事【天锦】的投稿。投稿请联系">
+
+<meta name="keywords" itemprop="keywords" content="java8">
+
+<link rel="canonical" href="./Java8-ifeve.com_files/Java8-ifeve.com.html">
+<!-- /all in one seo pack -->
+<link rel="alternate" type="application/rss+xml" title="并发编程网 - ifeve.com » Java8初体验（二）Stream语法详解评论Feed" href="http://ifeve.com/stream/feed/">
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/ifeve.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.2"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script><style type="text/css"></style><script src="./Java8-ifeve.com_files/wp-emoji-release.min.js" type="text/javascript"></script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="yarppWidgetCss-css" href="./Java8-ifeve.com_files/widget.css" type="text/css" media="all">
+<link rel="stylesheet" id="dwqa-style-css" href="./Java8-ifeve.com_files/style(1).css" type="text/css" media="all">
+<link rel="stylesheet" id="wp-postratings-css" href="./Java8-ifeve.com_files/postratings-css.css" type="text/css" media="all">
+<link rel="stylesheet" id="display-authors-widget-styles-css" href="./Java8-ifeve.com_files/display-authors-widget.css" type="text/css" media="all">
+<script type="text/javascript" src="./Java8-ifeve.com_files/jquery.js"></script>
+<script type="text/javascript" src="./Java8-ifeve.com_files/jquery-migrate.min.js"></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://ifeve.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://ifeve.com/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="Java8初体验（一）lambda表达式语法" href="http://ifeve.com/lambda/">
+<link rel="next" title="4.19周六北京 GreenTea JUG活动" href="http://ifeve.com/greentea-jug-4-19/">
+<meta name="generator" content="WordPress 4.2.2">
+<link rel="shortlink" href="http://ifeve.com/?p=11260">
+
+
+<!-- Plugin: Open external links a new window. Plugin by Kristian Risager Larsen, http://kristianrisagerlarsen.dk . Download it at http://wordpress.org/extend/plugins/open-external-links-in-a-new-window/ -->
+<script type="text/javascript">//<![CDATA[
+	function external_links_in_new_windows_loop() {
+		if (!document.links) {
+			document.links = document.getElementsByTagName('a');
+		}
+		var change_link = false;
+		var force = '';
+		var ignore = '';
+
+		for (var t=0; t<document.links.length; t++) {
+			var all_links = document.links[t];
+			change_link = false;
+			
+			if(document.links[t].hasAttribute('onClick') == false) {
+				// forced if the address starts with http (or also https), but does not link to the current domain
+				if(all_links.href.search(/^http/) != -1 && all_links.href.search('ifeve.com') == -1) {
+					// alert('Changeda '+all_links.href);
+					change_link = true;
+				}
+					
+				if(force != '' && all_links.href.search(force) != -1) {
+					// forced
+					// alert('force '+all_links.href);
+					change_link = true;
+				}
+				
+				if(ignore != '' && all_links.href.search(ignore) != -1) {
+					// alert('ignore '+all_links.href);
+					// ignored
+					change_link = false;
+				}
+
+				if(change_link == true) {
+					// alert('Changed '+all_links.href);
+					document.links[t].setAttribute('onClick', 'javascript:window.open(\''+all_links.href+'\'); return false;');
+					document.links[t].removeAttribute('target');
+				}
+			}
+		}
+	}
+	
+	// Load
+	function external_links_in_new_windows_load(func)
+	{	
+		var oldonload = window.onload;
+		if (typeof window.onload != 'function'){
+			window.onload = func;
+		} else {
+			window.onload = function(){
+				oldonload();
+				func();
+			}
+		}
+	}
+
+	external_links_in_new_windows_load(external_links_in_new_windows_loop);
+	//]]></script>
+
+
+<!-- StarBox - the Author Box for Humans 3.0.3, visit: http://wordpress.org/plugins/starbox/ -->
+<!-- /StarBox - the Author Box for Humans -->
+
+<link rel="stylesheet" id="frontend.css-css" href="./Java8-ifeve.com_files/frontend.css" type="text/css" media="all">
+<script type="text/javascript" src="./Java8-ifeve.com_files/frontend.js"></script>
+<link rel="stylesheet" id="hidedefault.css-css" href="./Java8-ifeve.com_files/hidedefault.css" type="text/css" media="all">
+<style type="text/css" media="screen">#wp-admin-bar-user-info .avatar-64 {width:64px}</style>
+	<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
+<link rel="stylesheet" type="text/css" href="./Java8-ifeve.com_files/shCore.css"><link rel="stylesheet" type="text/css" href="./Java8-ifeve.com_files/shThemeEclipse.css"><style type="text/css" id="syntaxhighlighteranchor"></style>
+
+<script type="text/javascript" src="./Java8-ifeve.com_files/jscript.js"></script>
+<script type="text/javascript" src="./Java8-ifeve.com_files/comment.js"></script>
+<script type="text/javascript" src="./Java8-ifeve.com_files/rollover.js"></script>
+
+<!--[if IE 7]>
+<link rel="stylesheet" href="http://ifeve.com/wp-content/themes/flat/ie7.css" type="text/css" />
+<![endif]-->
+<!--[if IE 8]>
+<link rel="stylesheet" href="http://ifeve.com/wp-content/themes/flat/ie8.css" type="text/css" />
+<![endif]-->
+
+
+<style type="text/css">
+a, .post .title a:hover, .post_meta a:hover, #bread_crumb ul li a:hover, #previous_post a:hover, #next_post a:hover, .post a.more-link:hover, #right_col li a:hover, #copyright li a:hover, #archive_headline #keyword,
+   #comments_wrapper a:hover, #comment_header_right .comment_switch_active a, #comment_header_right .comment_switch_active a:hover, #comment_pager .current
+   { color:#00A19E; }
+
+#no_post a.back:hover, #wp-calendar td a:hover, #wp-calendar #prev a:hover, #wp-calendar #next a:hover, .page_navi a:hover, #submit_comment:hover
+ { background-color:#00A19E; }
+
+#guest_info input:focus, #comment_textarea textarea:focus
+ { border:1px solid #00A19E; }
+
+a:hover
+ { color:#BDC900; }
+
+body { font-size:14px; }
+
+#header { background:url(http://ifeve.com/wp-content/uploads/flat/bg.png) left top; }
+.logo_text a { color:#F5F5F5; }
+#site_description {  border-top:1px solid #BBBBBB; color:#D2D9CC; }
+
+
+</style>
+
+</head>
+
+<body style="zoom: 1;"><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="./Java8-ifeve.com_files/o.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><link href="./Java8-ifeve.com_files/jiathis_counter.css" rel="stylesheet" type="text/css"><script src="./Java8-ifeve.com_files/jiathis.php" charset="utf-8"></script><link href="./Java8-ifeve.com_files/jiathis_share.css" rel="stylesheet" type="text/css"><iframe frameborder="0" style="position: absolute; display: none; opacity: 0;"></iframe><div class="jiathis_style" style="position: absolute; z-index: 1000000000; display: none; top: 50%; left: 50%; overflow: auto;"></div><div class="jiathis_style" style="position: absolute; z-index: 1000000000; display: none; overflow: auto;"></div><iframe frameborder="0" src="./Java8-ifeve.com_files/jiathis_utility.html" style="display: none;"></iframe>
+
+ <div id="header">
+  <div class="header_menu">
+    <ul id="menu-%e4%b8%bb%e8%8f%9c%e5%8d%95" class="menu"><li id="menu-item-16594" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-16594"><a href="http://ifeve.com/">首页</a></li>
+<li id="menu-item-3432" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3432"><a href="http://ifeve.com/wp-login.php">登录</a></li>
+<li id="menu-item-17079" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-17079"><a href="http://ifeve.com/questions/">面试题</a></li>
+<li id="menu-item-9219" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-has-children menu-item-9219 parent_menu"><a href="http://ifeve.com/category/java/">JAVA</a>
+<ul class="sub-menu">
+	<li id="menu-item-16108" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-16108"><a href="http://ifeve.com/java-io/">Java IO 教程</a></li>
+	<li id="menu-item-5283" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5283"><a href="http://ifeve.com/java-nio-all/">Java NIO 教程</a></li>
+	<li id="menu-item-17514" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-17514"><a href="http://ifeve.com/java-reflection/">JAVA Reflection教程</a></li>
+	<li id="menu-item-16239" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-16239"><a href="http://ifeve.com/java-network">Java 网络教程</a></li>
+	<li id="menu-item-4416" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4416"><a href="http://ifeve.com/java-concurrency-thread-directory/">Java并发和多线程</a></li>
+	<li id="menu-item-2767" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2767"><a href="http://ifeve.com/jmm-cookbook/">Java内存模型指南</a></li>
+	<li id="menu-item-2747" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2747"><a href="http://ifeve.com/jmm-faq/">Java内存模型FAQ</a></li>
+	<li id="menu-item-2765" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2765"><a href="http://ifeve.com/syn-jmm/">同步与Java内存模型</a></li>
+	<li id="menu-item-5789" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5789"><a href="http://ifeve.com/oracle-java-concurrency-tutorial/">Oracle官方并发教程</a></li>
+	<li id="menu-item-15316" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-15316"><a href="http://ifeve.com/jvm-optimize/">JVM性能优化系列</a></li>
+	<li id="menu-item-15313" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-15313"><a href="http://ifeve.com/useful-jvm-flags/">JVM实用参数系列</a></li>
+</ul>
+</li>
+<li id="menu-item-7938" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-7938"><a href="http://ifeve.com/category/c/">C++</a></li>
+<li id="menu-item-9220" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-9220 parent_menu"><a href="http://ifeve.com/category/framework/">Framework</a>
+<ul class="sub-menu">
+	<li id="menu-item-12798" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-12798"><a href="http://ifeve.com/disruptor/">Disruptor 框架指南</a></li>
+	<li id="menu-item-12783" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12783"><a title="Netty" href="http://ifeve.com/category/netty/">Netty</a></li>
+	<li id="menu-item-12791" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12791"><a href="http://ifeve.com/category/scala/">Scala</a></li>
+	<li id="menu-item-12312" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-12312"><a href="http://ifeve.com/getting-started-with-stom-index/">Storm 入门</a></li>
+	<li id="menu-item-9218" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-9218"><a href="http://ifeve.com/google-guava/">Guava 使用指南</a></li>
+</ul>
+</li>
+<li id="menu-item-555" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-555 parent_menu"><a href="http://ifeve.com/category/concurrency-translation/">其他译文</a>
+<ul class="sub-menu">
+	<li id="menu-item-2777" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2777"><a href="http://ifeve.com/java-concurrent/">并发基础</a></li>
+	<li id="menu-item-3340" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3340"><a href="http://ifeve.com/aqs/">j.u.c同步框架</a></li>
+	<li id="menu-item-2769" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2769"><a href="http://ifeve.com/fj/">Fork Join框架</a></li>
+	<li id="menu-item-9221" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-9221"><a href="http://ifeve.com/doug-lea/">Doug Lea 论文</a></li>
+	<li id="menu-item-4643" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4643"><a href="http://ifeve.com/mechanical-sympathy/">Mechanical Sympathy</a></li>
+	<li id="menu-item-6397" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6397"><a href="http://ifeve.com/stm/">软件事务内存导论</a></li>
+	<li id="menu-item-10845" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10845"><a href="http://ifeve.com/jsr133-cn/">JSR133中文版</a></li>
+</ul>
+</li>
+<li id="menu-item-103" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-103 parent_menu"><a href="http://ifeve.com/category/talk-concurrent/">本站原创</a>
+<ul class="sub-menu">
+	<li id="menu-item-2763" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2763"><a href="http://ifeve.com/talk-concurrency/">聊聊并发</a></li>
+	<li id="menu-item-2753" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2753"><a href="http://ifeve.com/java-memory-model-0/">深入理解Java内存模型</a></li>
+	<li id="menu-item-4862" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4862"><a href="http://ifeve.com/from-javaeye-sys-struct/">从Java视角理解系统结构</a></li>
+	<li id="menu-item-4627" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4627"><a href="http://ifeve.com/ali-itu-agile/">阿里内贸团队敏捷实践</a></li>
+</ul>
+</li>
+<li id="menu-item-7119" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-7119 parent_menu"><a href="http://ifeve.com/category/%e5%b9%b6%e5%8f%91%e4%b9%a6%e7%b1%8d/">并发书籍</a>
+<ul class="sub-menu">
+	<li id="menu-item-10846" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10846"><a href="http://ifeve.com/art-of-java-concurrent-program/">《Java 并发编程的艺术》迷你书</a></li>
+	<li id="menu-item-6042" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6042"><a href="http://ifeve.com/perfbook/">《深入理解并行编程》</a></li>
+	<li id="menu-item-9172" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-9172"><a href="http://ifeve.com/c-plus-plus-concurrency-in-action/">《C++ 并发编程》</a></li>
+	<li id="menu-item-7785" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7785"><a href="http://ifeve.com/java-7-concurrency-cookbook/">《Java 7 并发编程指南》</a></li>
+	<li id="menu-item-7120" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7120"><a href="http://ifeve.com/jvm-concurrency">《Java 虚拟机并发编程》</a></li>
+	<li id="menu-item-12360" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-12360"><a href="http://ifeve.com/getting-started-with-stom-index/">《Storm入门》中文版</a></li>
+</ul>
+</li>
+<li id="menu-item-9171" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-9171 parent_menu"><a href="http://ifeve.com/need-you/">加入我们</a>
+<ul class="sub-menu">
+	<li id="menu-item-3246" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3246"><a href="http://ifeve.com/contribute/">我要投稿</a></li>
+	<li id="menu-item-6854" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6854"><a href="http://ifeve.com/neitui/">内推阿里</a></li>
+</ul>
+</li>
+<li id="menu-item-105" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-105 parent_menu"><a href="http://ifeve.com/about-site/">关于本站</a>
+<ul class="sub-menu">
+	<li id="menu-item-11306" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-11306"><a href="http://ifeve.com/category/%e6%b4%bb%e5%8a%a8/">活动</a></li>
+	<li id="menu-item-1487" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1487"><a href="http://ifeve.com/sitemap.html">文章归档</a></li>
+	<li id="menu-item-131" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-131"><a href="http://ifeve.com/about-site/about-me/">关于清英</a></li>
+	<li id="menu-item-7600" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7600"><a href="http://ifeve.com/ads/">广告合作</a></li>
+</ul>
+</li>
+</ul>    </div>
+  <!-- logo -->
+  <h1 class="logo_text"><a href="http://ifeve.com/">并发编程网 - ifeve.com</a></h1>
+<h2 id="site_description">让天下没有难学的技术</h2>
+ </div>
+
+ <div id="main_content" class="clearfix">
+
+  <div id="left_col">
+      <div id="bread_crumb">
+    <ul class="clearfix">
+     <li id="bc_home"><a href="http://ifeve.com/" title="首页">首页</a></li>
+     <li id="bc_cat"><a href="http://ifeve.com/category/java/">JAVA</a></li>     <li class="last">Java8初体验（二）Stream语法详解</li>
+    </ul>
+   </div>
+   
+   
+   <div class="post_wrap clearfix" id="single">
+    <div class="post">
+     <h3 class="title"><span>Java8初体验（二）Stream语法详解</span></h3>
+     <div class="post_content">
+      <p>感谢同事<strong>【天锦】</strong>的投稿。投稿请联系 tengfei@ifeve.com<br>
+上篇文章<a href="http://ifeve.com/lambda/" target="_blank">Java8初体验（一）lambda表达式语法</a>比较详细的介绍了lambda表达式的方方面面，细心的读者会发现那篇文章的例子中有很多Stream的例子。这些Stream的例子可能让你产生疑惑，本文将会详细讲解Stream的使用方法（不会涉及Stream的原理，因为这个系列的文章还是一个快速学习如何使用的）。<br>
+<span id="more-11260"></span></p>
+<h1><em><strong>1. Stream初体验</strong></em></h1>
+<p>我们先来看看Java里面是怎么定义Stream的：</p>
+<blockquote><p>A sequence of elements supporting sequential and parallel aggregate operations.</p></blockquote>
+<p>我们来解读一下上面的那句话：</p>
+<ol>
+<li>
+Stream是元素的集合，这点让Stream看起来用些类似Iterator；</li>
+<li>
+可以支持顺序和并行的对原Stream进行汇聚的操作；</li>
+</ol>
+<p><strong>大家可以把Stream当成一个高级版本的Iterator。原始版本的Iterator，用户只能一个一个的遍历元素并对其执行某些操作；高级版本的Stream，用户只要给出需要对其包含的元素执行什么操作，比如“过滤掉长度大于10的字符串”、“获取每个字符串的首字母”等，具体这些操作如何应用到每个元素上，就给Stream就好了！（这个秘籍，一般人我不告诉他：））</strong>大家看完这些可能对Stream还没有一个直观的认识，莫急，咱们来段代码。</p>
+<div id="highlighter_454882" class="syntaxhighlighter  "><div class="bar  "><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_454882_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_454882" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="comments">//Lists是Guava中的一个工具类</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>2</code></td><td class="content"><code class="plain">List&lt;Integer&gt; nums = Lists.newArrayList(</code><code class="value">1</code><code class="plain">,</code><code class="keyword">null</code><code class="plain">,</code><code class="value">3</code><code class="plain">,</code><code class="value">4</code><code class="plain">,</code><code class="keyword">null</code><code class="plain">,</code><code class="value">6</code><code class="plain">);</code></td></tr></tbody></table></div><div class="line alt1"><table><tbody><tr><td class="number"><code>3</code></td><td class="content"><code class="plain">nums.stream().filter(num -&gt; num != </code><code class="keyword">null</code><code class="plain">).count();</code></td></tr></tbody></table></div></div></div>
+<p>上面这段代码是获取一个List中，元素不为null的个数。这段代码虽然很简短，但是却是一个很好的入门级别的例子来体现如何使用Stream，正所谓“麻雀虽小五脏俱全”。我们现在开始深入解刨这个例子，完成以后你可能可以基本掌握Stream的用法！</p>
+<h3>1.1 剖析Stream通用语法</h3>
+<p><img src="./Java8-ifeve.com_files/T2ycFgXQ8XXXXXXXXX_!!90219132.jpg" alt=""></p>
+<p>图片就是对于Stream例子的一个解析，可以很清楚的看见：原本一条语句被三种颜色的框分割成了三个部分。红色框中的语句是一个Stream的生命开始的地方，负责创建一个Stream实例；绿色框中的语句是赋予Stream灵魂的地方，把一个Stream转换成另外一个Stream，红框的语句生成的是一个包含所有nums变量的Stream，进过绿框的filter方法以后，重新生成了一个过滤掉原nums列表所有null以后的Stream；蓝色框中的语句是丰收的地方，把Stream的里面包含的内容按照某种算法来汇聚成一个值，例子中是获取Stream中包含的元素个数。如果这样解析以后，还不理解，那就只能动用“核武器”–图形化，一图抵千言！</p>
+<p><img src="./Java8-ifeve.com_files/T2BbhlXFBXXXXXXXXX_!!90219132.jpg" alt=""></p>
+<p>在此我们总结一下使用Stream的基本步骤：</p>
+<ol>
+<li>创建Stream；</li>
+<li>转换Stream，每次转换原有Stream对象不改变，返回一个新的Stream对象（**可以有多次转换**）；</li>
+<li>对Stream进行聚合（Reduce）操作，获取想要的结果；</li>
+</ol>
+<h1>2. 创建Stream</h1>
+<p>最常用的创建Stream有两种途径：</p>
+<ol>
+<li>通过Stream接口的静态工厂方法（注意：Java8里接口可以带静态方法）；</li>
+<li>通过Collection接口的默认方法（默认方法：Default method，也是Java8中的一个新特性，就是接口中的一个带有实现的方法，后续文章会有介绍）–stream()，把一个Collection对象转换成Stream</li>
+</ol>
+<h3>2.1 使用Stream静态方法来创建Stream</h3>
+<p>1. of方法：有两个overload方法，一个接受变长参数，一个接口单一值</p>
+<div id="highlighter_171156" class="syntaxhighlighter  "><div class="bar"><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_171156_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_171156" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="plain">Stream&lt;Integer&gt; integerStream = Stream.of(</code><code class="value">1</code><code class="plain">, </code><code class="value">2</code><code class="plain">, </code><code class="value">3</code><code class="plain">, </code><code class="value">5</code><code class="plain">);</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>2</code></td><td class="content"><code class="plain">Stream&lt;String&gt; stringStream = Stream.of(</code><code class="string">"taobao"</code><code class="plain">);</code></td></tr></tbody></table></div></div></div>
+<p>2. generator方法：生成一个无限长度的Stream，其元素的生成是通过给定的Supplier（这个接口可以看成一个对象的工厂，每次调用返回一个给定类型的对象）</p>
+<div id="highlighter_415173" class="syntaxhighlighter  "><div class="bar                            "><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_415173_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_415173" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="plain">Stream.generate(</code><code class="keyword">new</code> <code class="plain">Supplier&lt;Double&gt;() {</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>2</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="color1">@Override</code></td></tr></tbody></table></div><div class="line alt1"><table><tbody><tr><td class="number"><code>3</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="keyword">public</code> <code class="plain">Double get() {</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>4</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="keyword">return</code> <code class="plain">Math.random();</code></td></tr></tbody></table></div><div class="line alt1"><table><tbody><tr><td class="number"><code>5</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="plain">}</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>6</code></td><td class="content"><code class="plain">});</code></td></tr></tbody></table></div><div class="line alt1"><table><tbody><tr><td class="number"><code>7</code></td><td class="content"><code class="plain">Stream.generate(() -&gt; Math.random());</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>8</code></td><td class="content"><code class="plain">Stream.generate(Math::random);</code></td></tr></tbody></table></div></div></div>
+<p>    三条语句的作用都是一样的，只是使用了lambda表达式和方法引用的语法来简化代码。每条语句其实都是生成一个无限长度的Stream，其中值是随机的。<em>这个无限长度Stream是懒加载，一般这种无限长度的Stream都会配合Stream的limit()方法来用。</em><br>
+3. iterate方法：也是生成无限长度的Stream，和generator不同的是，其元素的生成是重复对给定的种子值(seed)调用用户指定函数来生成的。其中包含的元素可以认为是：seed，f(seed),f(f(seed))无限循环</p>
+<div id="highlighter_287100" class="syntaxhighlighter  "><div class="bar"><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_287100_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_287100" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="plain">Stream.iterate(</code><code class="value">1</code><code class="plain">, item -&gt; item + </code><code class="value">1</code><code class="plain">).limit(</code><code class="value">10</code><code class="plain">).forEach(System.out::println);</code></td></tr></tbody></table></div></div></div>
+<p>	这段代码就是先获取一个无限长度的正整数集合的Stream，然后取出前10个打印。<strong>千万记住使用limit方法，不然会无限打印下去。</strong></p>
+<h3>2.2 通过Collection子类获取Stream</h3>
+<p>这个在本文的第一个例子中就展示了从List对象获取其对应的Stream对象，如果查看Java doc就可以发现Collection接口有一个stream方法，所以其所有子类都都可以获取对应的Stream对象。</p>
+<div id="highlighter_186543" class="syntaxhighlighter  "><div class="bar                 "><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_186543_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_186543" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="keyword">public</code> <code class="keyword">interface</code> <code class="plain">Collection&lt;E&gt; </code><code class="keyword">extends</code> <code class="plain">Iterable&lt;E&gt; {</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>2</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="comments">//其他方法省略</code></td></tr></tbody></table></div><div class="line alt1"><table><tbody><tr><td class="number"><code>3</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="keyword">default</code> <code class="plain">Stream&lt;E&gt; stream() {</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>4</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="keyword">return</code> <code class="plain">StreamSupport.stream(spliterator(), </code><code class="keyword">false</code><code class="plain">);</code></td></tr></tbody></table></div><div class="line alt1"><table><tbody><tr><td class="number"><code>5</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="plain">}</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>6</code></td><td class="content"><code class="plain">}</code></td></tr></tbody></table></div></div></div>
+<h1>3. 转换Stream</h1>
+<p>转换Stream其实就是把一个Stream通过某些行为转换成一个新的Stream。Stream接口中定义了几个常用的转换方法，下面我们挑选几个常用的转换方法来解释。<br>
+1. distinct: 对于Stream中包含的元素进行去重操作（去重逻辑依赖元素的equals方法），新生成的Stream中没有重复的元素；</p>
+<p>	distinct方法示意图(**以下所有的示意图都要感谢[RxJava](https://github.com/Netflix/RxJava)项目的doc中的图片给予的灵感, 如果示意图表达的有错误和不准确的地方，请直接联系我。**)：<br>
+	<img src="./Java8-ifeve.com_files/T2K0lnXPRXXXXXXXXX_!!90219132.jpg" alt=""><br>
+2. filter: 对于Stream中包含的元素使用给定的过滤函数进行过滤操作，新生成的Stream只包含符合条件的元素；</p>
+<p>	filter方法示意图：<br>
+	<img src="./Java8-ifeve.com_files/T2OxXnXPlXXXXXXXXX_!!90219132.jpg" alt=""><br>
+3. map: 对于Stream中包含的元素使用给定的转换函数进行转换操作，新生成的Stream只包含转换生成的元素。这个方法有三个对于原始类型的变种方法，分别是：mapToInt，mapToLong和mapToDouble。这三个方法也比较好理解，比如mapToInt就是把原始Stream转换成一个新的Stream，这个新生成的Stream中的元素都是int类型。之所以会有这样三个变种方法，可以免除自动装箱/拆箱的额外消耗；</p>
+<p>	map方法示意图：<br>
+	<img src="./Java8-ifeve.com_files/T2PQJnXOJXXXXXXXXX_!!90219132.jpg" alt=""><br>
+4. flatMap：和map类似，不同的是其每个元素转换得到的是Stream对象，会把子Stream中的元素压缩到父集合中；</p>
+<p>	flatMap方法示意图：<br>
+	<img src="./Java8-ifeve.com_files/T2mBXnXQhXXXXXXXXX_!!90219132.jpg" alt=""><br>
+5. peek: 生成一个包含原Stream的所有元素的新Stream，同时会提供一个消费函数（Consumer实例），新Stream每个元素被消费的时候都会执行给定的消费函数；</p>
+<p>	peek方法示意图：<br>
+	<img src="./Java8-ifeve.com_files/T2DrFmXHtaXXXXXXXX_!!90219132.jpg" alt=""><br>
+6. limit: 对一个Stream进行截断操作，获取其前N个元素，如果原Stream中包含的元素个数小于N，那就获取其所有的元素；</p>
+<p>	limit方法示意图：<br>
+	<img src="./Java8-ifeve.com_files/T2QAXlXJBaXXXXXXXX_!!90219132.jpg" alt=""><br>
+7. skip: 返回一个丢弃原Stream的前N个元素后剩下元素组成的新Stream，如果原Stream中包含的元素个数小于N，那么返回空Stream；</p>
+<p>	skip方法示意图：<br>
+	<img src="./Java8-ifeve.com_files/T24A8mXUJXXXXXXXXX_!!90219132.jpg" alt=""><br>
+8. 在一起,在一起！</p>
+<div id="highlighter_701654" class="syntaxhighlighter  "><div class="bar     "><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_701654_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_701654" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="plain">List&lt;Integer&gt; nums = Lists.newArrayList(</code><code class="value">1</code><code class="plain">,</code><code class="value">1</code><code class="plain">,</code><code class="keyword">null</code><code class="plain">,</code><code class="value">2</code><code class="plain">,</code><code class="value">3</code><code class="plain">,</code><code class="value">4</code><code class="plain">,</code><code class="keyword">null</code><code class="plain">,</code><code class="value">5</code><code class="plain">,</code><code class="value">6</code><code class="plain">,</code><code class="value">7</code><code class="plain">,</code><code class="value">8</code><code class="plain">,</code><code class="value">9</code><code class="plain">,</code><code class="value">10</code><code class="plain">);</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>2</code></td><td class="content"><code class="plain">System.out.println(“sum is:”+nums.stream().filter(num -&gt; num != </code><code class="keyword">null</code><code class="plain">).</code></td></tr></tbody></table></div><div class="line alt1"><table><tbody><tr><td class="number"><code>3</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="plain">distinct().mapToInt(num -&gt; num * </code><code class="value">2</code><code class="plain">).</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>4</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="plain">peek(System.out::println).skip(</code><code class="value">2</code><code class="plain">).limit(</code><code class="value">4</code><code class="plain">).sum());</code></td></tr></tbody></table></div></div></div>
+<p>	这段代码演示了上面介绍的所有转换方法（除了flatMap），简单解释一下这段代码的含义：给定一个Integer类型的List，获取其对应的Stream对象，然后进行过滤掉null，再去重，再每个元素乘以2，再每个元素被消费的时候打印自身，在跳过前两个元素，最后去前四个元素进行加和运算(解释一大堆，很像废话，因为基本看了方法名就知道要做什么了。这个就是声明式编程的一大好处！)。大家可以参考上面对于每个方法的解释，看看最终的输出是什么。<br>
+9. 性能问题<br>
+	有些细心的同学可能会有这样的疑问：在对于一个Stream进行多次转换操作，每次都对Stream的每个元素进行转换，而且是执行多次，这样时间复杂度就是一个for循环里把所有操作都做掉的N（转换的次数）倍啊。<strong>其实不是这样的，转换操作都是lazy的，多个转换操作只会在汇聚操作（见下节）的时候融合起来，一次循环完成。我们可以这样简单的理解，Stream里有个操作函数的集合，每次转换操作就是把转换函数放入这个集合中，在汇聚操作的时候循环Stream对应的集合，然后对每个元素执行所有的函数。</strong></p>
+<h1>4. 汇聚（Reduce）Stream</h1>
+<blockquote><p>汇聚这个词，是我自己翻译的，如果大家有更好的翻译，可以在下面留言。在官方文档中是reduce，也叫fold。</p></blockquote>
+<p>在介绍汇聚操作之前，我们先看一下Java doc中对于其定义：</p>
+<blockquote><p>A reduction operation (also called a fold) takes a sequence of input elements and combines them into a single summary result by repeated application of a combining operation, such as finding the sum or maximum of a set of numbers, or accumulating elements into a list. The streams classes have multiple forms of general reduction operations, called reduce() and collect(), as well as multiple specialized reduction forms such as sum(), max(), or count().</p></blockquote>
+<p>简单翻译一下：汇聚操作（也称为折叠）接受一个元素序列为输入，反复使用某个合并操作，把序列中的元素合并成一个汇总的结果。比如查找一个数字列表的总和或者最大值，或者把这些数字累积成一个List对象。Stream接口有一些通用的汇聚操作，比如reduce()和collect()；也有一些特定用途的汇聚操作，比如sum(),max()和count()。<strong>注意：sum方法不是所有的Stream对象都有的，只有IntStream、LongStream和DoubleStream是实例才有。</strong></p>
+<p>下面会分两部分来介绍汇聚操作：</p>
+<ol>
+<li>可变汇聚：把输入的元素们累积到一个可变的容器中，比如Collection或者StringBuilder；</li>
+<li>其他汇聚：除去可变汇聚剩下的，一般都不是通过反复修改某个可变对象，而是通过把前一次的汇聚结果当成下一次的入参，反复如此。比如reduce，count，allMatch；</li>
+</ol>
+<h3>4.1 可变汇聚</h3>
+<p>可变汇聚对应的只有一个方法：collect，正如其名字显示的，它可以把Stream中的要有元素收集到一个结果容器中（比如Collection）。先看一下最通用的collect方法的定义（还有其他override方法）：</p>
+<div id="highlighter_209219" class="syntaxhighlighter  "><div class="bar"><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_209219_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_209219" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="plain">&lt;R&gt; R collect(Supplier&lt;R&gt; supplier,</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>2</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="plain">BiConsumer&lt;R, ? </code><code class="keyword">super</code> <code class="plain">T&gt; accumulator,</code></td></tr></tbody></table></div><div class="line alt1"><table><tbody><tr><td class="number"><code>3</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="plain">BiConsumer&lt;R, R&gt; combiner);</code></td></tr></tbody></table></div></div></div>
+<p>先来看看这三个参数的含义：Supplier supplier是一个工厂函数，用来生成一个新的容器；BiConsumer accumulator也是一个函数，用来把Stream中的元素添加到结果容器中；BiConsumer combiner还是一个函数，用来把中间状态的多个结果容器合并成为一个（并发的时候会用到）。看晕了？来段代码！</p>
+<div id="highlighter_149479" class="syntaxhighlighter  "><div class="bar "><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_149479_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_149479" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="plain">List&lt;Integer&gt; nums = Lists.newArrayList(</code><code class="value">1</code><code class="plain">,</code><code class="value">1</code><code class="plain">,</code><code class="keyword">null</code><code class="plain">,</code><code class="value">2</code><code class="plain">,</code><code class="value">3</code><code class="plain">,</code><code class="value">4</code><code class="plain">,</code><code class="keyword">null</code><code class="plain">,</code><code class="value">5</code><code class="plain">,</code><code class="value">6</code><code class="plain">,</code><code class="value">7</code><code class="plain">,</code><code class="value">8</code><code class="plain">,</code><code class="value">9</code><code class="plain">,</code><code class="value">10</code><code class="plain">);</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>2</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="plain">List&lt;Integer&gt; numsWithoutNull = nums.stream().filter(num -&gt; num != </code><code class="keyword">null</code><code class="plain">).</code></td></tr></tbody></table></div><div class="line alt1"><table><tbody><tr><td class="number"><code>3</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="plain">collect(() -&gt; </code><code class="keyword">new</code> <code class="plain">ArrayList&lt;Integer&gt;(),</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>4</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="plain">(list, item) -&gt; list.add(item),</code></td></tr></tbody></table></div><div class="line alt1"><table><tbody><tr><td class="number"><code>5</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="plain">(list1, list2) -&gt; list1.addAll(list2));</code></td></tr></tbody></table></div></div></div>
+<p>上面这段代码就是对一个元素是Integer类型的List，先过滤掉全部的null，然后把剩下的元素收集到一个新的List中。进一步看一下collect方法的三个参数，都是lambda形式的函数（*上面的代码可以使用方法引用来简化，留给读者自己去思考*）。</p>
+<ul>
+<li>第一个函数生成一个新的ArrayList实例；</li>
+<li>第二个函数接受两个参数，第一个是前面生成的ArrayList对象，二个是stream中包含的元素，函数体就是把stream中的元素加入ArrayList对象中。第二个函数被反复调用直到原stream的元素被消费完毕；</li>
+<li>第三个函数也是接受两个参数，这两个都是ArrayList类型的，函数体就是把第二个ArrayList全部加入到第一个中；</li>
+</ul>
+<p>但是上面的collect方法调用也有点太复杂了，没关系！我们来看一下collect方法另外一个override的版本，其依赖[Collector](http://docs.oracle.com/javase/8/docs/api/java/util/stream/Collector.html)。</p>
+<div id="highlighter_416805" class="syntaxhighlighter  "><div class="bar"><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_416805_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_416805" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="plain">&lt;R, A&gt; R collect(Collector&lt;? </code><code class="keyword">super</code> <code class="plain">T, A, R&gt; collector);</code></td></tr></tbody></table></div></div></div>
+<p>这样清爽多了！少年，还有好消息，Java8还给我们提供了Collector的工具类–[Collectors](http://docs.oracle.com/javase/8/docs/api/java/util/stream/Collectors.html)，其中已经定义了一些静态工厂方法，比如：Collectors.toCollection()收集到Collection中, Collectors.toList()收集到List中和Collectors.toSet()收集到Set中。这样的静态方法还有很多，这里就不一一介绍了，大家可以直接去看JavaDoc。下面看看使用Collectors对于代码的简化：</p>
+<div id="highlighter_115212" class="syntaxhighlighter  "><div class="bar"><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_115212_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_115212" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="plain">List&lt;Integer&gt; numsWithoutNull = nums.stream().filter(num -&gt; num != </code><code class="keyword">null</code><code class="plain">).</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>2</code></td><td class="content"><code class="spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="plain">collect(Collectors.toList());</code></td></tr></tbody></table></div></div></div>
+<h3>4.2 其他汇聚</h3>
+<p>– reduce方法：reduce方法非常的通用，后面介绍的count，sum等都可以使用其实现。reduce方法有三个override的方法，本文介绍两个最常用的，最后一个留给读者自己学习。先来看reduce方法的第一种形式，其方法定义如下：</p>
+<div id="highlighter_236312" class="syntaxhighlighter  "><div class="bar"><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_236312_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_236312" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="plain">Optional&lt;T&gt; reduce(BinaryOperator&lt;T&gt; accumulator);</code></td></tr></tbody></table></div></div></div>
+<p>    接受一个BinaryOperator类型的参数，在使用的时候我们可以用lambda表达式来。</p>
+<div id="highlighter_898308" class="syntaxhighlighter  "><div class="bar"><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_898308_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_898308" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="plain">List&lt;Integer&gt; ints = Lists.newArrayList(</code><code class="value">1</code><code class="plain">,</code><code class="value">2</code><code class="plain">,</code><code class="value">3</code><code class="plain">,</code><code class="value">4</code><code class="plain">,</code><code class="value">5</code><code class="plain">,</code><code class="value">6</code><code class="plain">,</code><code class="value">7</code><code class="plain">,</code><code class="value">8</code><code class="plain">,</code><code class="value">9</code><code class="plain">,</code><code class="value">10</code><code class="plain">);</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>2</code></td><td class="content"><code class="plain">System.out.println(</code><code class="string">"ints sum is:"</code> <code class="plain">+ ints.stream().reduce((sum, item) -&amp;gt; sum + item).get());</code></td></tr></tbody></table></div></div></div>
+<p>    可以看到reduce方法接受一个函数，这个函数有两个参数，第一个参数是上次函数执行的返回值（也称为中间结果），第二个参数是stream中的元素，这个函数把这两个值相加，得到的和会被赋值给下次执行这个函数的第一个参数。要注意的是：**第一次执行的时候第一个参数的值是Stream的第一个元素，第二个参数是Stream的第二个元素**。这个方法返回值类型是Optional，这是Java8防止出现NPE的一种可行方法，后面的文章会详细介绍，这里就简单的认为是一个容器，其中可能会包含0个或者1个对象。<br>
+    这个过程可视化的结果如图：<br>
+    <img src="./Java8-ifeve.com_files/T28rVAXJlaXXXXXXXX_!!90219132.jpg" alt=""><br>
+    reduce方法还有一个很常用的变种：</p>
+<div id="highlighter_704897" class="syntaxhighlighter  "><div class="bar"><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_704897_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_704897" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="plain">T reduce(T identity, BinaryOperator&lt;T&gt; accumulator);</code></td></tr></tbody></table></div></div></div>
+<p>    这个定义上上面已经介绍过的基本一致，不同的是：它允许用户提供一个循环计算的初始值，如果Stream为空，就直接返回该值。而且这个方法不会返回Optional，因为其不会出现null值。下面直接给出例子，就不再做说明了。</p>
+<div id="highlighter_797155" class="syntaxhighlighter  "><div class="bar"><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_797155_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_797155" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="plain">List&lt;Integer&gt; ints = Lists.newArrayList(</code><code class="value">1</code><code class="plain">,</code><code class="value">2</code><code class="plain">,</code><code class="value">3</code><code class="plain">,</code><code class="value">4</code><code class="plain">,</code><code class="value">5</code><code class="plain">,</code><code class="value">6</code><code class="plain">,</code><code class="value">7</code><code class="plain">,</code><code class="value">8</code><code class="plain">,</code><code class="value">9</code><code class="plain">,</code><code class="value">10</code><code class="plain">);</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>2</code></td><td class="content"><code class="plain">System.out.println(</code><code class="string">"ints sum is:"</code> <code class="plain">+ ints.stream().reduce(</code><code class="value">0</code><code class="plain">, (sum, item) -&gt; sum + item));</code></td></tr></tbody></table></div></div></div>
+<p>– count方法：获取Stream中元素的个数。比较简单，这里就直接给出例子，不做解释了。</p>
+<div id="highlighter_512242" class="syntaxhighlighter  "><div class="bar"><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_512242_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_512242" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="plain">List&lt;Integer&gt; ints = Lists.newArrayList(</code><code class="value">1</code><code class="plain">,</code><code class="value">2</code><code class="plain">,</code><code class="value">3</code><code class="plain">,</code><code class="value">4</code><code class="plain">,</code><code class="value">5</code><code class="plain">,</code><code class="value">6</code><code class="plain">,</code><code class="value">7</code><code class="plain">,</code><code class="value">8</code><code class="plain">,</code><code class="value">9</code><code class="plain">,</code><code class="value">10</code><code class="plain">);</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>2</code></td><td class="content"><code class="plain">System.out.println(</code><code class="string">"ints sum is:"</code> <code class="plain">+ ints.stream().count());</code></td></tr></tbody></table></div></div></div>
+<p>– 搜索相关<br>
+    – allMatch：是不是Stream中的所有元素都满足给定的匹配条件<br>
+    – anyMatch：Stream中是否存在任何一个元素满足匹配条件<br>
+    – findFirst: 返回Stream中的第一个元素，如果Stream为空，返回空Optional<br>
+    – noneMatch：是不是Stream中的所有元素都不满足给定的匹配条件<br>
+    – max和min：使用给定的比较器（Operator），返回Stream中的最大|最小值<br>
+    下面给出allMatch和max的例子，剩下的方法读者当成练习。</p>
+<div id="highlighter_338990" class="syntaxhighlighter  "><div class="bar"><div class="toolbar"><a href="http://ifeve.com/stream/#viewSource" title="查看源代码" class="item viewSource" style="width: 16px; height: 16px;">查看源代码</a><div class="item copyToClipboard"><embed width="16" height="16" id="highlighter_338990_clipboard" type="application/x-shockwave-flash" title="复制到剪贴板" allowscriptaccess="always" wmode="transparent" flashvars="highlighterId=highlighter_338990" menu="false" src="http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf"></div><a href="http://ifeve.com/stream/#printSource" title="打印" class="item printSource" style="width: 16px; height: 16px;">打印</a><a href="http://ifeve.com/stream/#about" title="帮助" class="item about" style="width: 16px; height: 16px;">帮助</a></div></div><div class="lines"><div class="line alt1"><table><tbody><tr><td class="number"><code>1</code></td><td class="content"><code class="plain">List&lt;Integer&amp;gt; ints = Lists.newArrayList(</code><code class="value">1</code><code class="plain">,</code><code class="value">2</code><code class="plain">,</code><code class="value">3</code><code class="plain">,</code><code class="value">4</code><code class="plain">,</code><code class="value">5</code><code class="plain">,</code><code class="value">6</code><code class="plain">,</code><code class="value">7</code><code class="plain">,</code><code class="value">8</code><code class="plain">,</code><code class="value">9</code><code class="plain">,</code><code class="value">10</code><code class="plain">);</code></td></tr></tbody></table></div><div class="line alt2"><table><tbody><tr><td class="number"><code>2</code></td><td class="content"><code class="plain">System.out.println(ints.stream().allMatch(item -&gt; item &lt; </code><code class="value">100</code><code class="plain">));</code></td></tr></tbody></table></div><div class="line alt1"><table><tbody><tr><td class="number"><code>3</code></td><td class="content"><code class="plain">ints.stream().max((o1, o2) -&amp;gt; o1.compareTo(o2)).ifPresent(System.out::println);</code></td></tr></tbody></table></div></div></div>
+<h1>5. 下期预告</h1>
+<p>Functional Interface</p>
+<h1>6. 引用文档</h1>
+<p>1. 《Java SE 8 for the Really Impatient》<br>
+2. Java 8 API doc
+</p><div style="margin-top: 15px; font-style: italic">
+<p><strong>原创文章，转载请注明：</strong> 转载自<a href="http://ifeve.com/">并发编程网 – ifeve.com</a></p>
+<p><strong>本文链接地址:</strong> <a href="./Java8-ifeve.com_files/Java8-ifeve.com.html">Java8初体验（二）Stream语法详解</a></p>
+</div>
+<div style="clear:both; margin-top:5px; margin-bottom:5px;"></div><div style="float:left"><!-- JiaThis Button BEGIN -->
+<div id="jiathis_style_32x32">
+	<a class="jiathis_button_qzone" title="分享到QQ空间"><span class="jiathis_txt jtico jtico_qzone"></span></a>
+	<a class="jiathis_button_tsina" title="分享到新浪微博"><span class="jiathis_txt jtico jtico_tsina"></span></a>
+	<a class="jiathis_button_tqq" title="分享到腾讯微博"><span class="jiathis_txt jtico jtico_tqq"></span></a>
+	<a class="jiathis_button_renren" title="分享到人人网"><span class="jiathis_txt jtico jtico_renren"></span></a>
+	<a class="jiathis_button_kaixin001" title="分享到开心网"><span class="jiathis_txt jtico jtico_kaixin001"></span></a>
+	<a href="http://www.jiathis.com/share/" class="jiathis jiathis_txt jtico jtico_jiathis" onclick="javascript:window.open(&#39;http://www.jiathis.com/share/&#39;); return false;"></a>
+	<a class="jiathis_counter_style"><span class="jiathis_button_expanded jiathis_counter jiathis_bubble_style" id="jiathis_counter_63" title="累计分享9次">9</span></a>
+</div>
+<script type="text/javascript" src="./Java8-ifeve.com_files/jia.js" charset="utf-8"></script><script type="text/javascript" src="./Java8-ifeve.com_files/plugin.client.js" charset="utf-8"></script>
+<!-- JiaThis Button END --></div><div style="clear:both; margin-top:5px; margin-bottom:5px;"></div>
+                         <div class="abh_box abh_box_down abh_box_"><ul class="abh_tabs"> <li class="abh_about abh_active"><a href="http://ifeve.com/stream/#abh_about">About</a></li> <li class="abh_posts"><a href="http://ifeve.com/stream/#abh_posts">Latest Posts</a></li></ul><div class="abh_tab_content"><section class="vcard abh_about_tab abh_tab" style="display:block"><div class="abh_image"><a href="http://ifeve.com/author/%E4%B8%80%E5%86%B0_%E5%A4%A9%E9%94%A6/" class="url" title="一冰_天锦"><img alt="" src="./Java8-ifeve.com_files/100" class="avatar avatar-80" height="80" width="80"></a></div><div class="abh_social"> </div><div class="abh_text"><h3 class="fn name"><a href="http://ifeve.com/author/%E4%B8%80%E5%86%B0_%E5%A4%A9%E9%94%A6/" class="url">一冰_天锦</a></h3><div class="abh_job"></div><div class="description note abh_description">码农，对各种新技术都会感兴趣。<br>目前关注Scala，AngularJS和Netty</div></div> </section><section class="abh_posts_tab abh_tab"><div class="abh_image"><a href="http://ifeve.com/author/%E4%B8%80%E5%86%B0_%E5%A4%A9%E9%94%A6/" class="url" title="一冰_天锦"><img alt="" src="./Java8-ifeve.com_files/100" class="avatar avatar-80" height="80" width="80"></a></div><div class="abh_social"> </div><div class="abh_text"><h4>Latest posts by 一冰_天锦 <span class="abh_allposts">(<a href="http://ifeve.com/author/%E4%B8%80%E5%86%B0_%E5%A4%A9%E9%94%A6/">see all</a>)</span></h4><div class="abh_description note"><ul>				<li>					<a href="./Java8-ifeve.com_files/Java8-ifeve.com.html">Java8初体验（二）Stream语法详解</a><span> - 2014 年 4 月 11 日</span>				</li>				<li>					<a href="http://ifeve.com/lambda/">Java8初体验（一）lambda表达式语法</a><span> - 2014 年 4 月 11 日</span>				</li>				<li>					<a href="http://ifeve.com/learn-java8/">Java8初体验系列文章</a><span> - 2014 年 4 月 11 日</span>				</li></ul></div></div> </section></div> </div><div class="yarpp-related">
+<h3>Related posts:</h3><ol>
+<li><a href="http://ifeve.com/lambda/" rel="bookmark" title="Java8初体验（一）lambda表达式语法">Java8初体验（一）lambda表达式语法 </a></li>
+<li><a href="http://ifeve.com/google-guava-functional/" rel="bookmark" title="[Google Guava] 4-函数式编程">[Google Guava] 4-函数式编程 </a></li>
+<li><a href="http://ifeve.com/google-guava-collectionutilities/" rel="bookmark" title="[Google Guava] 2.3-强大的集合工具类：java.util.Collections中未包含的集合工具">[Google Guava] 2.3-强大的集合工具类：java.util.Collections中未包含的集合工具 </a></li>
+<li><a href="http://ifeve.com/google-guava-ordering/" rel="bookmark" title="[Google Guava] 排序: Guava强大的”流畅风格比较器”">[Google Guava] 排序: Guava强大的”流畅风格比较器” </a></li>
+<li><a href="http://ifeve.com/google-guava-collectionhelpersexplained/" rel="bookmark" title="[Google Guava] 2.4-集合扩展工具类">[Google Guava] 2.4-集合扩展工具类 </a></li>
+<li><a href="http://ifeve.com/google-guava-ranges/" rel="bookmark" title="[Google Guava] 8-区间">[Google Guava] 8-区间 </a></li>
+<li><a href="http://ifeve.com/zookeeper-sharedcount/" rel="bookmark" title="跟着实例学习ZooKeeper的用法： 计数器">跟着实例学习ZooKeeper的用法： 计数器 </a></li>
+<li><a href="http://ifeve.com/google-guava-immutablecollections/" rel="bookmark" title="[Google Guava] 2.1-不可变集合">[Google Guava] 2.1-不可变集合 </a></li>
+<li><a href="http://ifeve.com/java8-lambdas-2/" rel="bookmark" title="Java8：Lambdas(二)学习怎样去使用lambda表达式">Java8：Lambdas(二)学习怎样去使用lambda表达式 </a></li>
+<li><a href="http://ifeve.com/zookeeper-leader/" rel="bookmark" title="跟着实例学习ZooKeeper的用法： Leader选举">跟着实例学习ZooKeeper的用法： Leader选举 </a></li>
+<li><a href="http://ifeve.com/zookeeper-curator-ext/" rel="bookmark" title="跟着实例学习ZooKeeper的用法： Curator扩展库">跟着实例学习ZooKeeper的用法： Curator扩展库 </a></li>
+<li><a href="http://ifeve.com/java-8-features-tutorial/" rel="bookmark" title="Java 8 特性 – 终极手册">Java 8 特性 – 终极手册 </a></li>
+<li><a href="http://ifeve.com/google-guava-primitives/" rel="bookmark" title="[Google Guava] 7-原生类型">[Google Guava] 7-原生类型 </a></li>
+<li><a href="http://ifeve.com/getting-started-with-storm-5/" rel="bookmark" title="Storm入门之第五章Bolts">Storm入门之第五章Bolts </a></li>
+<li><a href="http://ifeve.com/google-guava-commonobjectutilities/" rel="bookmark" title="[Google Guava] 1.3-常见Object方法">[Google Guava] 1.3-常见Object方法 </a></li>
+</ol>
+</div>
+           </div><!-- END .post_content -->
+    </div>
+    <div class="meta">
+          <ul>
+      <li class="post_date clearfix">
+       <span class="date">11</span>
+       <span class="month">Apr</span>
+       <span class="year">2014</span>
+      </li>
+      
+<li class="post_comment">
+9,702 人阅读</li>
+
+      <li class="post_author"><a href="http://ifeve.com/author/%E4%B8%80%E5%86%B0_%E5%A4%A9%E9%94%A6/" title="由一冰_天锦发布" rel="author">一冰_天锦</a></li>      <li class="post_category"><a href="http://ifeve.com/category/java/" rel="category tag">JAVA</a></li>       <li class="post_category"><div id="post-ratings-11260" class="post-ratings" itemscope="" itemtype="http://schema.org/Article" data-nonce="d9d499f6ba"><img id="rating_11260_1" src="./Java8-ifeve.com_files/rating_on.gif" alt="好烂啊" title="好烂啊" onmouseover="current_rating(11260, 1, &#39;好烂啊&#39;);" onmouseout="ratings_off(4.9, 5, 0);" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;"><img id="rating_11260_2" src="./Java8-ifeve.com_files/rating_on.gif" alt="没价值" title="没价值" onmouseover="current_rating(11260, 2, &#39;没价值&#39;);" onmouseout="ratings_off(4.9, 5, 0);" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;"><img id="rating_11260_3" src="./Java8-ifeve.com_files/rating_on.gif" alt="凑合看看" title="凑合看看" onmouseover="current_rating(11260, 3, &#39;凑合看看&#39;);" onmouseout="ratings_off(4.9, 5, 0);" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;"><img id="rating_11260_4" src="./Java8-ifeve.com_files/rating_on.gif" alt="还不错" title="还不错" onmouseover="current_rating(11260, 4, &#39;还不错&#39;);" onmouseout="ratings_off(4.9, 5, 0);" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;"><img id="rating_11260_5" src="./Java8-ifeve.com_files/rating_half.gif" alt="超赞" title="超赞" onmouseover="current_rating(11260, 5, &#39;超赞&#39;);" onmouseout="ratings_off(4.9, 5, 0);" onclick="rate_post();" onkeypress="rate_post();" style="cursor: pointer; border: 0px;"> (<strong>7</strong> votes, average: <strong>4.86</strong> out of 5)<br><span class="post-ratings-text" id="ratings_11260_text"></span><meta itemprop="name" content="Java8初体验（二）Stream语法详解"><meta itemprop="description" content="感谢同事【天锦】的投稿。投稿请联系 tengfei@ifeve.com
+上篇文章Java8初体验（一）lambda表达式语法比较详细的介绍了lambda表达式的方方面面，细心的读者会发现那篇文章的例子中有很多Stream的例子。这些Stream的例子可能让你产生疑惑，本文将会详细讲解Stream的使用方法（不会涉及Stream的原理，因为这个系列的文章还是一个快速学习如何使用的）。
+
+1. ..."><meta itemprop="url" content="http://ifeve.com/stream/"><div style="display: none;" itemprop="aggregateRating" itemscope="" itemtype="http://schema.org/AggregateRating"><meta itemprop="bestRating" content="5"><meta itemprop="ratingValue" content="4.86"><meta itemprop="ratingCount" content="7"></div></div><div id="post-ratings-11260-loading" class="post-ratings-loading">
+			<img src="./Java8-ifeve.com_files/loading.gif" width="16" height="16" alt="Loading..." title="Loading..." class="post-ratings-image">Loading...</div></li>       <li class="post_comment"><a href="http://ifeve.com/stream/#comments">8 条评论</a></li>           </ul>
+         </div>
+   </div><!-- END .post_wrap -->
+
+   
+      <div id="comments_wrapper">
+    
+
+
+
+
+<div id="comment_header" class="clearfix">
+
+ <ul id="comment_header_left">
+  <li id="add_comment"><a href="http://ifeve.com/stream/#respond">发表评论</a></li>
+  <li id="comment_feed"><a href="http://ifeve.com/comments/feed/" title="RSS订阅评论">RSS订阅评论</a></li>
+ </ul>
+
+ <ul id="comment_header_right">
+   <li id="trackback_closed">Trackback 关闭</li>
+   <li id="comment_closed">评论 (8)</li>
+ </ul>
+
+
+</div><!-- END #comment_header -->
+
+<div id="comments">
+
+ <div id="comment_area">
+  <!-- start commnet -->
+  <ol class="commentlist">
+	
+ <li class="comment guest-comment even_comment" id="comment-10199">
+  <div class="comment-meta">
+   <div class="comment-meta-left">
+  <img alt="" src="./Java8-ifeve.com_files/c586f85a1a270b1723f6aa18286a30cd" srcset="http://gravatar0.233.wiki/avatar/c586f85a1a270b1723f6aa18286a30cd?s=70&amp;d=mm&amp;r=g 2x" class="avatar avatar-35 photo" height="35" width="35">  
+    <ul class="comment-name-date">
+     <li class="comment-name">
+<span id="commentauthor-10199">
+
+Avin
+</span>
+     </li>
+     <li class="comment-date">2014/04/14 2:04下午</li>
+    </ul>
+   </div>
+
+   <ul class="comment-act">
+    <li class="comment-reply"><a rel="nofollow" class="comment-reply-login" href="http://ifeve.com/wp-login.php?redirect_to=http%3A%2F%2Fifeve.com%2Fstream%2F">登录以回复</a></li>
+    <li class="comment-quote"><a href="javascript:void(0);" onclick="MGJS_CMT.quote(&#39;commentauthor-10199&#39;, &#39;comment-10199&#39;, &#39;comment-content-10199&#39;, &#39;comment&#39;);">引用</a></li>
+       </ul>
+
+  </div>
+  <div class="comment-content" id="comment-content-10199">
+    <p>感谢楼主，很透彻，不过，这排版跟代码看起来真心费劲啊！</p>
+  </div>
+
+<ul class="children">
+
+ <li class="comment admin-comment even_comment_children" id="comment-10220">
+  <div class="comment-meta">
+   <div class="comment-meta-left">
+  <img alt="" src="./Java8-ifeve.com_files/100" class="avatar avatar-35" height="35" width="35">  
+    <ul class="comment-name-date">
+     <li class="comment-name">
+<span id="commentauthor-10220">
+
+一冰_天锦
+</span>
+     </li>
+     <li class="comment-date">2014/04/14 7:02下午</li>
+    </ul>
+   </div>
+
+   <ul class="comment-act">
+    <li class="comment-reply"><a rel="nofollow" class="comment-reply-login" href="http://ifeve.com/wp-login.php?redirect_to=http%3A%2F%2Fifeve.com%2Fstream%2F">登录以回复</a></li>
+    <li class="comment-quote"><a href="javascript:void(0);" onclick="MGJS_CMT.quote(&#39;commentauthor-10220&#39;, &#39;comment-10220&#39;, &#39;comment-content-10220&#39;, &#39;comment&#39;);">引用</a></li>
+       </ul>
+
+  </div>
+  <div class="comment-content" id="comment-content-10220">
+    <p>不好意思，别人修改了一下，样式乱了，已经修复</p>
+  </div>
+
+</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+
+ <li class="comment guest-comment odd_comment" id="comment-10211">
+  <div class="comment-meta">
+   <div class="comment-meta-left">
+  <img alt="" src="./Java8-ifeve.com_files/8b2257f98a6a1b7d4819305986930d2c" srcset="http://gravatar1.233.wiki/avatar/8b2257f98a6a1b7d4819305986930d2c?s=70&amp;d=mm&amp;r=g 2x" class="avatar avatar-35 photo" height="35" width="35">  
+    <ul class="comment-name-date">
+     <li class="comment-name">
+<a id="commentauthor-10211" class="url guest-url" href="http://weibo.com/u/2411023433" rel="external nofollow" onclick="javascript:window.open(&#39;http://weibo.com/u/2411023433&#39;); return false;">
+
+光头JAVA
+</a>
+     </li>
+     <li class="comment-date">2014/04/14 3:14下午</li>
+    </ul>
+   </div>
+
+   <ul class="comment-act">
+    <li class="comment-reply"><a rel="nofollow" class="comment-reply-login" href="http://ifeve.com/wp-login.php?redirect_to=http%3A%2F%2Fifeve.com%2Fstream%2F">登录以回复</a></li>
+    <li class="comment-quote"><a href="javascript:void(0);" onclick="MGJS_CMT.quote(&#39;commentauthor-10211&#39;, &#39;comment-10211&#39;, &#39;comment-content-10211&#39;, &#39;comment&#39;);">引用</a></li>
+       </ul>
+
+  </div>
+  <div class="comment-content" id="comment-content-10211">
+    <p>你是怎么看完的?<br>
+这玩意怎么看啊</p>
+  </div>
+
+<ul class="children">
+
+ <li class="comment admin-comment odd_comment_children" id="comment-10222">
+  <div class="comment-meta">
+   <div class="comment-meta-left">
+  <img alt="" src="./Java8-ifeve.com_files/100" class="avatar avatar-35" height="35" width="35">  
+    <ul class="comment-name-date">
+     <li class="comment-name">
+<span id="commentauthor-10222">
+
+一冰_天锦
+</span>
+     </li>
+     <li class="comment-date">2014/04/14 7:19下午</li>
+    </ul>
+   </div>
+
+   <ul class="comment-act">
+    <li class="comment-reply"><a rel="nofollow" class="comment-reply-login" href="http://ifeve.com/wp-login.php?redirect_to=http%3A%2F%2Fifeve.com%2Fstream%2F">登录以回复</a></li>
+    <li class="comment-quote"><a href="javascript:void(0);" onclick="MGJS_CMT.quote(&#39;commentauthor-10222&#39;, &#39;comment-10222&#39;, &#39;comment-content-10222&#39;, &#39;comment&#39;);">引用</a></li>
+       </ul>
+
+  </div>
+  <div class="comment-content" id="comment-content-10222">
+    <p>sorry，原来ok的，今天同事修改了一下，样式乱了，已经修复</p>
+  </div>
+
+</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+
+ <li class="comment guest-comment even_comment" id="comment-10818">
+  <div class="comment-meta">
+   <div class="comment-meta-left">
+  <img alt="" src="./Java8-ifeve.com_files/62ebff22979eefad556befc3c367fb26" srcset="http://gravatar0.233.wiki/avatar/62ebff22979eefad556befc3c367fb26?s=70&amp;d=mm&amp;r=g 2x" class="avatar avatar-35 photo" height="35" width="35">  
+    <ul class="comment-name-date">
+     <li class="comment-name">
+<span id="commentauthor-10818">
+
+fair_jm
+</span>
+     </li>
+     <li class="comment-date">2014/04/18 12:48上午</li>
+    </ul>
+   </div>
+
+   <ul class="comment-act">
+    <li class="comment-reply"><a rel="nofollow" class="comment-reply-login" href="http://ifeve.com/wp-login.php?redirect_to=http%3A%2F%2Fifeve.com%2Fstream%2F">登录以回复</a></li>
+    <li class="comment-quote"><a href="javascript:void(0);" onclick="MGJS_CMT.quote(&#39;commentauthor-10818&#39;, &#39;comment-10818&#39;, &#39;comment-content-10818&#39;, &#39;comment&#39;);">引用</a></li>
+       </ul>
+
+  </div>
+  <div class="comment-content" id="comment-content-10818">
+    <p>前段时间有在学scala 现在也简单码码<br>
+感觉这些操作没有scala中的直观…还有IntStream DoubleStream这类的存在感觉怪怪的 虽然哪里怪说不上来….</p>
+  </div>
+
+<ul class="children">
+
+ <li class="comment admin-comment even_comment_children" id="comment-11273">
+  <div class="comment-meta">
+   <div class="comment-meta-left">
+  <img alt="" src="./Java8-ifeve.com_files/100" class="avatar avatar-35" height="35" width="35">  
+    <ul class="comment-name-date">
+     <li class="comment-name">
+<span id="commentauthor-11273">
+
+一冰_天锦
+</span>
+     </li>
+     <li class="comment-date">2014/04/18 2:03下午</li>
+    </ul>
+   </div>
+
+   <ul class="comment-act">
+    <li class="comment-reply"><a rel="nofollow" class="comment-reply-login" href="http://ifeve.com/wp-login.php?redirect_to=http%3A%2F%2Fifeve.com%2Fstream%2F">登录以回复</a></li>
+    <li class="comment-quote"><a href="javascript:void(0);" onclick="MGJS_CMT.quote(&#39;commentauthor-11273&#39;, &#39;comment-11273&#39;, &#39;comment-content-11273&#39;, &#39;comment&#39;);">引用</a></li>
+       </ul>
+
+  </div>
+  <div class="comment-content" id="comment-content-11273">
+    <p>你会scala，会觉得java的lambda相关内容很熟悉的。<br>
+IntStream这类主要是为了性能考虑，不需要额外的装箱和拆箱</p>
+  </div>
+
+</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+
+ <li class="comment guest-comment odd_comment" id="comment-25265">
+  <div class="comment-meta">
+   <div class="comment-meta-left">
+  <img alt="" src="./Java8-ifeve.com_files/saved_resource" srcset="http://gravatar0.233.wiki/avatar/?s=70&amp;d=mm&amp;r=g 2x" class="avatar avatar-35 photo avatar-default" height="35" width="35">  
+    <ul class="comment-name-date">
+     <li class="comment-name">
+<a id="commentauthor-25265" class="url guest-url" href="http://youhuo.hilyb.com/" rel="external nofollow" onclick="javascript:window.open(&#39;http://youhuo.hilyb.com/&#39;); return false;">
+
+hilyb
+</a>
+     </li>
+     <li class="comment-date">2014/09/22 11:35上午</li>
+    </ul>
+   </div>
+
+   <ul class="comment-act">
+    <li class="comment-reply"><a rel="nofollow" class="comment-reply-login" href="http://ifeve.com/wp-login.php?redirect_to=http%3A%2F%2Fifeve.com%2Fstream%2F">登录以回复</a></li>
+    <li class="comment-quote"><a href="javascript:void(0);" onclick="MGJS_CMT.quote(&#39;commentauthor-25265&#39;, &#39;comment-25265&#39;, &#39;comment-content-25265&#39;, &#39;comment&#39;);">引用</a></li>
+       </ul>
+
+  </div>
+  <div class="comment-content" id="comment-content-25265">
+    <p>很不错的文章，看完基本了解了。可惜这东东得Java8才有。。暂时用不上啊</p>
+  </div>
+
+</li><!-- #comment-## -->
+
+ <li class="comment guest-comment even_comment" id="comment-26059">
+  <div class="comment-meta">
+   <div class="comment-meta-left">
+  <img alt="" src="./Java8-ifeve.com_files/8a672282ba963dde1687adb03a5ad24b" srcset="http://gravatar1.233.wiki/avatar/8a672282ba963dde1687adb03a5ad24b?s=70&amp;d=mm&amp;r=g 2x" class="avatar avatar-35 photo" height="35" width="35">  
+    <ul class="comment-name-date">
+     <li class="comment-name">
+<span id="commentauthor-26059">
+
+darion
+</span>
+     </li>
+     <li class="comment-date">2015/01/30 12:34上午</li>
+    </ul>
+   </div>
+
+   <ul class="comment-act">
+    <li class="comment-reply"><a rel="nofollow" class="comment-reply-login" href="http://ifeve.com/wp-login.php?redirect_to=http%3A%2F%2Fifeve.com%2Fstream%2F">登录以回复</a></li>
+    <li class="comment-quote"><a href="javascript:void(0);" onclick="MGJS_CMT.quote(&#39;commentauthor-26059&#39;, &#39;comment-26059&#39;, &#39;comment-content-26059&#39;, &#39;comment&#39;);">引用</a></li>
+       </ul>
+
+  </div>
+  <div class="comment-content" id="comment-content-26059">
+    <p>reduce 一般来说翻译成“归约”吧</p>
+  </div>
+
+</li><!-- #comment-## -->
+  </ol>
+  <!-- comments END -->
+
+  
+ </div><!-- #comment-list END -->
+
+
+ <div id="trackback_area">
+ <!-- start trackback -->
+  <!-- trackback end -->
+ </div><!-- #trackbacklist END -->
+
+ 
+
+
+ 
+ <div class="comment_form_wrapper" id="respond">
+    您必须 <a href="http://ifeve.com/wp-login.php">登陆</a> 后才能发表评论 </div>
+
+ </div><!-- #comment end -->   </div>
+   
+      <div id="previous_next_post_single">
+    <div class="clearfix">
+     <p id="previous_post"><a href="http://ifeve.com/lambda/" rel="prev">Java8初体验（一）lambda表达式语法</a></p>     <p id="next_post"><a href="http://ifeve.com/greentea-jug-4-19/" rel="next">4.19周六北京 GreenTea JUG活动</a></p>    </div>
+   </div>
+   
+
+  </div><!-- END #left_col -->
+
+  <div id="container"></div>
+
+    <div id="right_col">
+   
+<div id="info_area">
+ <div class="side_box clearfix" id="info_content">
+    <div class="desc">
+   <p>本站服务器由UCloud云服务赞助。</p>
+  </div>
+ </div>
+</div>
+
+<div class="side_box clearfix" id="side_meta_content">
+
+  <ul id="social_link" class="clearfix">
+    <li class="rss_button"><a class="target_blank" href="http://ifeve.com/feed/" target="_blank">rss</a></li>
+       </ul>
+ 
+  <div id="search_area">
+    <form method="get" id="searchform" action="http://ifeve.com/">
+   <div><input id="search_button" class="rollover" type="image" src="./Java8-ifeve.com_files/search_button.gif" alt="搜索一下" title="搜索一下"></div>
+   <div><input id="search_input" type="text" value="搜索一下" name="s" onfocus="if (this.value == &#39;搜索一下&#39;) this.value = &#39;&#39;;" onblur="if (this.value == &#39;&#39;) this.value = &#39;搜索一下&#39;;"></div>
+  </form>
+   </div>
+ 
+</div>
+
+
+<div id="side_top">
+
+ <div class="side_box widget_text" id="text-17">
+			<div class="textwidget"><!-- 请置于所有广告位代码之前 -->
+<script type="text/javascript" src="./Java8-ifeve.com_files/m.js"></script>
+<script type="text/javascript">
+BAIDU_CLB_preloadSlots("980251","980252");
+</script><script charset="utf-8" src="./Java8-ifeve.com_files/ecom"></script>
+<!-- 广告位：右最上 -->
+<script type="text/javascript">BAIDU_CLB_fillSlot("1063991");</script><div id="BAIDU_DUP_wrapper_1063991_0"></div><script charset="utf-8" src="./Java8-ifeve.com_files/ecom(1)"></script><script charset="utf-8" src="./Java8-ifeve.com_files/fixed7o.js"></script>
+<br>
+<!-- 广告位：首页右上1 -->
+<script type="text/javascript">BAIDU_CLB_fillSlot("980251");</script><div id="BAIDU_DUP_wrapper_980251_0"><iframe id="baidu_clb_slot_iframe_980251_0" src="./Java8-ifeve.com_files/Java8-ifeve.com.html" onload="BAIDU_DUP_CLB_renderFrame(&#39;980251_0&#39;)" width="300" height="80" vspace="0" hspace="0" allowtransparency="true" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" style="border:0; vertical-align:bottom; margin:0; display:block;"></iframe></div>
+<br>
+<!-- 广告位：首页右上2 -->
+<script type="text/javascript">BAIDU_CLB_fillSlot("980252");</script><div id="BAIDU_DUP_wrapper_980252_0"></div>
+<script async="" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9394337417063147" data-ad-slot="8872369516"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+		</div>
+		<div class="side_box widget_recent_entries" id="recent-posts-2">
+		<h3 class="side_title">近期文章</h3>
+		<ul>
+					<li>
+				<a href="http://ifeve.com/javaee-http-2/">JavaEE 要懂的小事：二、图解 Cookie（小甜饼）</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/javaee-http/">JavaEE 要懂的小事：一、图解Http协议</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/executor-framework-thread-pool-task-execution-part-01/">戏（细）说Executor框架线程池任务执行全过程（上）</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/java-permgen-removed/">Java PermGen 去哪里了?</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/jdatetime/">JDateTime</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/classloader/">深入浅出ClassLoader</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/to_singleton_or_not_to_singleton/">【Velocity官方指南】使用单例模式还是非单例模式</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/questions-26375932/">为何从10开始到99连续相乘会得到0？</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/logging-stop-the-world-pauses-in-jvm/">通过JVM日志来进行安全点分析</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/velocity-the-context/">Velocity官方指南-容器</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/hazard-pointer/">并行编程中的内存回收Hazard Pointer</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/lock-free-linked-list/">无锁有序链表的实现</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/under-the-hood-runtime-data-areas-javas-memory-model/">JAVA的内存模型及结构</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/velocity-1/">Velocity官方指南-简介</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/apache-velocity-3/">Velocity官方指南-Velocity是如何工作的</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/apache-velocity-12/">Apache Velocity官方指南-12.模板编码及国际化</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/velocity-guide/">Apache Velocity官方指南译者招募</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/guava-ratelimiter/">Guava官方文档-RateLimiter类</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/java8-concurrency-tutorial-thread-executor-examples/">Java8并发教程：Threads和Executors</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/enhanced-cas-in-jdk8/">Java8中CAS的增强</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/%e5%b9%b6%e5%8f%91%e7%bc%96%e7%a8%8b%e6%a8%a1%e5%9e%8b/">并发编程模型</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/java-threadlocal%e7%9a%84%e4%bd%bf%e7%94%a8/">Java ThreadLocal的使用</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/javacodetobytecode-partone/">Java代码到字节码——第一部分</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/jvm-having-access-to-less-memory-than-xmx/">为什么我的JVM能实际使用的内存比-Xmx指定的少？</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/beyond-hadoop-bigdata-analitics-6/">颠覆大数据分析之结论</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/beyond-hadoop-bigdata-analitics-4-2/">颠覆大数据分析之实时分析的应用</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/beyond-hadoop-bigdata-analitics-4-1-2/">颠覆大数据分析之Storm的设计模式</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/processing-data-with-java-se-8-streamspart-1/">使用stream操作表达更高级的数据处理请求, Part 1</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/jvm-internals/">JVM内部原理</a>
+						</li>
+					<li>
+				<a href="http://ifeve.com/beyond-hadoop-bigdata-analitics-4-1/">颠覆大数据分析之Storm简介</a>
+						</li>
+				</ul>
+		</div>
+<div class="side_box widget_text" id="text-10">
+			<div class="textwidget"><script async="" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 首页－右上－2 -->
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9394337417063147" data-ad-slot="8872369516"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+		</div>
+<div class="side_box widget_views" id="views-4">
+<h3 class="side_title">热门文章</h3>
+<ul>
+<li><a href="http://ifeve.com/google-guava/" title="Google Guava官方教程（中文版）">Google Guava官方教程（中文版）</a> 130,220 人阅读 </li><li><a href="http://ifeve.com/overview/" title="Java NIO系列教程（一） Java NIO 概述">Java NIO系列教程（一） Java NIO 概述</a> 83,186 人阅读 </li><li><a href="http://ifeve.com/java-concurrency-thread-directory/" title="Java并发性和多线程介绍目录">Java并发性和多线程介绍目录</a> 67,335 人阅读 </li><li><a href="http://ifeve.com/java-nio-all/" title="Java NIO 系列教程">Java NIO 系列教程</a> 66,834 人阅读 </li><li><a href="http://ifeve.com/java-nio-vs-io/" title="Java NIO系列教程（十二） Java NIO与IO">Java NIO系列教程（十二） Java NIO与IO</a> 60,910 人阅读 </li><li><a href="http://ifeve.com/java-7-concurrency-cookbook/" title="Java 7 并发编程指南中文版">Java 7 并发编程指南中文版</a> 51,842 人阅读 </li><li><a href="http://ifeve.com/selectors/" title="Java NIO系列教程（六） Selector">Java NIO系列教程（六） Selector</a> 47,307 人阅读 </li><li><a href="http://ifeve.com/channels/" title="Java NIO系列教程（二） Channel">Java NIO系列教程（二） Channel</a> 43,797 人阅读 </li><li><a href="http://ifeve.com/buffers/" title="Java NIO系列教程（三） Buffer">Java NIO系列教程（三） Buffer</a> 43,716 人阅读 </li><li><a href="http://ifeve.com/locks-are-bad/" title="剖析Disruptor:为什么会这么快？(一)锁的缺点">剖析Disruptor:为什么会这么快？(一)锁的缺点</a> 35,514 人阅读 </li><li><a href="http://ifeve.com/disruptor/" title="并发框架Disruptor译文">并发框架Disruptor译文</a> 35,431 人阅读 </li><li><a href="http://ifeve.com/getting-started-with-stom-index/" title="《Storm入门》中文版">《Storm入门》中文版</a> 32,907 人阅读 </li><li><a href="http://ifeve.com/perfbook/" title="《深入理解并行编程》中文版">《深入理解并行编程》中文版</a> 32,007 人阅读 </li><li><a href="http://ifeve.com/netty5-user-guide/" title="Netty 5用户指南">Netty 5用户指南</a> 29,361 人阅读 </li><li><a href="http://ifeve.com/socket-channel/" title="Java NIO系列教程（八） SocketChannel">Java NIO系列教程（八） SocketChannel</a> 29,130 人阅读 </li><li><a href="http://ifeve.com/getting-started-with-storm-1/" title="Storm入门之第一章">Storm入门之第一章</a> 26,914 人阅读 </li><li><a href="http://ifeve.com/file-channel/" title="Java NIO系列教程（七） FileChannel">Java NIO系列教程（七） FileChannel</a> 26,905 人阅读 </li><li><a href="http://ifeve.com/netty1/" title="Netty源码解读（一）概述">Netty源码解读（一）概述</a> 25,644 人阅读 </li><li><a href="http://ifeve.com/java-concurrency-constructs/" title="Java并发结构">Java并发结构</a> 24,844 人阅读 </li><li><a href="http://ifeve.com/java-concurrency-thread/" title="Java并发性和多线程介绍">Java并发性和多线程介绍</a> 24,115 人阅读 </li></ul>
+</div>
+<div class="side_box widget_text" id="text-7">
+			<div class="textwidget"><script async="" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9394337417063147" data-ad-slot="4721371513"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</div>
+		</div>
+<div class="side_box widget_recent_comments" id="recent-comments-2">
+<h3 class="side_title">近期评论</h3>
+<ul id="recentcomments"><li class="recentcomments"><span class="comment-author-link">jk1420</span>发表在《<a href="http://ifeve.com/netty-2-3-3/comment-page-1/#comment-26217">《Netty 权威指南》—— NIO创建的TimeServer源码分析</a>》</li><li class="recentcomments"><span class="comment-author-link">jk1420</span>发表在《<a href="http://ifeve.com/java-nio-vs-io/comment-page-1/#comment-26216">Java NIO系列教程（十二） Java NIO与IO</a>》</li><li class="recentcomments"><span class="comment-author-link">charliex</span>发表在《<a href="http://ifeve.com/getting-started-with-storm-3/comment-page-1/#comment-26215">Storm入门之第三章拓扑</a>》</li><li class="recentcomments"><span class="comment-author-link">charliex</span>发表在《<a href="http://ifeve.com/getting-started-with-storm-3/comment-page-1/#comment-26214">Storm入门之第三章拓扑</a>》</li><li class="recentcomments"><span class="comment-author-link">caoyishuai</span>发表在《<a href="http://ifeve.com/google-guava-using-and-avoiding-null/comment-page-1/#comment-26213">[Google Guava] 1.1-使用和避免null</a>》</li><li class="recentcomments"><span class="comment-author-link">fycghy0803</span>发表在《<a href="http://ifeve.com/java-7-concurrency-cookbook/comment-page-1/#comment-26212">Java 7 并发编程指南中文版</a>》</li><li class="recentcomments"><span class="comment-author-link">larry.su</span>发表在《<a href="http://ifeve.com/ali-itu-agile/comment-page-1/#comment-26211">阿里内贸团队敏捷实践</a>》</li><li class="recentcomments"><span class="comment-author-link">larry.su</span>发表在《<a href="http://ifeve.com/art-of-java-concurrent-program/comment-page-1/#comment-26210">《Java 并发编程的艺术》迷你书</a>》</li><li class="recentcomments"><span class="comment-author-link"><a href="http://www.aliog.com/16153.html" rel="external nofollow" class="url" onclick="javascript:window.open(&#39;http://www.aliog.com/16153.html&#39;); return false;">疯狂Java学习笔记（68）———–synchronized - 编程语言 - 阿里欧歌</a></span>发表在《<a href="http://ifeve.com/java-synchronized/comment-page-1/#comment-26209">聊聊并发（二）Java SE1.6中的Synchronized</a>》</li><li class="recentcomments"><span class="comment-author-link">feng15</span>发表在《<a href="http://ifeve.com/logging-stop-the-world-pauses-in-jvm/comment-page-1/#comment-26207">通过JVM日志来进行安全点分析</a>》</li><li class="recentcomments"><span class="comment-author-link">viviju1989</span>发表在《<a href="http://ifeve.com/volatile/comment-page-1/#comment-26206">聊聊并发（一）深入分析Volatile的实现原理</a>》</li><li class="recentcomments"><span class="comment-author-link">silymer</span>发表在《<a href="http://ifeve.com/buffers/comment-page-1/#comment-26205">Java NIO系列教程（三） Buffer</a>》</li><li class="recentcomments"><span class="comment-author-link">wangwei0537</span>发表在《<a href="http://ifeve.com/thread-management-3/comment-page-1/#comment-26204">线程管理（二）获取和设置线程信息</a>》</li><li class="recentcomments"><span class="comment-author-link">wangwei0537</span>发表在《<a href="http://ifeve.com/thread-management-3/comment-page-1/#comment-26203">线程管理（二）获取和设置线程信息</a>》</li><li class="recentcomments"><span class="comment-author-link">jaco_520</span>发表在《<a href="http://ifeve.com/java-memory-model/comment-page-1/#comment-26202">深入理解Java内存模型（六）——final</a>》</li><li class="recentcomments"><span class="comment-author-link">jaco_520</span>发表在《<a href="http://ifeve.com/java-memory-model/comment-page-1/#comment-26201">深入理解Java内存模型（六）——final</a>》</li><li class="recentcomments"><span class="comment-author-link">AllenZhou</span>发表在《<a href="http://ifeve.com/apache-velocity-3/comment-page-1/#comment-26200">Velocity官方指南-Velocity是如何工作的</a>》</li><li class="recentcomments"><span class="comment-author-link">曾道涛</span>发表在《<a href="http://ifeve.com/velocity-guide/comment-page-1/#comment-26199">Apache Velocity官方指南译者招募</a>》</li><li class="recentcomments"><span class="comment-author-link">TonyAdo</span>发表在《<a href="http://ifeve.com/case-of-hashmap-in-concurrency/comment-page-1/#comment-26198">并发环境下HashMap引起的full gc排查</a>》</li><li class="recentcomments"><span class="comment-author-link">kenny</span>发表在《<a href="http://ifeve.com/java8-concurrency-tutorial-thread-executor-examples/comment-page-1/#comment-26197">Java8并发教程：Threads和Executors</a>》</li></ul></div>
+<div class="side_box widget_tag_cloud" id="tag_cloud-4">
+<h3 class="side_title">标签</h3>
+<div class="tagcloud"><a href="http://ifeve.com/tag/actor/" class="tag-link-226" title="17个话题" style="font-size: 13.917525773196pt;">actor</a>
+<a href="http://ifeve.com/tag/basic/" class="tag-link-213" title="14个话题" style="font-size: 12.762886597938pt;">Basic</a>
+<a href="http://ifeve.com/tag/cacheline/" class="tag-link-77" title="6个话题" style="font-size: 8pt;">cacheline</a>
+<a href="http://ifeve.com/tag/classes/" class="tag-link-251" title="8个话题" style="font-size: 9.4432989690722pt;">classes</a>
+<a href="http://ifeve.com/tag/collections/" class="tag-link-260" title="7个话题" style="font-size: 8.7216494845361pt;">collections</a>
+<a href="http://ifeve.com/tag/concurrency/" class="tag-link-111" title="65个话题" style="font-size: 22pt;">concurrency</a>
+<a href="http://ifeve.com/tag/concurrent/" class="tag-link-214" title="11个话题" style="font-size: 11.319587628866pt;">Concurrent</a>
+<a href="http://ifeve.com/tag/concurrent-data-structure/" class="tag-link-322" title="13个话题" style="font-size: 12.329896907216pt;">concurrent data structure</a>
+<a href="http://ifeve.com/tag/concurrenthashmap/" class="tag-link-61" title="6个话题" style="font-size: 8pt;">ConcurrentHashMap</a>
+<a href="http://ifeve.com/tag/customizing/" class="tag-link-250" title="8个话题" style="font-size: 9.4432989690722pt;">Customizing</a>
+<a href="http://ifeve.com/tag/design/" class="tag-link-209" title="6个话题" style="font-size: 8pt;">design</a>
+<a href="http://ifeve.com/tag/executor/" class="tag-link-177" title="20个话题" style="font-size: 14.783505154639pt;">Executor</a>
+<a href="http://ifeve.com/tag/executor-framework/" class="tag-link-231" title="16个话题" style="font-size: 13.484536082474pt;">Executor framework</a>
+<a href="http://ifeve.com/tag/false-sharing/" class="tag-link-119" title="7个话题" style="font-size: 8.7216494845361pt;">False Sharing</a>
+<a href="http://ifeve.com/tag/faq/" class="tag-link-39" title="13个话题" style="font-size: 12.329896907216pt;">faq</a>
+<a href="http://ifeve.com/tag/fork/" class="tag-link-232" title="11个话题" style="font-size: 11.319587628866pt;">fork</a>
+<a href="http://ifeve.com/tag/forkjoin/" class="tag-link-224" title="9个话题" style="font-size: 10.164948453608pt;">Fork/Join</a>
+<a href="http://ifeve.com/tag/fork-join/" class="tag-link-53" title="8个话题" style="font-size: 9.4432989690722pt;">fork join</a>
+<a href="http://ifeve.com/tag/framework/" class="tag-link-73" title="21个话题" style="font-size: 15.072164948454pt;">Framework</a>
+<a href="http://ifeve.com/tag/functional-programming/" class="tag-link-460" title="9个话题" style="font-size: 10.164948453608pt;">Functional Programming</a>
+<a href="http://ifeve.com/tag/guava/" class="tag-link-309" title="14个话题" style="font-size: 12.762886597938pt;">Guava</a>
+<a href="http://ifeve.com/tag/io/" class="tag-link-129" title="26个话题" style="font-size: 16.371134020619pt;">IO</a>
+<a href="http://ifeve.com/tag/java/" class="tag-link-69" title="58个话题" style="font-size: 21.278350515464pt;">JAVA</a>
+<a href="http://ifeve.com/tag/java8/" class="tag-link-342" title="9个话题" style="font-size: 10.164948453608pt;">java8</a>
+<a href="http://ifeve.com/tag/jmm/" class="tag-link-31" title="31个话题" style="font-size: 17.525773195876pt;">jmm</a>
+<a href="http://ifeve.com/tag/join/" class="tag-link-233" title="11个话题" style="font-size: 11.319587628866pt;">join</a>
+<a href="http://ifeve.com/tag/jvm/" class="tag-link-127" title="16个话题" style="font-size: 13.484536082474pt;">JVM</a>
+<a href="http://ifeve.com/tag/lock/" class="tag-link-17" title="23个话题" style="font-size: 15.649484536082pt;">lock</a>
+<a href="http://ifeve.com/tag/memory-barriers/" class="tag-link-75" title="10个话题" style="font-size: 10.742268041237pt;">Memory Barriers</a>
+<a href="http://ifeve.com/tag/netty/" class="tag-link-280" title="16个话题" style="font-size: 13.484536082474pt;">Netty</a>
+<a href="http://ifeve.com/tag/nio/" class="tag-link-131" title="14个话题" style="font-size: 12.762886597938pt;">NIO</a>
+<a href="http://ifeve.com/tag/oauth-2-0/" class="tag-link-380" title="8个话题" style="font-size: 9.4432989690722pt;">OAuth 2.0</a>
+<a href="http://ifeve.com/tag/pattern-matching/" class="tag-link-167" title="8个话题" style="font-size: 9.4432989690722pt;">pattern-matching</a>
+<a href="http://ifeve.com/tag/quartz/" class="tag-link-405" title="6个话题" style="font-size: 8pt;">quartz</a>
+<a href="http://ifeve.com/tag/ringbuffer/" class="tag-link-91" title="7个话题" style="font-size: 8.7216494845361pt;">RingBuffer</a>
+<a href="http://ifeve.com/tag/scala/" class="tag-link-166" title="22个话题" style="font-size: 15.360824742268pt;">Scala</a>
+<a href="http://ifeve.com/tag/semaphore/" class="tag-link-163" title="6个话题" style="font-size: 8pt;">Semaphore</a>
+<a href="http://ifeve.com/tag/stm/" class="tag-link-199" title="12个话题" style="font-size: 11.752577319588pt;">stm</a>
+<a href="http://ifeve.com/tag/storm/" class="tag-link-351" title="9个话题" style="font-size: 10.164948453608pt;">Storm</a>
+<a href="http://ifeve.com/tag/synchronization/" class="tag-link-216" title="15个话题" style="font-size: 13.051546391753pt;">synchronization</a>
+<a href="http://ifeve.com/tag/synchronized/" class="tag-link-15" title="10个话题" style="font-size: 10.742268041237pt;">Synchronized</a>
+<a href="http://ifeve.com/tag/thread/" class="tag-link-11" title="41个话题" style="font-size: 19.113402061856pt;">thread</a>
+<a href="http://ifeve.com/tag/tomcat/" class="tag-link-347" title="8个话题" style="font-size: 9.4432989690722pt;">tomcat</a>
+<a href="http://ifeve.com/tag/volatile/" class="tag-link-25" title="11个话题" style="font-size: 11.319587628866pt;">volatile</a>
+<a href="http://ifeve.com/tag/%e5%a4%9a%e7%ba%bf%e7%a8%8b/" class="tag-link-197" title="8个话题" style="font-size: 9.4432989690722pt;">多线程</a></div>
+</div>
+<div class="side_box widget_text" id="text-9">
+			<div class="textwidget"><script async="" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-9394337417063147" data-ad-slot="6198104715"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+
+</div>
+		</div>
+</div>
+<div id="side_middle" class="clearfix">
+ <div id="side_left">
+  <div class="side_box_short widget_archive" id="archives-2">
+<h3 class="side_title">文章归档</h3>
+		<ul>
+	<li><a href="http://ifeve.com/2015/06/">2015年六月</a>&nbsp;(6)</li>
+	<li><a href="http://ifeve.com/2015/05/">2015年五月</a>&nbsp;(15)</li>
+	<li><a href="http://ifeve.com/2015/04/">2015年四月</a>&nbsp;(27)</li>
+	<li><a href="http://ifeve.com/2015/03/">2015年三月</a>&nbsp;(13)</li>
+	<li><a href="http://ifeve.com/2015/02/">2015年二月</a>&nbsp;(11)</li>
+	<li><a href="http://ifeve.com/2015/01/">2015年一月</a>&nbsp;(13)</li>
+	<li><a href="http://ifeve.com/2014/12/">2014年十二月</a>&nbsp;(26)</li>
+	<li><a href="http://ifeve.com/2014/11/">2014年十一月</a>&nbsp;(61)</li>
+	<li><a href="http://ifeve.com/2014/10/">2014年十月</a>&nbsp;(33)</li>
+	<li><a href="http://ifeve.com/2014/09/">2014年九月</a>&nbsp;(47)</li>
+	<li><a href="http://ifeve.com/2014/08/">2014年八月</a>&nbsp;(27)</li>
+	<li><a href="http://ifeve.com/2014/07/">2014年七月</a>&nbsp;(13)</li>
+	<li><a href="http://ifeve.com/2014/06/">2014年六月</a>&nbsp;(32)</li>
+	<li><a href="http://ifeve.com/2014/05/">2014年五月</a>&nbsp;(45)</li>
+	<li><a href="http://ifeve.com/2014/04/">2014年四月</a>&nbsp;(41)</li>
+	<li><a href="http://ifeve.com/2014/03/">2014年三月</a>&nbsp;(34)</li>
+	<li><a href="http://ifeve.com/2014/02/">2014年二月</a>&nbsp;(38)</li>
+	<li><a href="http://ifeve.com/2014/01/">2014年一月</a>&nbsp;(19)</li>
+	<li><a href="http://ifeve.com/2013/12/">2013年十二月</a>&nbsp;(10)</li>
+	<li><a href="http://ifeve.com/2013/11/">2013年十一月</a>&nbsp;(5)</li>
+	<li><a href="http://ifeve.com/2013/10/">2013年十月</a>&nbsp;(20)</li>
+	<li><a href="http://ifeve.com/2013/09/">2013年九月</a>&nbsp;(38)</li>
+	<li><a href="http://ifeve.com/2013/08/">2013年八月</a>&nbsp;(48)</li>
+	<li><a href="http://ifeve.com/2013/07/">2013年七月</a>&nbsp;(26)</li>
+	<li><a href="http://ifeve.com/2013/06/">2013年六月</a>&nbsp;(16)</li>
+	<li><a href="http://ifeve.com/2013/05/">2013年五月</a>&nbsp;(9)</li>
+	<li><a href="http://ifeve.com/2013/04/">2013年四月</a>&nbsp;(17)</li>
+	<li><a href="http://ifeve.com/2013/03/">2013年三月</a>&nbsp;(41)</li>
+	<li><a href="http://ifeve.com/2013/02/">2013年二月</a>&nbsp;(25)</li>
+	<li><a href="http://ifeve.com/2013/01/">2013年一月</a>&nbsp;(57)</li>
+	<li><a href="http://ifeve.com/2012/12/">2012年十二月</a>&nbsp;(9)</li>
+	<li><a href="http://ifeve.com/2012/10/">2012年十月</a>&nbsp;(1)</li>
+	<li><a href="http://ifeve.com/2012/08/">2012年八月</a>&nbsp;(1)</li>
+		</ul>
+</div>
+ </div>
+ <div id="side_right">
+  <div class="side_box_short widget_links" id="linkcat-2">
+<h3 class="side_title">友情链接</h3>
+
+	<ul class="xoxo blogroll">
+<li><a href="http://coolshell.cn/" rel="co-worker" onclick="javascript:window.open(&#39;http://coolshell.cn/&#39;); return false;">coolshell</a></li>
+<li><a href="http://blog.91gaoqing.com/" onclick="javascript:window.open(&#39;http://blog.91gaoqing.com/&#39;); return false;">Programer. 大猫</a></li>
+<li><a href="http://hugozhu.myalert.info/" rel="co-worker" onclick="javascript:window.open(&#39;http://hugozhu.myalert.info/&#39;); return false;">一粟的博客</a></li>
+<li><a href="http://bj.liepin.com/" onclick="javascript:window.open(&#39;http://bj.liepin.com/&#39;); return false;">北京猎聘网</a></li>
+<li><a href="http://blog.csdn.net/cutesource/" rel="acquaintance co-worker" onclick="javascript:window.open(&#39;http://blog.csdn.net/cutesource/&#39;); return false;">志俊的博客</a></li>
+<li><a href="http://www.zuidaima.com/" onclick="javascript:window.open(&#39;http://www.zuidaima.com/&#39;); return false;">最代码</a></li>
+<li><a href="http://diandianzhe.com/" onclick="javascript:window.open(&#39;http://diandianzhe.com/&#39;); return false;">点点折</a></li>
+<li><a href="http://www.liuinsect.com/" onclick="javascript:window.open(&#39;http://www.liuinsect.com/&#39;); return false;">码梦为生</a></li>
+<li><a href="http://namiao.org/" rel="acquaintance co-worker" onclick="javascript:window.open(&#39;http://namiao.org/&#39;); return false;">纳秒</a></li>
+
+	</ul>
+</div>
+
+<div class="side_box_short widget_categories" id="categories-2">
+<h3 class="side_title">分类目录</h3>
+		<ul>
+	<li class="cat-item cat-item-387"><a href="http://ifeve.com/category/framework/akka-framework/">akka</a> (18)
+</li>
+	<li class="cat-item cat-item-415"><a href="http://ifeve.com/category/android/">Android</a> (3)
+</li>
+	<li class="cat-item cat-item-289"><a href="http://ifeve.com/category/c/">C++</a> (11)
+</li>
+	<li class="cat-item cat-item-366"><a href="http://ifeve.com/category/cpu-2/">CPU</a> (2)
+</li>
+	<li class="cat-item cat-item-73"><a href="http://ifeve.com/category/framework/">Framework</a> (44)
+</li>
+	<li class="cat-item cat-item-458"><a href="http://ifeve.com/category/go/">GO</a> (6)
+</li>
+	<li class="cat-item cat-item-310"><a href="http://ifeve.com/category/framework/guava-2/">guava</a> (22)
+</li>
+	<li class="cat-item cat-item-69"><a href="http://ifeve.com/category/java/">JAVA</a> (304)
+</li>
+	<li class="cat-item cat-item-127"><a href="http://ifeve.com/category/jvm/">JVM</a> (32)
+</li>
+	<li class="cat-item cat-item-300"><a href="http://ifeve.com/category/linux/">linux</a> (7)
+</li>
+	<li class="cat-item cat-item-280"><a href="http://ifeve.com/category/netty/">Netty</a> (22)
+</li>
+	<li class="cat-item cat-item-166"><a href="http://ifeve.com/category/scala/">Scala</a> (9)
+</li>
+	<li class="cat-item cat-item-388"><a href="http://ifeve.com/category/framework/storm-framework/">storm</a> (12)
+</li>
+	<li class="cat-item cat-item-485"><a href="http://ifeve.com/category/velocity/">Velocity</a> (3)
+</li>
+	<li class="cat-item cat-item-279"><a href="http://ifeve.com/category/web/">Web</a> (11)
+</li>
+	<li class="cat-item cat-item-148"><a href="http://ifeve.com/category/notice/">公告</a> (5)
+</li>
+	<li class="cat-item cat-item-378"><a href="http://ifeve.com/category/bigdata/">大数据</a> (20)
+</li>
+	<li class="cat-item cat-item-138"><a href="http://ifeve.com/category/%e5%a5%bd%e6%96%87%e6%8e%a8%e8%8d%90/">好文推荐</a> (26)
+</li>
+	<li class="cat-item cat-item-244"><a href="http://ifeve.com/category/%e5%b9%b6%e5%8f%91%e4%b9%a6%e7%b1%8d/">并发书籍</a> (89)
+</li>
+	<li class="cat-item cat-item-29"><a href="http://ifeve.com/category/concurrency-translation/" title="发布国外并发编程相关文献译文。">并发译文</a> (355)
+</li>
+	<li class="cat-item cat-item-7"><a href="http://ifeve.com/category/ask/" title="可以在这里发表并发编程的问题。如何发表？用QQ登陆，然后点击“新建文章”，管理员审核后就可以发表。">技术问答</a> (11)
+</li>
+	<li class="cat-item cat-item-147"><a href="http://ifeve.com/category/%e6%95%8f%e6%8d%b7%e7%ae%a1%e7%90%86/">敏捷管理</a> (4)
+</li>
+	<li class="cat-item cat-item-1"><a href="http://ifeve.com/category/talk-concurrent/">本站原创</a> (69)
+</li>
+	<li class="cat-item cat-item-367"><a href="http://ifeve.com/category/%e6%9e%b6%e6%9e%84/">架构</a> (15)
+</li>
+	<li class="cat-item cat-item-305"><a href="http://ifeve.com/category/%e6%b4%bb%e5%8a%a8/">活动</a> (6)
+</li>
+	<li class="cat-item cat-item-414"><a href="http://ifeve.com/category/%e7%bd%91%e7%bb%9c/">网络</a> (3)
+</li>
+		</ul>
+</div>
+ </div>
+</div>
+<div id="side_bottom">
+ <div class="side_box widget_text" id="text-15">
+			<div class="textwidget"><script async="" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 摩天大楼 -->
+<ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px" data-ad-client="ca-pub-9394337417063147" data-ad-slot="6358703113"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<!-- CNZZ -->
+<script src="./Java8-ifeve.com_files/stat.php" language="JavaScript"></script>
+
+感谢<a href="https://www.upyun.com/index.html" onclick="javascript:window.open(&#39;https://www.upyun.com/index.html&#39;); return false;">又拍云</a>为本站提供服务器和图片服务。</div>
+		</div>
+</div>
+
+  </div>
+  
+  <div id="footer">
+
+<ul id="copyright">
+    <li>版权所有 ©&nbsp; <a href="http://ifeve.com/">并发编程网 – ifeve.com</a></li>
+    <li>ICP号: <a href="http://www.miibeian.gov.cn/" onclick="javascript:window.open(&#39;http://www.miibeian.gov.cn/&#39;); return false;">浙ICP备12046809号</a></li>
+<li class="last"><script type="text/javascript" src="./Java8-ifeve.com_files/tongji.js"></script><noscript>&lt;a href="http://www.linezing.com"&gt;&lt;img src="http://img.tongji.linezing.com/3067707/tongji.gif"/&gt;&lt;/a&gt;</noscript></li>
+   </ul>
+ </div>
+ </div><!-- END #main_content -->
+
+  <p id="return_top" style="display: block;"><a href="http://ifeve.com/stream/#header">return top</a></p>
+ 
+<script type="text/javascript" src="./Java8-ifeve.com_files/shCore.js"></script>
+<script type="text/javascript" src="./Java8-ifeve.com_files/shBrushJava.js"></script>
+<script type="text/javascript">
+	(function(){
+		var corecss = document.createElement('link');
+		var themecss = document.createElement('link');
+		var corecssurl = "http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/styles/shCore.css?ver=2.1.364";
+		if ( corecss.setAttribute ) {
+				corecss.setAttribute( "rel", "stylesheet" );
+				corecss.setAttribute( "type", "text/css" );
+				corecss.setAttribute( "href", corecssurl );
+		} else {
+				corecss.rel = "stylesheet";
+				corecss.href = corecssurl;
+		}
+		document.getElementsByTagName("head")[0].insertBefore( corecss, document.getElementById("syntaxhighlighteranchor") );
+		var themecssurl = "http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/styles/shThemeEclipse.css?ver=2.1.364";
+		if ( themecss.setAttribute ) {
+				themecss.setAttribute( "rel", "stylesheet" );
+				themecss.setAttribute( "type", "text/css" );
+				themecss.setAttribute( "href", themecssurl );
+		} else {
+				themecss.rel = "stylesheet";
+				themecss.href = themecssurl;
+		}
+		//document.getElementById("syntaxhighlighteranchor").appendChild(themecss);
+		document.getElementsByTagName("head")[0].insertBefore( themecss, document.getElementById("syntaxhighlighteranchor") );
+	})();
+	SyntaxHighlighter.config.clipboardSwf = 'http://ifeve.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter2/scripts/clipboard.swf';
+	SyntaxHighlighter.config.strings.expandSource = 'show source';
+	SyntaxHighlighter.config.strings.viewSource = '查看源代码';
+	SyntaxHighlighter.config.strings.copyToClipboard = '复制到剪贴板';
+	SyntaxHighlighter.config.strings.copyToClipboardConfirmation = '代码现在在你的剪贴板';
+	SyntaxHighlighter.config.strings.print = '打印';
+	SyntaxHighlighter.config.strings.help = '帮助';
+	SyntaxHighlighter.config.strings.alert = 'SyntaxHighlighter\n\n';
+	SyntaxHighlighter.config.strings.noBrush = '无法找到Brush：';
+	SyntaxHighlighter.config.strings.brushNotHtmlScript = 'Brush不能设置 html-script选项';
+	SyntaxHighlighter.defaults['pad-line-numbers'] = true;
+	SyntaxHighlighter.all();
+</script>
+<link rel="stylesheet" id="yarppRelatedCss-css" href="./Java8-ifeve.com_files/related.css" type="text/css" media="all">
+<script type="text/javascript" src="./Java8-ifeve.com_files/comment-reply.min.js"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var ratingsL10n = {"plugin_url":"http:\/\/ifeve.com\/wp-content\/plugins\/wp-postratings","ajax_url":"http:\/\/ifeve.com\/wp-admin\/admin-ajax.php","text_wait":"Please rate only 1 post at a time.","image":"stars_crystal","image_ext":"gif","max":"5","show_loading":"1","show_fading":"1","custom":"0"};
+var ratings_mouseover_image=new Image();ratings_mouseover_image.src=ratingsL10n.plugin_url+"/images/"+ratingsL10n.image+"/rating_over."+ratingsL10n.image_ext;;
+/* ]]> */
+</script>
+<script type="text/javascript" src="./Java8-ifeve.com_files/postratings-js.js"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var viewsCacheL10n = {"admin_ajax_url":"http:\/\/ifeve.com\/wp-admin\/admin-ajax.php","post_id":"11260"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./Java8-ifeve.com_files/postviews-cache.js"></script>
+
+
+
+<script src="./Java8-ifeve.com_files/jquery.min.js"></script>
+
+<script src="./Java8-ifeve.com_files/jquery.bpopup-0.8.0.min.js"></script>
+
+
+<!--
+<script type="text/javascript">
+
+;(function($) {
+
+    $(function() {
+
+        var url=document.referrer;
+
+        if ( url && url.search("http://")>-1) {
+
+            var refurl =  url.match(/:\/\/(.[^/]+)/)[1];
+
+            if(refurl.indexOf("baidu.com")>-1){
+
+                $('#nobaidu_dlg').bPopup();
+
+            }
+
+        }
+
+    });
+
+
+
+})(jQuery);
+
+</script>
+
+
+
+
+<div id="nobaidu_dlg" style="background-color:#fff; border-radius:15px;color:#000;display:none;padding:20px;min-width:450px;min-height:180px;">
+
+    <span class="bClose" style="cursor:pointer; position:absolute; right:10px;top:5px;">x<span/>
+
+    <img src="http://coolshell.cn//wp-content/themes/inove/img/nobaidu.jpg" align="left">
+
+     <p style="margin-left:200px;margin-top: 20px; line-height: 30px;">
+
+     检测到你还在使用百度这个搜索引擎，<br/>
+
+     做为一个程序员，这是一种自暴自弃！<br/>
+
+     <br/>
+
+     </p>
+
+     <p align="center" style="margin-top:20px;">
+
+     <b><a href="http://coolshell.cn/articles/7186.html">作环保的程序员，从不用百度开始！</a></b>
+
+     </p>
+
+</div>
+-->
+
+<!-- Dynamic page generated in 1.476 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2015-06-11 09:48:04 -->
+
+<!-- Dynamic Legacy Super Cache --></body></html>

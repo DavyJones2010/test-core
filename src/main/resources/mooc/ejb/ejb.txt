@@ -1,0 +1,18 @@
+Session Bean: Represents the business logic. It may be stateless, stateful or singleton.	
+1. Types of Session Bean:
+	1) Stateless Session Bean: It doesn't maintain state of a client between multiple method calls.
+	2) Stateful Session Bean: It maintains state of a client across multiple requests.
+	3) Singleton Session Bean: One instance per application, it is shared between clients and supports concurrent access.
+
+2. Stateless Session Bean:
+	1) Conversational state between multiple method calls is not maintained by the container in case of stateless session bea.
+	2) The stateless bean objects are pooled by EJB container to service the request on demand.
+	3) It can be accessed by one client at a time. In case of concurrent access, EJB container routes each request to different instance.
+
+3. Stateful Session Bean:
+	1) 	Conversational state between multiple method calls is maintained by the container in stateful session bean.
+
+JMS: Java Message Service, is an API that provides the facility to create, send and read messages. It provides loosely coupled, reliable and asynchronous communication.
+1. Types of Messaging Domains:
+	1) Point-to-Point Messaging Domain
+	2) Publisher/Subscriber Messaging Domain

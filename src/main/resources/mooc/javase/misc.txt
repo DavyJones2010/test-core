@@ -1,0 +1,7 @@
+1) Fail Fast v.s Fail Safe
+http://javahungry.blogspot.com/2014/04/fail-fast-iterator-vs-fail-safe-iterator-difference-with-example-in-java.html
+2) 分析幂等点:
+	1. 多次预处理
+	2. 多次提交
+	3. 多次回滚
+	4. 假失败

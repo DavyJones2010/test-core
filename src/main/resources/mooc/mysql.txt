@@ -1,0 +1,5 @@
+1> Start mysqld.exe, it is the server process.
+2> Start mysql.exe in cmd: "mysql -u root;"
+3> "show databases"
+4> "use hibernate"
+5> "show tables"

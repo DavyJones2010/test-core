@@ -1,0 +1,29 @@
+Stream from: <a href="http://ifeve.com/stream/">i-feve stream</a>
+
+1) Stream conversion: (Stream->Stream)
+	1> distinct
+	2> filter
+	3> map
+	4> flatMap
+	5> peek
+	6> limit
+	7> skip
+	8> sort
+
+2) Stream reduce:
+可变汇聚(collect)：把输入的元素们累积到一个可变的容器中，比如Collection或者StringBuilder；
+其他汇聚(reduce/count/...)：除去可变汇聚剩下的，一般都不是通过反复修改某个可变对象，而是通过把前一次的汇聚结果当成下一次的入参，反复如此。比如reduce，count，allMatch；
+	1> collect
+	2> reduce
+	3> sum/max/min/avg/count (only apply for IntStream/LongStream/DoubleStream)
+
+3) Stream type conversion:
+	1> Steam.mapToInt(); Stream.mapToDouble(); Stream.mapToLong()...
+	2> IntStream.mapToObj()...
+
+4) Stream search:
+	1) allMatch
+	2) anyMatch
+	3) nonMatch
+	4) findFirst
+	5) max/min

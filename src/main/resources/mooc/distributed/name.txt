@@ -1,0 +1,15 @@
+* RPC框架:
+	* LB
+	* Failover(容灾)/Failfast(ConcurrentModificationException)/Failsafe/Failback/Forking
+	* Routing
+	* QoS
+	* 服务治理
+	* 数据监控
+
+* Dubbo服务框架角色:
+	* Provider
+	* Consumer
+	* Registry
+	* Monitor
+	
+* QoS的关键指标: 可用性、吞吐量、时延、时延变化(包括抖动和漂移)和丢失

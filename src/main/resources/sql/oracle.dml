@@ -1,0 +1,16 @@
+-- order by:http://stackoverflow.com/questions/13339589/custom-order-in-oracle-sql
+SELECT COLUMN_NAME FROM TABLE ORDER BY 
+CASE
+	WHEN COLUMN_NAME='COLUMN_VALUE' THEN 1
+	WHEN COLUMN_NAME='COLUMN_VALUE_2' THEN 2
+	ELSE 3
+END; 
+-- format date: http://docs.oracle.com/cd/B19306_01/server.102/b14200/sql_elements004.htm#i34924
+UPDATE TABLE_NAME SET REQUEST_DATE=TO_DATE('2014-05-14 21:01:22', 'yyyy-MM-dd HH24:MI:SS')
+-- update column value by joining on other column's value 
+UPDATE TABLE_NAME SET COLUMN_A = COLUMN_A || '_' ||COLUMN_B;
+-- NVL:(it is used to replace null with default value) http://www.techonthenet.com/oracle/functions/nvl.php
+SELECT NVL(COLUMN_NAME, 'COLUMN_DEFAULT_VALUE') FROM TABLE;
+
+-- What's the difference between UNION and UNION ALL?
+-- http://stackoverflow.com/questions/49925/what-is-the-difference-between-union-and-union-all

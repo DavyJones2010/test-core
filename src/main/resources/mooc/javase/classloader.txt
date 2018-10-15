@@ -1,0 +1,30 @@
+-- http://blog.csdn.net/lovingprince/article/details/4238695
+1> Overview:
+	1) Bootstrap Class Loader <- Extension Class Loader <- System Class Loader <- User Defined Class Loader
+
+2> Class Loader Types:
+	1) Bootstrap Class Loader:
+		1> It is written in C++
+		2> It is used to load classes under "%JAVA_HOME%/jre/lib", "-Xbootclasspath" and "%JAVA_HOME%/jre/classes"
+	2) Extension Class Loader:
+		1> It is loaded by Bootstrap Class Loader
+		2> It is an instance of sun.misc.Launcher$ExtClassLoader which extends java.net.URLClassLoader extends java.lang.ClassLoader
+		3> 它负责加载JRE的扩展目录（JAVA_HOME/jre/lib/ext或者由java.ext.dirs系统属性指定的）中JAR的 类包
+	3) System Class Loader:
+		1> It is loaded by Bootstrap Class Loader; but its parent class loader is set as ExtensionClassLoader explicitly by BootstrapClassLoader
+		2> 它负责在JVM被启动时，加载来自在命令java中的-classpath所指定的JAR类包和类路径
+		3> 总能通过静态方法ClassLoader.getSystemClassLoader()找 到该类加载器
+		如果没有特别指定，则用户自定义的任何类加载器都将该类加载器(SystemClassLoader)作为它的父加载器
+	4) User Defined Class Loader:
+		1> Its parent is set as SystemClassLoader by default.
+
+3>
+	1) 全盘负责: 即是当一个classloader加载一个Class的时候，这个Class所依赖的和引用的所有 Class也由这个classloader负责载入，除非是显式的使用另外一个classloader载入
+	2) 委托机制: 委托机制则是先让parent（父）类加载器 (而不是super，它与parent classloader类不是继承关系)寻找，只有在parent找不到的时候才从自己的类路径中去寻找
+	3) cache机制: 也就是如果 cache中保存了这个Class就直接返回它，如果没有才从文件中读取和转换成Class，并存入cache
+
+4>
+	1) 当执行java命令的时候，JVM会先使用bootstrap classloader载入并初始化一个sun.misc.Launcher
+	2) Launcher 会根据系统和命令设定初始化好class loader结构
+
+	

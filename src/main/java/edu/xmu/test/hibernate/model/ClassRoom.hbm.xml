@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="true" package="edu.xmu.test.hibernate.model">
+	<class name="ClassRoom" table="classroom">
+		<id name="id">
+			<generator class="native" />
+		</id>
+		<property name="name" column="class_name" />
+		<set name="students" lazy="false">
+			<!-- classroom_id column will be added into student table, and will be foreign key refers to classroom's id -->
+			<!-- There would be problem if we add not-null="true" to the tag "key" -->
+			<key column="classroom_id" />
+			<one-to-many class="Student" />
+		</set>
+	</class>
+</hibernate-mapping>

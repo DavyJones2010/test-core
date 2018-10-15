@@ -1,0 +1,12 @@
+1) POI for Excel
+	1> Microsofts's OLE 2 Compound Document Format (OLE2) -> XLS
+	2> Office OpenXML (OOXML) -> XLSX(Excel 2007, 2008)
+You'd use HSSF if you needed to read or write an Excel file using Java (XLS).
+You'd use XSSF if you need to read or write an OOXML Excel file using Java (XLSX).
+SXSSF allows to write very large Excel (XLSX) files in a memory optimized way.
+2) SXXSF:
+	1> Only a limited number of rows are accessible at a point in time.
+	2> Sheet.clone() is not supported.
+	3> Formula evaluation is not supported
+ 
+3) User Model & Event Model

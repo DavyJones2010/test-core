@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE note [
+<!ELEMENT note (to,from+,heading*,body?,(signature|tail),greeting)>
+<!ELEMENT to EMPTY>
+<!ELEMENT from ANY>
+<!ELEMENT heading (#PCDATA)>
+<!ELEMENT body (#PCDATA)>
+<!ELEMENT signature (#PCDATA)>
+<!ELEMENT tail (#PCDATA)>
+<!ELEMENT greeting (#PCDATA)>
+<!ATTLIST note note-id CDATA #REQUIRED>
+<!ATTLIST heading heading-id CDATA "0">
+<!ATTLIST body body-id CDATA #FIXED "1">
+<!ATTLIST signature signature-id CDATA #IMPLIED>
+<!ATTLIST tail tail-id CDATA #IMPLIED>
+<!ATTLIST greeting greeting-sentence (HELLO|HALLO|HOLA) "HELLO"
+	greeting-smile CDATA #REQUIRED
+	greeting-farewell CDATA #IMPLIED>
+]>
+<note note-id="AAA">
+	<to />
+	<from></from>
+	<from></from>
+	<heading heading-id="0"></heading>
+	<body body-id="12"></body>
+	<signature signature-id="1"></signature>
+	<greeting greeting-sentence="HOLA" greeting-smile="HaHa"></greeting>
+</note>

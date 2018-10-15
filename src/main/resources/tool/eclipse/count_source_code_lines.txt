@@ -1,0 +1,2 @@
+http://stackoverflow.com/questions/1043666/counting-line-numbers-in-eclipse
+Search > File Search > Check Use Regular Expression > \n[^!//][\s]* > *.java

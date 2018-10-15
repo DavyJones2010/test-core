@@ -1,0 +1,21 @@
+// list all tree dependencies that include groupId: org.slf4j 
+dependency:tree -Dverbose -Dincludes=xx.xxxx.xxx
+// exclude child dependency for specific artificate
+<dependency>
+	<groupId>org.springframework.batch</groupId>
+	<artifactId>spring-batch-admin-manager</artifactId>
+	<version>1.3.1.RELEASE</version>
+	<exclusions>
+		<exclusion>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</exclusion>
+	</exclusions>
+</dependency> 
+// why am I excluding slf4j-log4j12 from spring batch?
+log4j-over-slf4j.jar and slf4j-log4j12.jar cannot be present simultaneously: 
+The presence of slf4j-log4j12.jar, that is the log4j binding for SLF4J, will force all SLF4J calls to be delegated to log4j.
+The presence of log4j-over-slf4j.jar will in turn delegate all log4j API calls to their SLF4J equivalents.
+If both are present simultaneously, slf4j calls will be delegated to log4j, and log4j calls redirected to SLF4j, resulting in an endless loop.
+
+# 也可以在eclipse里打开pom文件, 直接看"Dependency Hierarchy"

@@ -1,0 +1,20 @@
+/target/
+/derby.log
+*.log
+*.iml
+/target
+.classpath
+.project
+.settings/
+test-output/
+.idea/
+.DS_Store
+bin/
+.coverage
+.gitignore
+.idea/
+feature/
+.pydevproject
+# test reports
+report.html
+javancss-raw-report.xml

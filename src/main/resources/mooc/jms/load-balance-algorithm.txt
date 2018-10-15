@@ -1,0 +1,17 @@
+集群负载均衡算法主要有：(F5负载均衡产品) http://www.cnblogs.com/shanyou/archive/2012/11/09/2763272.html
+	随机
+	轮询
+	加权轮询
+	动态轮询
+	最快算法
+	最少连接
+	观察算法
+	预判算法
+	
+Cache负载均衡算法:
+	Static算法: First-available
+	Random算法: idx=rand()%M
+	Round robin算法: idx=(idx+1)%M
+	Hash算法: idx=hash(query_key)%M, 缺点: 当添加或移除服务器时,余数就会产生巨变,这样就无法获取与保存时相同的服务器.
+	CARP算法: 
+	Consistent hash算法

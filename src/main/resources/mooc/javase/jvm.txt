@@ -1,0 +1,33 @@
+1) JVM options
+-Xms<size> set initial Java heap size
+-Xmx<size> set maximum Java heap size
+-Xss<size> set java thread stack size
+-XX:PermSize=<size> set initial Java Permgen size
+-XX:MaxPermSize=<size> set max Java Permgen size
+
+2) 根:
+	1. 栈中引用的对象
+	2. 方法区中静态成员或者常量引用的对象(全局对象)
+	3. JNI方法栈中引用的对象
+
+3) STOP-THE-WORLD:(Major GC, 一般来说,堆越大,Major GC时间越长)
+	1. 多半由于GC引起:
+		1. DUPM线程
+		2. 死锁检查
+		3. 堆DUPM
+	2. 遇到HA系统,可能引起主备切换,严重危害生产环境.
+4) HA系统: 
+	High Available(双机集群系统):主机器和一台或多台备份机器,是保证业务连续性的有效解决方案. 
+	一般有两个或者两个以上的节点,且分为活动节点和备用节点.
+	
+1. 如何导出heap dump:
+	$JAVA_HOME/bin/jmap -dump:format=b,file=/home/admin/heap.hprof pid
+2. 如何实时查出gc信息:
+	1. $JAVA_HOME/bin/jstat -gcutil pid interval (可以查看gc状况以及各个代的利用率)
+	2. 查看gc log (可以查看gc的具体值)
+
+3. 如何导出thread dump:
+	$JAVA_HOME/bin/jstack pid > /home/admin/jstack.log
+
+4. 如何实时查看线程
+	top查看

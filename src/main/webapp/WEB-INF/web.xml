@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+			http://java.sun.com/xml/ns/j2ee
+			http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+<!--
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath*:/org/springframework/batch/admin/web/resources/webapp-config.xml</param-value>
+	</context-param>
+	<context-param>
+		<param-name>user_name</param-name>
+		<param-value>yang, kunlun</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>edu.xmu.test.javaweb.servlet.MyServletContextListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>edu.xmu.test.javaweb.servlet.MySessionContextListener</listener-class>
+	</listener>
+	-->
+	<filter>
+		<filter-name>logFilter</filter-name>
+		<filter-class>edu.xmu.test.javaweb.servlet.LogFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>logFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+<!--
+	<filter>
+		<filter-name>shallowEtagHeaderFilter</filter-name>
+		<filter-class>org.springframework.web.filter.ShallowEtagHeaderFilter</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>hiddenHttpMethodFilter</filter-name>
+		<filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>shallowEtagHeaderFilter</filter-name>
+		<url-pattern>spring-batch/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>hiddenHttpMethodFilter</filter-name>
+		<url-pattern>spring-batch/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>struts2</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>struts-default.xml,struts-plugin.xml,struts2/struts.xml</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>/struts2/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>Batch Servlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:/org/springframework/batch/admin/web/resources/servlet-config.xml</param-value>
+		</init-param>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Batch Servlet</servlet-name>
+		<url-pattern>spring-batch/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>HelloServlet</servlet-name>
+		<servlet-class>edu.xmu.test.javaweb.servlet.HelloServlet</servlet-class>
+		<init-param>
+			<param-name>first_name</param-name>
+			<param-value>yang</param-value>
+		</init-param>
+		<init-param>
+			<param-name>last_name</param-name>
+			<param-value>kunlun</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>HelloServlet</servlet-name>
+		<url-pattern>/serlvet/HelloServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>HelloFormServlet</servlet-name>
+		<servlet-class>edu.xmu.test.javaweb.servlet.HelloFormServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>HelloFormServlet</servlet-name>
+		<url-pattern>/serlvet/HelloForm</url-pattern>
+	</servlet-mapping>
+	<filter>
+		<filter-name>ResponseServletFilter</filter-name>
+		<filter-class>edu.xmu.test.javaweb.servlet.ResponseServletFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>ResponseServletFilter</filter-name>
+		<url-pattern>/serlvet/ResponseSample</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>ResponseServletFilter2</filter-name>
+		<filter-class>edu.xmu.test.javaweb.servlet.ResponseServletFilter2</filter-class>
+		<init-param>
+			<param-name>first_name</param-name>
+			<param-value>yang</param-value>
+		</init-param>
+		<init-param>
+			<param-name>last_name</param-name>
+			<param-value>kunlun</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>ResponseServletFilter2</filter-name>
+		<url-pattern>/serlvet/ResponseSample</url-pattern>
+	</filter-mapping>
+	<servlet>
+		<servlet-name>ResponseServlet</servlet-name>
+		<servlet-class>edu.xmu.test.javaweb.servlet.ResponseServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ResponseServlet</servlet-name>
+		<url-pattern>/serlvet/ResponseSample</url-pattern>
+	</servlet-mapping>
+-->
+	<servlet>
+		<servlet-name>RefreshServlet</servlet-name>
+		<servlet-class>edu.xmu.test.javaweb.servlet.RefreshServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RefreshServlet</servlet-name>
+		<url-pattern>/serlvet/RefreshServlet</url-pattern>
+	</servlet-mapping>
+
+    <servlet>
+        <servlet-name>UserCenterLoginServlet</servlet-name>
+        <servlet-class>edu.xmu.test.blog.sample.session.UserCenterLoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UserCenterLoginServlet</servlet-name>
+        <url-pattern>/serlvet/UserCenterLoginServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UserCenterJumpServlet</servlet-name>
+        <servlet-class>edu.xmu.test.blog.sample.session.UserCenterJumpServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UserCenterJumpServlet</servlet-name>
+        <url-pattern>/serlvet/UserCenterJumpServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>MyDomainPassServlet</servlet-name>
+        <servlet-class>edu.xmu.test.blog.sample.session.MyDomainPassServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MyDomainPassServlet</servlet-name>
+        <url-pattern>/serlvet/MyDomainPassServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>MyDomainCartServlet</servlet-name>
+        <servlet-class>edu.xmu.test.blog.sample.session.MyDomainCartServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MyDomainCartServlet</servlet-name>
+        <url-pattern>/serlvet/MyDomainCartServlet</url-pattern>
+    </servlet-mapping>
+	<!-- <servlet> <servlet-name>spring-mvc</servlet-name> <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class> 
+		<init-param> <param-name>contextConfigLocation</param-name> <param-value>classpath*:spring/mvc/spring-mvc-servlet.xml</param-value> 
+		</init-param> <load-on-startup>1</load-on-startup> </servlet> <servlet-mapping> <servlet-name>spring-mvc</servlet-name> <url-pattern>/spring-mvc/*</url-pattern> 
+		</servlet-mapping> -->
+<!--
+	<servlet>
+		<servlet-name>Jersey REST Service</servlet-name>
+		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>com.sun.jersey.config.property.packages</param-name>
+			<param-value>edu.xmu.test.j2ee.ws</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Jersey REST Service</servlet-name>
+		<url-pattern>/rs/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+      <servlet-name>DruidStatView</servlet-name>
+      <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>DruidStatView</servlet-name>
+      <url-pattern>/druid/*</url-pattern>
+  </servlet-mapping>
+-->
+</web-app>

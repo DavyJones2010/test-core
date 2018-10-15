@@ -1,0 +1,3 @@
+OGNL(Object Graph Navigation Language)
+
+1) OgnlContext: we can assign an ognlContext as the RootContext.

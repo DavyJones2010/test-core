@@ -1,0 +1,4 @@
+1) Intro to hash
+	http://kb.cnblogs.com/page/42731/
+2) Consistent Hashing:
+	http://blog.csdn.net/cywosp/article/details/23397179/

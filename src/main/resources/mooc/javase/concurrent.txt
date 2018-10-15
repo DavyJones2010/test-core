@@ -1,0 +1,25 @@
+1) Difference between: "synchronized block" and ReentrantLock 
+	1> synzhronized block is suitable when race condition is not that frequently, and ReentrantLock can keep good performance when race condition is fierce.
+	2> we can simply use jvisualvm/threaddump to find the deadlock caused by synchronized block cause it is supported by JVM. But we cannot do this with ReentrantLock.
+ 	3> Instead of waiting for lock in synchronized(lock), We have lock.tryLock() which can make us make better use of thread 
+ 	
+2) 
+public ThreadPoolExecutor(int corePoolSize,
+                              int maximumPoolSize,
+                              long keepAliveTime,
+                              TimeUnit unit,
+                              BlockingQueue<Runnable> workQueue,
+                              ThreadFactory threadFactory,
+                              RejectedExecutionHandler handler)
+                              
+	1> corePoolSize:
+	2> maximumPoolSize:
+	3> keepAliveTime & unit:
+	4> workQueue:
+	5> threadFactory:
+	6> handler:
+	关于corePoolSize和maximumPoolSize：
+当新任务在方法 execute(java.lang.Runnable) 中提交时，如果运行的线程少于 corePoolSize，则创建新线程来处理请求（即使存在空闲线程）。
+如果运行的线程多于 corePoolSize 而少于 maximumPoolSize，则仅当队列（queue）满时才创建新线程。
+如果设置的 corePoolSize 和 maximumPoolSize 相同，则创建了固定大小的线程池。
+如果将 maximumPoolSize 设置为基本的无界值（如 Integer.MAX_VALUE），则允许池适应任意数量的并发任务。 

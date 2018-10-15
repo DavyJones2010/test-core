@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Spring Batch Admin</title>
+<link rel="stylesheet" href="/test-core/resources/styles/main.css" type="text/css"></link>
+<link rel="stylesheet" href="/test-core/resources/styles/colors.css" type="text/css"></link>
+<link rel="stylesheet" href="/test-core/resources/styles/local.css" type="text/css"></link>
+<link rel="stylesheet" href="/test-core/resources/styles/print.css" type="text/css" media="print"></link>
+<script src="/test-core/resources/js/jquery-1.4.2.min.js" type="text/javascript"></script>
+<script src="/test-core/resources/js/jquery.validate-1.7.0.min.js" type="text/javascript"></script>
+<!-- 
+Some icons from Silk icon set 1.3 by Mark James, http://www.famfamfam.com/lab/icons/silk/
+ -->
+</head>
+<body class="main">
+<div id="page"><div id="header">
+	<div id="name-and-company">
+		<div id='site-name'>
+			<a href=/test-core/ title="Site Name" rel="home">
+Spring Batch Admin			</a>
+		</div>
+		<div id='company-name'>
+			<a href="http://www.spring.io/" title="Spring">
+				Spring
+			</a>
+		</div>         
+	</div> <!-- /name-and-company -->
+</div> <!-- /header -->
+ <div id="primary-navigation">
+	<div id="primary-left">
+		<ul>
+			<li><a href="/test-core">Home</a></li>
+			<li><a href="/test-core/jobs">Jobs</a></li>
+			<li><a href="/test-core/jobs/executions">Executions</a></li>
+			<li><a href="/test-core/files">Files</a></li>
+		</ul>
+	</div>
+	<div id="primary-right">
+		<ul>
+			<li><a href="http://www.spring.io">Spring</a></li>
+			<li><a href="http://projects.spring.io/spring-batch/">Spring Batch</a></li>
+		</ul>
+	</div>
+</div><!-- /primary-navigation -->
+<div id="container">
+<div id="content" class="no-side-nav">
+<div id="body">	<table title="Available Resources"
+		class="bordered-table">
+		<tr>
+			<th>Resource</th>
+			<th>Method</th>
+			<th>Description</th>
+		</tr>
+			<tr class="name-sublevel1-even">
+				<td><a href="/test-core/configuration">/configuration</a></td>
+				<td>GET</td>
+				<td>Form for upload of Job configuration file</td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td><a href="/test-core/files">/files</a></td>
+				<td>GET</td>
+				<td>List uploaded data files </td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/files</td>
+				<td>POST</td>
+				<td>Upload a new file (in a multipart form request) with path= and file= paremeters.</td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td>/files</td>
+				<td>DELETE</td>
+				<td>Remove a file that was previously uploaded.  Add pattern= parameter to narrow down to a subset of existing resources.</td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/files/{path}</td>
+				<td>GET</td>
+				<td>Download a previously uploaded file.  The path can contain directory separators.</td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td><a href="/test-core/home">/home</a></td>
+				<td>GET</td>
+				<td>List the resources available</td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/job-configuration</td>
+				<td>POST</td>
+				<td>Upload a Job configuration file as a String request body</td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td><a href="/test-core/jobs">/jobs</a></td>
+				<td>GET</td>
+				<td>List the jobs known to the application.  If they are configured in this application they are launchable, otherwise not (i.e. if they have been executed offline)</td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td><a href="/test-core/jobs/executions">/jobs/executions</a></td>
+				<td>GET</td>
+				<td>List all the job executions, in order of most recent to least.</td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td>/jobs/executions</td>
+				<td>DELETE</td>
+				<td>Stop all job executions</td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/jobs/executions/{jobExecutionId}</td>
+				<td>GET</td>
+				<td>Show the JobExecution with the id provided</td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td>/jobs/executions/{jobExecutionId}</td>
+				<td>DELETE</td>
+				<td>Stop the JobExecution with the id provided.  Add abort=true parameter to abort an already stopped or failed job.</td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/jobs/executions/{jobExecutionId}/steps</td>
+				<td>GET</td>
+				<td>List the StepExecutions of the JobExecution with the id provided</td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td>/jobs/executions/{jobExecutionId}/steps/{stepExecutionId}</td>
+				<td>GET</td>
+				<td>Inspect the StepExecution with the id provided</td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/jobs/executions/{jobExecutionId}/steps/{stepExecutionId}/progress</td>
+				<td>GET</td>
+				<td>Monitor the progress of the StepExecution with the id provided</td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td>/jobs/{jobName}</td>
+				<td>GET</td>
+				<td>List the JobInstances of the job name provided</td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/jobs/{jobName}</td>
+				<td>POST</td>
+				<td>Execute the job with the name provided and parameters provided as a String (stringified Properties as per the CommandLineJobRunner)</td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td>/jobs/{jobName}/executions</td>
+				<td>GET</td>
+				<td>List the JobExecutions for the job name provided</td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/jobs/{jobName}/{jobInstanceId}/executions</td>
+				<td>GET</td>
+				<td>List the JobExecutions for the job instance with the id provided</td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td>/jobs/{jobName}/{jobInstanceId}/executions</td>
+				<td>POST</td>
+				<td>Stop the JobExecutions for the job instance with the id provided</td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td><a href="/test-core/files.json">/files.json</a></td>
+				<td>GET</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td><a href="/test-core/home.json">/home.json</a></td>
+				<td>GET</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/job-configuration.json</td>
+				<td>POST</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td>/job-restarts.json</td>
+				<td>POST</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td><a href="/test-core/jobs.json">/jobs.json</a></td>
+				<td>GET</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td><a href="/test-core/jobs/executions.json">/jobs/executions.json</a></td>
+				<td>GET</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/jobs/executions.json</td>
+				<td>DELETE</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td>/jobs/executions/{jobExecutionId}.json</td>
+				<td>GET</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/jobs/executions/{jobExecutionId}.json</td>
+				<td>DELETE</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td>/jobs/executions/{jobExecutionId}/execution-context.json</td>
+				<td>GET</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/jobs/executions/{jobExecutionId}/steps/{stepExecutionId}.json</td>
+				<td>GET</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td>/jobs/executions/{jobExecutionId}/steps/{stepExecutionId}/execution-context.json</td>
+				<td>GET</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/jobs/{jobName}.json</td>
+				<td>GET</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td>/jobs/{jobName}.json</td>
+				<td>POST</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/jobs/{jobName}/executions.json</td>
+				<td>GET</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-odd">
+				<td>/jobs/{jobName}/{jobInstanceId}.json</td>
+				<td>GET</td>
+				<td></td>
+			</tr>
+			<tr class="name-sublevel1-even">
+				<td>/jobs/{jobName}/{jobInstanceId}/executions.json</td>
+				<td>POST</td>
+				<td></td>
+			</tr>
+	</table>
+</div>
+</div>
+<!-- /content --></div>
+<!-- /container --> <div id="footer-wrapper">
+	<div id="footer-left">
+		&copy; Copyright 2009-2014 Pivotal. All Rights Reserved.
+	</div>
+	<div id="footer-right">
+		<a href="http://www.spring.io">Contact Spring</a>
+	</div> 
+</div> <!-- /footer-wrapper -->
+</div>
+<!-- /page -->
+</body>
+</html>

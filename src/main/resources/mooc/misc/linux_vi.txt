@@ -1,0 +1,40 @@
+### grep与fgrep区别
+* grep把模式当做正则表达式看
+* fgrep把模式当做固定字符串看,所以速度更快
+
+### top
+这个是Linux自带的命令，查看系统资源消耗情况，可以看看CPU、内存、SWAP、I/O的消耗情况，需要特别注意的有几个值：
+ni，这个值如果特别高说明线程上下文切换开销较大，看看是不是开了太多的线程导致的
+res，这个代表了进程实际占用的内存
+swap，内存不足就会占用swap空间，这个时候一般应用的性能会急剧下降，需要特别关注
+
+### vim删除每行前n个字符, 配合fgrep能够快速从日志文件中捞取关键数据
+* 删除每行的第一个字符
+	```
+:%s/^.
+	```
+* 删除每行的前3个字符
+	```
+:%s/^.\{3}
+	```
+* 删除每行前面的数字:
+	```
+:%s/^.\d*
+	```
+* 删除每行的最后一个字符
+	```
+:%s/.$//
+	```
+* 删除每行的最后3个字符
+	```
+:%s/.\{3}$
+	```
+
+### 切分大文件
+* split -l <no_of_line_in_each_file> <orig_file_name> <new_file_prefix_>
+* split -b <size_of_each_file> <orig_file_name> <new_file_prefix_>
+```
+	split -l 1000 aaa.csv small_
+	split -b 100m aaa.txt small_
+	split -C 100m aaa.txt small_
+```

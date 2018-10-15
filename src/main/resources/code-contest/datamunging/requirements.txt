@@ -1,0 +1,33 @@
+1> Phase 1: 
+	-- 1> Read TechCrunch.csv into memory;
+	1> Get entry of columnA="valueA";
+	2> Get entry of columnA!="valueA"; 
+	3> Get max/min val of columnA;		--(Number/Date)
+	4> Get avg/sum val of columnA;			--(Number)
+2> Phase 2:
+	1> Get max/min entry's other field
+	2> Chained filtering: getMax("columnA") + getMin("columnB") + getAvg("columnC")
+	3> Add distinct a single column capability
+	4> Add limit capability
+	5> Add ordering capability
+3> Phase 3:
+	1> Get sum/diff/multiply/divid(columnA, columnB) value	-Number
+	2> Get max/min(sum/diff/prod/divid(columnA, columnB)) value	-Number
+4> Phase 4:
+	1> Add "group by" capability [with only one field] 
+		1> select company, sum(raisedAmt) as sum_amt from *** group by company order by amt desc
+		2> select date_time, avg(wind_speed) from *** group by date_time order by date_time desc
+		2> select date_time, max(surface_temperature) from *** group by date_time order by date_time desc
+		2> select date_time, min(surface_temperature) from *** group by date_time order by date_time desc
+	2> Apply to other csv model [JCMB_2015_Apr.csv] // date format is not the same as that in TechCrunchcontinentalUSA.csv
+5> Phase 5:
+	1> Add query cache if possible
+
+Criteria:
+1> Result should be corret. (35%)
+2> Code impl should be as clean as possible. (30%)
+3> API should be designed as user friendly as possible. (35%)
+4> Performance(time cost) should be as high as possible. (10%)
+
+Notes:
+1> The runtime RAM cost is not a part of the final score criteria as long as there is no OutOfMemoryError occurs.

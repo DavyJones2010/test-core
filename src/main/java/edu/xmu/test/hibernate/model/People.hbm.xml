@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="true">
+	<class name="edu.xmu.test.hibernate.model.People" table="people">
+		<!-- Below config is for one-to-one primary key association only -->
+		<!-- 
+		<id name="id" column="people_id">
+			<generator class="foreign">
+				<param name="property">idCard</param>
+			</generator>
+		</id> 
+		<property name="name" column="name" /> 
+		-->
+		<!-- If we set constrained as true, hibernate will add foreign key constraint -->
+		<!-- 
+		<one-to-one name="idCard" constrained="true" cascade="save-update" lazy="false" />
+		-->
+		
+		<!-- Below config is for one-to-one foreign key association only -->
+		<id name="id" column="people_id">
+			<generator class="native" />
+		</id>
+		<property name="name" column="name" />
+		<many-to-one name="idCard" column="id_card_id" cascade="save-update" lazy="false" unique="true" />
+	</class>
+</hibernate-mapping>

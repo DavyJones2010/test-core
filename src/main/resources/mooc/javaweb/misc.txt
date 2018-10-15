@@ -1,0 +1,7 @@
+1) How to avoid duplicate form submission?
+	1> Use JavaScript setting "disable" to submit button, avoiding multiple clicking submit button
+	2> Send a redirect after submit, this is know as Post-Redirect-Get(PRG) pattern, avoiding user press F5 refresh
+	3> Generate an unique token whewhenn the page is requestd. (Deja vu token)
+	Comments:
+	#3 is implemented by Struts2 TokenInterceptor:
+	http://www.journaldev.com/2281/struts2-token-interceptor-to-handle-double-form-submission-problem

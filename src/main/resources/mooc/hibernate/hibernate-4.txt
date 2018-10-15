@@ -1,0 +1,79 @@
+1. Session Flush: It is done just before executing session.commit() implicitly. We can manually flush it.
+	Q. flush操作所做的事情:
+		1> clean up cache
+		2> execute sql
+	Q. Hibernate在什么情况下执行flush?
+		1) 默认事务提交时:session.commit; 
+		2) 显式调用session.flush(); 
+		3) 在执行查询前:如iterate().
+	SessionImpl.ActionQueue.ExecutableList<AbstractEntityInsertAction> insertions 定义了一系列将要执行的语句.
+	SessionImpl.StatefulPersistenceContext 也就是session的缓存.会存放所有将要执行操作的对象.
+	例如:插入---commit之前,对象存在于缓存的entity map中,对象有一个属性:isInDatabase=false.在执行flush之后,sql执行,对象id(uuid/auto)生成.对象从map中清除,isInDatabase=true.
+	但在这个时候,查询db可能不会找到该对象(除非数据库隔离级别设置为read-uncommitted),这跟数据库隔离级别有关. 
+	有关隔离级别参见: http://davyjones2010.iteye.com/blog/1991099 文中列出的锁(行锁,表锁)都称为悲观锁.
+	
+	Q. Hibernate的主键生成策略是否会影响到session flush?
+	当uuid时,session.commit()/session.flush()时执行sql->生成id->对象从缓存中清除.
+	当native时,session.save()时执行sql->生成id->对象从缓存中清除.
+	see edu.xmu.test.hibernate.service.SessionFlushTest as example
+	
+	Q. Hibernate中的一个问题：
+		session.save(user);
+		session.evict(user);
+		sessioin.getTransaction.commit();
+	这样的执行序列会抛出异常。因为在hibernate内部存放一个insertion的map,存放着将要执行插入操作的语句。然后在entityEntries里边存放了将要执行操作的对象的子类，existInDatabase设置的是false。
+	当save(user)的时候，会将existInDatabase设置为true。以便在最后session flush的时候统一进行处理。
+	当evict(user)的时候，会将该对象的子类从entityEntries map里边清除。从而最后在session flush的时候发现insertion map里边有数据但是entityEntries里边没有数据。从而报出：possible non-threadsafe access to session的异常。
+	是因为hibernate以为是其他线程将对象清除掉了。
+	evict():将对象从entityEntries（即session缓存）中清除。
+	解决方案：
+		session.save(user);
+		session.evict(user);
+		session.flush();
+		session.getTransaction.commit();
+	当session.flush()的时候。
+	
+2. “多对一”与“一对多”：都是通过多的一方某个字段的外键关联来进行。
+ 	多对一：关注点在多的那一方，多的那一方会有一个字段外键关联到一的一方。
+ 		在加载（get/load）多的一方的时候hibernate会把一的一方同时加载进来。
+ 	一对多：关注点在一的那一方。多的一方会有一个外键指向一的一方。
+ 		在加载（get/load) 一的一方的时候，hibernate会同时把多的一方查找出来,放入集合中。
+
+3. “一对多”详解：classroom - student
+	在ClassRoom中students应该是一个Set instead of HashSet, 
+	that's because hibernate internally extends Set(that is PersistentSet) to support lazy loading.
+	Drawbacks of One-to-Many relationship:
+	1> 要插入一的一方，必须先插入多的一方。
+	如果多的一方设置的外键字段为非空。<key column="classroom_id" not-null="true"/>
+	那么多的一方插入失败，就会导致一的一方也插入失败（因为它引用的多的一方此时仍然是transient object）。
+	2> 在插入多的一方的时候，需要同时遍历多的集合。然后执行n个SQL来update多的一方。效率会受影响。
+
+4. Lazy loading strategy for collection:
+	<class name="Many" lazy="false">意味着对many的普通属性进行eager load,对many的其他属性(set/list/map/object)则无效(仍然是默认的lazy load)
+	class标签上的lazy只对该class的普通属性有意义,对它的集合属性无效.
+	如果要集合属性起作用,需要对property/set/.. 上的lazy进行设置.
+	<set lazy="extra">代表着:
+
+5. Hibernate Caching:
+	1> First-level cache: The first level cache is the Session cache and is a mandatory cache through wich all requests must pass.
+	If you issue multiple updates to an object, 
+	Hibernate tries to deplay doing the update as long as possible to reduce the number of update SQL statement issued.
+	If you close the session, all the objects being cached are lost and either persisted or updated in the database.
+	2> Second-level cache:
+	Second level cache is an optional cache and first-level cache will always be sonsulted before any attempt is made to locate an object in the second-level cache.
+	The second level cache can be configured on a per-class and per-collection basis and mainly responsible for caching objects across sessions.
+	3> How to config second-level cache? See CachedObject.hbm.xml as example
+	http://howtodoinjava.com/2013/07/04/hibernate-ehcache-configuration-tutorial/
+	Step 1: Decide which concurrency startegy to use in XXX.hbm.xml
+	Step 2: Config cache expiration and physical cache attributes using the cache provider
+	4> Concurrency strageties:
+		1) Transactional/Read-write: Suitable for read-mostly data where it is critical to prevent stale data in concurrent transactions, 
+		in the rare case of an update.
+		2) Nonstrict-read-write: No guarantee of consistency between cache and DB.
+		3) Read-only: Suitable for data which never changes. Use it for reference data only.
+	二级缓存包括:
+		1>普通的缓存,用于session.get(class, id)结果集缓存,该缓存无法被session.createQuery(...)查询所使用 
+		2>查询缓存:用于session.createQuery(...)查询结果结果集,该缓存可以被session.get(class, id)所使用.
+
+6. ORM: What's the N+1 select issue:
+	http://stackoverflow.com/questions/97197/what-is-the-n1-selects-issue

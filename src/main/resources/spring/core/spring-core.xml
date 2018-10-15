@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd  
+     ">
+    <context:component-scan base-package="edu.xmu.test.spring.core"/>
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="spring/core/system-${env}.properties" />
+	</bean>
+	<bean id="system" class="edu.xmu.test.spring.core.PropertyPlaceholderConfigurerSample$DummySystem" lazy-init="true">
+		<property name="sysName" value="${sysName}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+	</bean>
+
+    <bean id="myUser" class="edu.xmu.test.spring.core.MyUserFactoryBean"></bean>
+    <bean id="myUser2" class="edu.xmu.test.spring.core.User">
+        <property name="username" value="davyjones"/>
+        <property name="password" value="hello" />
+    </bean>
+    <bean id="myUserManager" class="edu.xmu.test.spring.core.MyUserManager"></bean>
+
+	<!-- lazy-init doesn't work for BeanPostProcessor -->
+	<!-- http://forum.spring.io/forum/spring-projects/container/23635-lazy-init-beanpostprocessor-working-fine -->
+	<bean class="edu.xmu.test.spring.core.MyBeanPostprocessor" lazy-init="true" />
+
+	<bean id="myName" class="java.lang.String">
+		<constructor-arg>
+			<value>Hello</value>
+		</constructor-arg>
+	</bean>
+</beans>

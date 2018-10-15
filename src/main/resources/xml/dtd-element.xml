@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE note [
+<!ELEMENT note (to,from+,heading*,body?,(signature|tail))>
+<!ELEMENT to EMPTY>
+<!ELEMENT from ANY>
+<!ELEMENT heading (#PCDATA)>
+<!ELEMENT body (#PCDATA)>
+<!ELEMENT signature (#PCDATA)>
+<!ELEMENT tail (#PCDATA)>
+]>

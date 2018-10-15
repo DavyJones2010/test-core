@@ -1,0 +1,65 @@
+1. Everytime we run "edu.xmu.test.hibernate.util.ExportDB", all existing table will be deleted and re-created.
+   	What if we only want to create the table that has changed(newly created) and do not re-create the table that has not changed?
+	Add "<property name="hibernate.hbm2ddl.auto">update</property>" in hibernate.cfg.xml, then we do not need to run ExportDB.
+	Whenever the table is needed but it doesn't exist, it will be created automatically. E.g. When we run save(), but do not have table "user", it will be auto created.
+	See: "http://docs.jboss.org/hibernate/orm/4.3/manual/en-US/html_single/#configuration-optional"
+
+2. Many-To-One Mapping
+	Multiple person belong to the same group.
+	1>　Person类持有PersonGroup的引用,但是PersonGroup没有Person的引用.
+	在配置Mapping的时候,将PersonGroup字段配置为many-to-one,这样hibernate在建立person表的时候,会将这一字段改为对应类的table的主键的引用作为外键.
+	2> Persistent状态的对象不能引用transient状态对象.保存person之前应该先save personGroup.
+	当session.save(obj)的时候,事务没有提交,我们在db table中是看不到记录的,这跟数据库隔离级别有关.如果降为read-uncommitted级别的话,我们就可以看到.
+	3> 或者,配置标签:<many-to-one name="personGroup" column="group_id"/>时添加 cascade属性, 默认为none.
+	这样在保存person的时候会先看引用的group是否已经在db中存在,如果不存在就会自动将引用的group对象先save.
+	cascade可以配置为:"all", "none", "save-update", "delete". 
+	"all"表示在save/update/delete时起作用.选择"all",或者"delete"时需要谨慎.
+	cascade与load/get过程无关,不论是否配置,在取person的时候都会从person group表中取出相应的person group记录.这是由many-to-one标签决定的.
+	4> many-to-one会在多的一端添加外键. 在load many的时候自动将one的部分读取出来.
+
+3. One-To-One Uni-Directional Mapping
+	One people have only one ID card.
+	1> 单向/双向关联
+	2> 两种关联方式:主键关联 v.s 外键关联
+	主键关联:不用加任何字段,只需要将两个表的主键保持一致即可.同时将people的主键外键关联到 ID Card主键.people get its primary key from id_card primary key.
+	外键关联: 需要为people表添加字段来关联到id card table primary key.
+	
+	1> Primary Key Association:
+		<id name="id" column="people_id">
+				<generator class="foreign">
+					<param name="property">idCard</param>
+				</generator>
+		</id>
+		<one-to-one name="idCard" constrained="true" cascade="all"/>
+	By default, for one-to-one tag, cascade is set as "all".
+	Hibernate's source code for ID generation lies in package org.hibernate.id. 
+	For foreign id generation, see: org.hibernate.id.ForeignGenerator.
+	Generated sample ddl:
+		PRIMARY KEY (`people_id`),
+		CONSTRAINT `FK_e58r55ig7997bq5dw9q80m7p4` FOREIGN KEY (`people_id`) REFERENCES `id_card` (`id`)
+	2> Foreign Key Association:
+		<id name="id" column="people_id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="idCard" column="id_card_id" cascade="save-update" lazy="false" unique="true" />
+	We have to set many-to-one in order to create a seperate field for idCard, 
+	and we set unique as "true" to ensure that it is a one-to-one mapping.
+
+4. One-To-One Bi-Directional Mapping
+	<ont-to-one>标签默认的关联策略是:主键关联.
+	1> Primary Key Association 
+		1> One's id should refer to the other's, and the other's id should be auto generated.
+		See Husband.hbm.xml and Wife.hbm.xml as example
+		2> The generated select sql would be "left outer join" if we set fetch="join" in one-to-one tag.
+		The default fetch mode for one-to-one is "join".
+	2> Foreign Key Association
+		1> Both husband & wife's ID should be native/auto_increase/uuid and do not refer to the other's primary key/id.
+		2> Husband table will add column: wife_id and refer to wife table's id column. And wife table will NOT add column husband_id. 
+		When we get husband, many-to-one tag in husband indicates hibernate will fetch wife by the foreign key: wife_id;
+		and when we get wife, property-ref="wife" in one-to-one tag in wife-2.hbm.xml indicates hibernate will get its husband from husband's wife column.
+		property-ref="wife"这个属性对应的操作是由hibernate实现的,而不会在DB层面进行.
+		如果不添加,那么在获取wife对应的husband的时候hibernate默认是将wife的主键与husband表的主键字段来关联,这样就会关联错误(错位).
+		property-ref="wife"就指定了hibernate在关联的时候,将wife的主键跟husband表的wife对应的字段关联.
+
+		
+		

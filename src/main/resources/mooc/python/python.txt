@@ -1,0 +1,182 @@
+== Basic
+* raw_input和print是在命令行下面最基本的输入和输出
+* 直接运行py文件，在Mac和Linux上是可以的，方法是在.py文件的第一行加上：
+	#!/usr/bin/env python
+	然后，通过命令：
+	$ chmod a+x hello.py
+   就可以直接运行hello.py了
+* Python的语法比较简单，采用缩进方式
+
+== Chapter 1 == Basic ==
+* 数据类型: 整数, 浮点数, 字符串, 布尔值(True/False)[布尔值可以用and、or和not运算], 空值(None)
+* 变量: 种变量本身类型不固定的语言称之为动态语言
+*　字符串和编码: 
+	* ASCII:  最早只有127个字母被编码到计算机里，也就是大小写英文字母、数字和一些符号
+	* Unicode: Unicode把所有语言都统一到一套编码里, 最常用的是用两个字节表示一个字符, 但是，如果你写的文本基本上全部是英文的话，用Unicode编码比ASCII编码需要多一倍的存储空间，在存储和传输上就十分不划算。
+	* UTF-8: UTF-8编码把一个Unicode字符根据不同的数字大小编码成1-6个字节, 常用的英文字母被编码成1个字节，汉字通常是3个字节，只有很生僻的字符才会被编码成4-6个字节。如果你要传输的文本包含大量英文字符，用UTF-8编码就能节省空间
+	ASCII编码实际上可以被看成是UTF-8编码的一部分，所以，大量只支持ASCII编码的历史遗留软件可以在UTF-8编码下继续工作。
+* ord(), chr(): 可以把字母和对应的数字相互转换
+* list和tuple: 
+	* list: list是一种有序的集合，可以随时添加和删除其中的元素
+		* classmates = ['Michael', 'Bob', 'Tracy']
+		* len(classmates)
+		* classmates[1], classmates[-1]
+		* classmates.append('Adam'), classmates.insert(1, 'Jack'), classmates.pop(), classmates.pop(1)
+		* classmates[1] = 'Sarah'
+	* tuple: tuple和list非常类似，但是tuple一旦初始化就不能修改. 因为tuple不可变，所以代码更安全。如果可能，能用tuple代替list就尽量用tuple。
+* if and for:
+	* 	if <条件判断1>:
+			<执行1>
+		elif <条件判断2>:
+    		<执行2>
+		elif <条件判断3>:
+    		<执行3>
+		else:
+    		<执行4>
+    *	sum = 0
+    	for x in range(101):
+    		sum += x
+    *	range(start, end): [start, end)
+	* 	sum = 0
+		n = 99
+		while n > 0
+			sum += n
+			n -= 2
+		print sum
+* int(raw_input("prompt>")):
+* dict & set:
+	* s.add(4)
+	* s.remove(4)
+	* s1 | s2
+	* s1 & s2
+	* s.sort()
+* str is immutable object, list is mutable object
+== Chapter 2 == Function ==
+* Frequently Used Function:
+	* abs(x)
+	* cmp(x, y)
+	* int(x), bool(x), float(x), str(x), unicode(x)
+	* isinstance(x, (typeA, typeB, ...))
+* 函数名其实就是指向一个函数对象的引用，完全可以把函数名赋给一个变量，相当于给这个函数起了一个“别名”：
+	>>> a = abs # 变量a指向abs函数
+	>>> a(-1) # 所以也可以通过a调用abs函数
+	1
+* 定义一个函数: 
+	def function_name(params):
+		#ended with return
+		function_body
+	如果没有return语句，函数执行完毕后也会返回结果，只是结果为None。
+	return None可以简写为return。
+* 返回多个值:
+	函数可以返回多个值吗？答案是肯定的。
+	但其实这只是一种假象，Python函数返回的仍然是单一值：
+	原来返回值是一个tuple！但是，在语法上，返回一个tuple可以省略括号，而多个变量可以同时接收一个tuple，按位置赋给对应的值，所以，Python的函数返回多值其实就是返回一个tuple，但写起来更方便。
+	函数可以同时返回多个值，但其实真正返回的就是一个tuple。
+* 函数的参数:
+	* 默认参数: def power(x, n=2):
+	默认参数必须指向不变对象！
+	def add_end(L=[]):
+		# L is mutable
+	    L.append('END')
+	    return L
+	def add_end(L=None):
+		# L is immutable
+    	if L is None:
+	        L = []
+	    L.append('END')
+	    return L
+	* 可变参数: 
+	def calc(*numbers):
+	# nums = [1, 2, 3]
+	# calc(*nums)
+	def calc(numbers):
+	# calc([1, 2, 3])
+	* 关键字参数:
+	def person(name, age, **kw):
+   		print 'name:', name, 'age:', age, 'other:', kw
+	* 参数组合:
+	参数定义的顺序必须是：必选参数、默认参数、可变参数和关键字参数
+	def func(a, b, c=0, *args, **kw):
+   		print 'a =', a, 'b =', b, 'c =', c, 'args =', args, 'kw =', kw
+* 递归函数: 
+	* 理论上，所有的递归函数都可以写成循环的方式，但循环的逻辑不如递归清晰。
+	* 在计算机中，函数调用是通过栈（stack）这种数据结构实现的，每当进入一个函数调用，栈就会加一层栈帧，每当函数返回，栈就会减一层栈帧。由于栈的大小不是无限的，所以，递归调用的次数过多，会导致栈溢出。
+	* 解决递归调用栈溢出的方法是通过尾递归优化，事实上尾递归和循环的效果是一样的，所以，把循环看成是一种特殊的尾递归函数也是可以的。
+	* 尾递归调用时，如果做了优化，栈不会增长，因此，无论多少次调用也不会导致栈溢出。
+	* 遗憾的是，大多数编程语言没有针对尾递归做优化，Python解释器也没有做优化，所以，即使把上面的fact(n)函数改成尾递归方式，也会导致栈溢出。
+	* 尾递归调用的优化的原因: 当编译器检测到一个函数调用是尾递归的时候，它就覆盖当前的活动记录而不是在栈中去创建一个新的。编译器可以做到这点，因为递归调用是当前活跃期内最后一条待执行的语句，于是当这个调用返回时栈帧中并没有其他事情可做，因此也就没有保存栈帧的必要了。通过覆盖当前的栈帧而不是在其之上重新添加一个，这样所使用的栈空间就大大缩减了，这使得实际的运行效率会变得更高。
+	def fact(n):
+	    if n==1:
+	        return 1
+	    return n * fact(n - 1)
+	    
+	def fact(n):
+    return fact_iter(n, 1)
+	def fact_iter(num, product):
+	    if num == 1:
+	        return product
+	    return fact_iter(num - 1, num * product)
+
+== Chapter 3 == Advanced Features ==
+* 切片: list[startIndex:endIndex:step]
+	list = ['a','b','c','d','e','f','g']
+	# list[2:6:2] -> ['c','e'] 
+* 迭代: 
+	>>> d = {'a': 1, 'b': 2, 'c': 3}
+	>>> for key in d:
+	>>>		print key
+	默认情况下，dict迭代的是key
+	>>> d = {'a': 1, 'b': 2, 'c': 3}
+	>>> for val in d.itervalues():
+	>>>		print val
+	>>> isinstance('abc', Iterable) # str是否可迭代
+	True
+	>>> isinstance([1,2,3], Iterable) # list是否可迭代
+	True
+列表生成式
+	1) 
+	>>> range(1, 11)
+	[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+	2) 把要生成的元素x * x放到前面，后面跟for循环，就可以把list创建出来
+	>>> [x * x for x in range(1, 11)]
+	[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+	3) for循环后面还可以加上if判断，这样我们就可以筛选出仅偶数的平方
+	>>> [x * x for x in range(1, 11) if x % 2 == 0]
+	[4, 16, 36, 64, 100]
+	4) 还可以使用两层循环，可以生成全排列：
+	>>> [m + n for m in 'ABC' for n in 'XYZ']
+	['AX', 'AY', 'AZ', 'BX', 'BY', 'BZ', 'CX', 'CY', 'CZ']
+高阶函数:
+	def add(x, y, f):
+    	return f(x) + f(y)
+    >>> add(-5, 6, abs)
+	11
+返回函数:
+	* 闭包: 返回闭包时牢记的一点就是：返回函数不要引用任何循环变量，或者后续会发生变化的变量。
+	如果一定要引用循环变量怎么办？方法是再创建一个函数，用该函数的参数绑定循环变量当前的值，无论该循环变量后续如何更改，已绑定到函数参数的值不变：
+匿名函数:
+	>>> map(lambda x: x * x, [1, 2, 3, 4, 5, 6, 7, 8, 9])
+	[1, 4, 9, 16, 25, 36, 49, 64, 81]
+	匿名函数lambda x: x * x 实际上就是：
+	def f(x):
+    	return x * x
+	关键字lambda表示匿名函数，冒号前面的x表示函数参数。
+	匿名函数有个限制，就是只能有一个表达式，不用写return，返回值就是该表达式的结果。
+装饰器:
+	OOP的装饰模式需要通过继承和组合来实现，而Python除了能支持OOP的decorator外，直接从语法层次支持decorator。Python的decorator可以用函数实现，也可以用类实现。
+	def log(func):
+    def wrapper(*args, **kw):
+        print 'call %s():' % func.__name__
+        return func(*args, **kw)
+    return wrapper
+    @log
+	def now():
+	    print '2013-12-25'
+	>>> now()
+	call now():
+	2013-12-25
+偏函数:
+	函数柯里化
+	>>> import functools
+	>>> int2 = functools.partial(int, base=2)
+	
