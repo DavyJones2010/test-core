@@ -33,7 +33,7 @@ public class GoogleAuthenticatorSample {
     private static final int timeExcursion = 1;
 
     public static void main(String[] args) throws IOException, WriterException {
-        String googleAuthQRCodeData = createGoogleAuthQRCodeData(SK, "davywalker2010", "alibaba");
+        String googleAuthQRCodeData = createGoogleAuthQRCodeData(SK, "davywalker2010", "ceshi");
         System.out.println(googleAuthQRCodeData);
         QRCodeUtil.createQRCode(googleAuthQRCodeData,
             "/Users/davywalker/Softwares/totp.png");
