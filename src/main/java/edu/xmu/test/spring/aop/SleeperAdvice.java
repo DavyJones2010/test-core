@@ -1,28 +1,31 @@
 package edu.xmu.test.spring.aop;
 
-import java.lang.reflect.Method;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.aop.AfterReturningAdvice;
-import org.springframework.aop.MethodBeforeAdvice;
+@Aspect
+@Component
+public class SleeperAdvice {
 
-public class SleeperAdvice implements MethodBeforeAdvice, AfterReturningAdvice, MethodInterceptor {
-
-	@Override
-	public void before(Method method, Object[] args, Object target) throws Throwable {
+	@Before("execution(* edu.xmu.test.spring.aop.Human.*(..) )")
+	public void before(JoinPoint jp) throws Throwable {
 		System.out.println("Before sleep, we should take off our clothes");
 	}
 
-	@Override
-	public void afterReturning(Object returnValue, Method method, Object[] args, Object target) throws Throwable {
+	@AfterReturning(value="execution(* edu.xmu.test.spring.aop.Human.*(..) )", returning = "result")
+	public void afterReturning(JoinPoint jp, Object result) throws Throwable {
 		System.out.println("After sleep, we should take on our clothes");
 	}
 
-	@Override
-	public Object invoke(MethodInvocation invocation) throws Throwable {
+	@Around(value = "execution(* edu.xmu.test.spring.aop.Human.*(..) )")
+	public Object invoke(ProceedingJoinPoint jp) throws Throwable {
 		System.out.println("Before sleep, we should take in some water");
-		Object returnVal = invocation.proceed();
+		Object returnVal = jp.proceed();
 		System.out.println("After sleep, we should take a bath");
 		return returnVal;
 	}

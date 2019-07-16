@@ -1,10 +1,17 @@
 package edu.xmu.test.spring.aop;
 
-public class Human implements Sleepable {
+public class Human {
 
-	@Override
+	//@Override
 	public void sleep() {
 		System.out.println("Human is going to sleep");
+		//((Sleepable)AopContext.currentProxy()).sleepDeep();
+		sleepDeep();
+	}
+
+	//@Override
+	public void sleepDeep() {
+		System.out.println("Human is going to sleepDeep");
 	}
 
 }
