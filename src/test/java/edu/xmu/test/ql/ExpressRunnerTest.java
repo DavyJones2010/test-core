@@ -1,10 +1,6 @@
 package edu.xmu.test.ql;
 
 import com.google.common.collect.Lists;
-import com.ql.util.express.DefaultContext;
-import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.Operator;
-import com.ql.util.express.OperatorOfNumber;
 import org.apache.commons.lang.math.RandomUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +11,7 @@ import java.util.List;
  * Created by davywalker on 17/1/23.
  */
 public class ExpressRunnerTest {
-    ExpressRunner runner;
+    /*ExpressRunner runner;
     DefaultContext<String, Object> context;
     String text;
 
@@ -54,11 +50,11 @@ public class ExpressRunnerTest {
         System.out.println(r);
     }
 
-    /**
+    *//**
      * 自定义操作符号: addOperatorWithAlias, addOperator, addFunction
      *
      * @throws Exception
-     */
+     *//*
     @Test
     public void addOperatorTest() throws Exception {
         runner.addOperator("join", new JoinOperator());
@@ -66,11 +62,11 @@ public class ExpressRunnerTest {
         System.out.println(r);
     }
 
-    /**
+    *//**
      * 自定义操作符号: addFunction
      *
      * @throws Exception
-     */
+     *//*
     @Test
     public void addFunctionTest() throws Exception {
         runner.addFunction("group", new GroupOperator("group"));
@@ -96,20 +92,20 @@ public class ExpressRunnerTest {
         System.out.println(execute);
     }
 
-    /**
+    *//**
      * 类的静态方法: addFunctionOfClassMethod
      *
      * @throws Exception
-     */
+     *//*
     @Test
     public void addFunctionOfClassMethodTest() throws Exception {
     }
 
-    /**
+    *//**
      * 判定runner是否是线程安全的
      *
      * @throws Exception
-     */
+     *//*
     @Test
     public void concurrentTest() throws Exception {
         String express = "if(i<10){return i} else{return i;}";
@@ -168,5 +164,5 @@ public class ExpressRunnerTest {
             return result;
         }
     }
-
+*/
 }

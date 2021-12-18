@@ -8,6 +8,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -22,7 +23,7 @@ public class PlainNioEchoServer {
         Selector selector = Selector.open();
         channel.register(selector, SelectionKey.OP_ACCEPT);
 
-        ByteBuffer dst = ByteBuffer.allocate(256);
+        ByteBuffer dst = ByteBuffer.allocate(1024);
         while (true) {
             selector.select();
 
@@ -31,26 +32,24 @@ public class PlainNioEchoServer {
             while (iterator.hasNext()) {
                 SelectionKey key = iterator.next();
                 if (key.isAcceptable()) {
-                    ServerSocketChannel server = (ServerSocketChannel)key.channel();
+                    ServerSocketChannel server = (ServerSocketChannel) key.channel();
                     SocketChannel client = server.accept();
                     client.configureBlocking(false);
                     System.out.println("connected clientAddr: " + client.getRemoteAddress().toString() + " clientId: "
-                        + client.hashCode());
+                            + client.hashCode());
                     client.register(selector, SelectionKey.OP_READ);
                     //channel.register(selector, SelectionKey.OP_READ);
                     //key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_ACCEPT);
                 } else if (key.isReadable()) {
-                    SocketChannel clientChannel = (SocketChannel)key.channel();
+                    SocketChannel clientChannel = (SocketChannel) key.channel();
                     int read = clientChannel.read(dst);
-                    if(-1 == read) {
+                    if (-1 == read) {
                         clientChannel.close();
                         System.out.println("clientId: " + clientChannel.hashCode() + " closed");
                     } else {
-                        byte[] array = dst.slice().array();
-                        String s = new String(array);
-                        //dst.position()
-                        //String s = new String(dst.array());
-                        //String s = StandardCharsets.ISO_8859_1.decode(dst).toString();
+                        // 这里没有解决拆包问题(如果请求过来的数据包太大, 没有同时到达网卡缓冲区)
+                        dst.flip();
+                        String s = StandardCharsets.UTF_8.decode(dst).toString();
                         System.out.println("clientId: " + clientChannel.hashCode() + " says: " + s);
                     }
                     dst.clear();

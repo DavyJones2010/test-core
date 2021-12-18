@@ -146,6 +146,12 @@
             <version>${jmh.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+            <version>2.13.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-server</artifactId>
             <version>${jersey.version}</version>
@@ -413,11 +419,11 @@
             <artifactId>commons-pool</artifactId>
             <version>1.6</version>
         </dependency>
-        <dependency>
+       <!-- <dependency>
             <groupId>com.taobao.util</groupId>
             <artifactId>taobao-express</artifactId>
             <version>3.0.9</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>javase</artifactId>
