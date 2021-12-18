@@ -43,16 +43,23 @@ public class PlainNioEchoServer {
                 } else if (key.isReadable()) {
                     SocketChannel clientChannel = (SocketChannel) key.channel();
                     int read = clientChannel.read(dst);
-                    if (-1 == read) {
-                        clientChannel.close();
-                        System.out.println("clientId: " + clientChannel.hashCode() + " closed");
-                    } else {
-                        // 这里没有解决拆包问题(如果请求过来的数据包太大, 没有同时到达网卡缓冲区)
-                        dst.flip();
-                        String s = StandardCharsets.UTF_8.decode(dst).toString();
-                        System.out.println("clientId: " + clientChannel.hashCode() + " says: " + s);
-                    }
+//                    if (-1 == read) {
+//                        clientChannel.close();
+//                        System.out.println("clientId: " + clientChannel.hashCode() + " closed");
+//                    } else {
+                    // 这里没有解决拆包问题(如果请求过来的数据包太大, 没有同时到达网卡缓冲区)
+                    dst.flip();
+                    String s = StandardCharsets.UTF_8.decode(dst).toString();
+                    System.out.println("clientId: " + clientChannel.hashCode() + " says: " + s);
+                    dst.flip();
+                    clientChannel.register(selector, SelectionKey.OP_WRITE);
+//                    }
+//                    dst.clear();
+                } else if (key.isWritable()) {
+                    SocketChannel clientChannel = (SocketChannel) key.channel();
+                    clientChannel.write(dst);
                     dst.clear();
+                    clientChannel.close();
                 }
                 iterator.remove();
             }
