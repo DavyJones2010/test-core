@@ -53,8 +53,12 @@ public class PlainNioEchoServer {
                     System.out.println("clientId: " + clientChannel.hashCode() + " says: " + s);
                     dst.flip();
                     clientChannel.register(selector, SelectionKey.OP_WRITE);
+//                    clientChannel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+//                    此时由于业务上对于缓冲区读取已经读完了, 但实际底层操作系统缓冲区中仍然还是原来的数据(并不知道读完了), 所以selector.select()会始终返回可读.
+//                    所以这里业务上已经读完了, 就不要再注册OP_READ了.
+//                    TODO: 但有什么办法告知操作系统已经读完了, 可以把网卡度缓冲区中数据清理掉了呢?? 这样效率是不是更高一些?
+//                    TODO: 如果不清理操作系统读缓冲区, 会不会导致后边缓冲区溢出?
 //                    }
-//                    dst.clear();
                 } else if (key.isWritable()) {
                     SocketChannel clientChannel = (SocketChannel) key.channel();
                     clientChannel.write(dst);
