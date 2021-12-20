@@ -43,6 +43,11 @@ public class PlainNioEchoServer {
                 } else if (key.isReadable()) {
                     SocketChannel clientChannel = (SocketChannel) key.channel();
                     int read = clientChannel.read(dst);
+                    // 如果 read == -1; 则代表EOS(EndOfStream), 即对端已经关闭掉了写出侧的socket, 此时服务端需要至少deregister(OP_READ); 如果不deregister/closeChannel, 则会一直readable==true, 告诉服务端EOS了(死循环).
+                    // End of stream on a socket means the peer has closed the connection.
+                    // When you get EOS, you must either close the channel or at least deregister interest in OP_READ
+                    // If bytesRead < 0 you should close the channel or at least deregister OP_READ. Otherwise you will keep getting OP_READ over and over again to tell you about the EOS.
+
 //                    if (-1 == read) {
 //                        clientChannel.close();
 //                        System.out.println("clientId: " + clientChannel.hashCode() + " closed");
