@@ -122,11 +122,13 @@ public class PlainNioClient {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        //for (int i = 0; i < 1000; i++) {
         PlainNioClient client = new PlainNioClient("127.0.0.1", 10800);
         client.send("hello");
         client.send("world");
         client.send("close");
         Thread.sleep(10000L);
         client.close();
+        //}
     }
 }
