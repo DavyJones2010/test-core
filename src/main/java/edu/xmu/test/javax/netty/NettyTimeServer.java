@@ -47,7 +47,9 @@ public class NettyTimeServer {
         EventLoopGroup workerGroup = new NioEventLoopGroup(1);
         ServerBootstrap b = new ServerBootstrap();
         //b.group(bossGroup, workerGroup)
-        b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).option(ChannelOption.TCP_NODELAY, true)
+        b.group(bossGroup, workerGroup)
+            .channel(NioServerSocketChannel.class)
+            .option(ChannelOption.TCP_NODELAY, true)
             .option(ChannelOption.SO_BACKLOG, 1024)
             .handler(new ChannelInitializer() {
                 @Override
@@ -71,11 +73,16 @@ public class NettyTimeServer {
 
         @Override
         protected void initChannel(SocketChannel socketChannel) throws Exception {
-            System.out.println(System.currentTimeMillis() + " " + Thread.currentThread() + " ChildChannelHandler.initChannel invoked client: " + socketChannel.remoteAddress().toString());
+            System.out.println(System.currentTimeMillis() + " " + Thread.currentThread()
+                + " ChildChannelHandler.initChannel invoked client: " + socketChannel.remoteAddress().toString());
             //ByteBuf byteBuf = Unpooled.copiedBuffer(",".getBytes());
             socketChannel.pipeline()
                 //.addLast(new DelimiterBasedFrameDecoder(1024, byteBuf))
-                .addLast(new LineBasedFrameDecoder(1024))
+                // hantingtodo: 如果实际单行长度超过maxLengh:
+                //  A TooLongFrameException is thrown if the length of the frame exceeds this value.
+                // 就不会走到这个decoder之后的handler里了. 例如StringDecoder, TimeServerHandler 等.
+                // hantingfixme: 在哪个地方可以捕获到该异常?
+                .addLast(new LineBasedFrameDecoder(2))
                 .addLast(new StringDecoder())
                 .addLast(new MessageToMessageDecoder() {
                              @Override
@@ -88,6 +95,13 @@ public class NettyTimeServer {
                          }
                 )
                 .addLast(new TimeServerHandler());
+        }
+
+        @Override
+        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+            System.out.println("caught exception:");
+            cause.printStackTrace();
+            super.exceptionCaught(ctx, cause);
         }
     }
 
