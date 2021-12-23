@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import io.netty.util.concurrent.DefaultEventExecutor;
+//import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.Promise;
@@ -12,7 +12,7 @@ import io.netty.util.concurrent.Promise;
 /**
  * 测试netty中Promise的使用
  */
-public class PromiseTest {
+public class PromiseTest {/*
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         DefaultEventExecutor defaultEventExecutor = new DefaultEventExecutor();
         Promise<Object> objectPromise = defaultEventExecutor.newPromise();
@@ -134,5 +134,5 @@ public class PromiseTest {
 
         //String s = submit.get();
         //System.out.println(s);
-    }
+    }*/
 }

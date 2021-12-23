@@ -2,15 +2,16 @@ package edu.xmu.test.javax.netty;
 
 import java.util.Calendar;
 
-import edu.xmu.test.codekata.codecomp.StringGenerator;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
+import io.netty.channel.ChannelPromise;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -58,7 +59,7 @@ public class NettyTimeClient {
         }
     }
 
-    private class TimeClientReader extends ChannelHandlerAdapter {
+    private class TimeClientReader extends ChannelInboundHandlerAdapter {
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
             String body = (String)msg;
@@ -78,30 +79,12 @@ public class NettyTimeClient {
         }
     }
 
-    private class TimeClientWriter extends ChannelHandlerAdapter {
+    private class TimeClientWriter extends ChannelOutboundHandlerAdapter {
 
         @Override
-        public void channelActive(ChannelHandlerContext ctx) throws Exception {
-            // TCP连接建立
-            for (int i = 0; i < 1; i++) {
-                //ctx.channel().eventLoop().schedule(new Runnable() {
-                //    @Override
-                //    public void run() {
-                //
-                //    }
-                //}, i + 1, TimeUnit.SECONDS);
-                byte[] bytes = ("QUERY TIME ORDER," + StringGenerator.randString(102400)).getBytes();
-                ByteBuf byteBuf = Unpooled.buffer(bytes.length);
-                byteBuf.writeBytes(bytes);
-                ctx.writeAndFlush(byteBuf);
-            }
-            //ctx.close();  // 这里直接把Context关闭掉, 会导致整个TCP连接关闭, 回调到channelInactive接口中.
-        }
-
-        @Override
-        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-            // TCP连接关闭
-            System.out.println("Client channel inactive");
+        public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+            System.out.println("start write");
+            super.write(ctx, msg, promise);
         }
 
         @Override
