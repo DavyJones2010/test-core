@@ -38,11 +38,14 @@ public class NettyTimeServer {
         // 这个EventLoop用来监听OP_ACCEPT事件
         // hantingfixme: 为啥需要单独的eventLoopGroup来监听ACCEPT?
         // 如果与workerGroup共用一个, 会有什么问题?
-        // 在什么时候, bossGroup会设置多于1个线程?
+        // 在什么时候, bossGroup会设置多于1个线程? 线程池名称: nioEventLoopGroup-3-1
+        // 样例: "nioEventLoopGroup-3-1" nioEventLoopGroup: 代表类型; 3: 代表全局netty的第3个线程池(不分类型); 1: 代表该线程池中的第一个线程
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
 
         // 这个EventLoopGroup用来监听OP_READ, OP_WRITE事件
         // hantingfixme: 线程池里线程名称是啥?
+        // 线程名: io.netty.util.concurrent.DefaultThreadFactory.DefaultThreadFactory(java.lang.String, boolean, int)
+        // 样例: "nioEventLoopGroup-4-1" nioEventLoopGroup: 代表类型; 4: 代表全局netty的第4个线程池; 1: 代表该线程池中的第一个线程
         // 在各个filter/handler里, 执行业务操作, 也是在IO线程么? 会不会阻塞IO线程?
         EventLoopGroup workerGroup = new NioEventLoopGroup(1);
         ServerBootstrap b = new ServerBootstrap();
@@ -54,9 +57,26 @@ public class NettyTimeServer {
             .handler(new ChannelInitializer() {
                 @Override
                 protected void initChannel(Channel ch) throws Exception {
+                    // 这里会在server初始化完成, 开始监听端口号之后调用. 在bossGroup线程池里.
                     System.out.println(Thread.currentThread() + " BossChannelHandler.initChannel invoked");
+                    // hantingfixme: 如何在bossGroup线程里, 获知到client的accept事件?
                 }
-            }).childHandler(new ChildChannelHandler());
+
+                @Override
+                public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                    System.out.println(Thread.currentThread() + " BossChannelHandler.channelRead invoked");
+                    super.channelRead(ctx, msg);
+                }
+
+                @Override
+                public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                    System.out.println(Thread.currentThread() + " BossChannelHandler.channelActive invoked");
+                    super.channelActive(ctx);
+                }
+            }).childHandler(
+                // 这里会在客户端已经建立成功后执行, 整个运行在workerGroup线程池里.
+                new ChildChannelHandler()
+            );
         ChannelFuture f = null;
         try {
             f = b.bind(port).sync();
@@ -66,7 +86,8 @@ public class NettyTimeServer {
             bossGroup.shutdownGracefully();
             //workerGroup.shutdownGracefully();
         }
-
+        //  为啥socketChannel会有parentChannel的概念? 父子channel的关系是啥?
+        // AbstractChannelHandlerContext 组成了链表. 是有prevContext, nextContext的
     }
 
     private class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
@@ -76,6 +97,7 @@ public class NettyTimeServer {
             System.out.println(System.currentTimeMillis() + " " + Thread.currentThread()
                 + " ChildChannelHandler.initChannel invoked client: " + socketChannel.remoteAddress().toString());
             //ByteBuf byteBuf = Unpooled.copiedBuffer(",".getBytes());
+            // hantingtodo: socketChannel与pipeline关系是啥? 一对一么?
             socketChannel.pipeline()
                 //.addLast(new DelimiterBasedFrameDecoder(1024, byteBuf))
                 // hantingtodo: 如果实际单行长度超过maxLengh:
@@ -93,15 +115,27 @@ public class NettyTimeServer {
                                  out.add(msg);
                              }
                          }
-                )
+                ).addLast(new ChannelInboundHandlerAdapter() {
+                    @Override
+                    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                        System.out.println("tmp read: " + msg);
+                        super.channelRead(ctx, msg);
+                    }
+
+                    @Override
+                    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                        System.out.println("CC caught exception:");
+                        cause.printStackTrace();
+                    }
+                })
                 .addLast(new TimeServerHandler());
         }
 
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-            System.out.println("caught exception:");
+            System.out.println("AA caught exception:");
             cause.printStackTrace();
-            super.exceptionCaught(ctx, cause);
+            //super.exceptionCaught(ctx, cause);
         }
     }
 
@@ -128,13 +162,17 @@ public class NettyTimeServer {
 
         @Override
         public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-            // hantingfixme: 为啥这里会被执行2次?
+            // hantingfixme: 为啥这里会被执行2次? 为啥会在 channelRead调用之后才被调用?
+            // 参照这个: https://blog.csdn.net/MarchRS/article/details/104312146
+            // 但还是不合理, 每次客户端只发送1个字节, 但这个接口仍然被调用2次?
             System.out.println(Thread.currentThread() + " Server channelReadComplete");
             ctx.flush();
         }
 
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+            System.out.println("BB caught exception:");
+            cause.printStackTrace();
             ctx.close();
         }
     }
