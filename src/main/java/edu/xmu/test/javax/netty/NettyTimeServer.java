@@ -179,6 +179,7 @@ public class NettyTimeServer {
 
     public static void main(String[] args) {
         int port = 8888;
+        // hantingfixme: io.netty.handler.codec.ByteToMessageDecoder.channelRead 仔细阅读, 如何处理黏包/拆包的
         new NettyTimeServer().bind(port);
     }
 }
