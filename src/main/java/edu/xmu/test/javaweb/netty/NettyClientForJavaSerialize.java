@@ -43,7 +43,6 @@ public class NettyClientForJavaSerialize {
     }
 
     class SubReqClientHandler extends ChannelHandlerAdapter {
-        @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             for (int i = 0; i < 10; i++) {
                 // httodo: 这里如果每次write都flush一下, 会怎样?
@@ -52,12 +51,10 @@ public class NettyClientForJavaSerialize {
             ctx.flush();
         }
 
-        @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
             System.out.println("client receive from server: " + msg.toString());
         }
 
-        @Override
         public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
             // httodo: 这里为什么需要在readComplete时flush一下?
             ctx.flush();

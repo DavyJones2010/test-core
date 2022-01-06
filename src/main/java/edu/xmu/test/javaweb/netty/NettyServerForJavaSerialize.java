@@ -44,12 +44,10 @@ public class NettyServerForJavaSerialize {
     }
 
     public class SubReqServerHandler extends ChannelHandlerAdapter {
-        @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             System.out.println("server received connection: " + ctx.channel().toString());
         }
 
-        @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
             SubscribeReq req = (SubscribeReq) msg;
             System.out.println("server read: " + req.toString());
