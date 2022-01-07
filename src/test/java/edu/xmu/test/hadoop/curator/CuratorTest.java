@@ -23,4 +23,17 @@ public class CuratorTest {
             retryPolicy(retryPolicy).
             build();
     }
+
+    @Test
+    public void floatTest() {
+        Integer i = 4;
+        float t = i.floatValue() / 4;
+        System.out.println(t);
+    }
+
+    @Test
+    public void name() {
+        String str = null;
+        System.out.println(str + "-AY");
+    }
 }

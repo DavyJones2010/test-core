@@ -1,10 +1,7 @@
 package edu.xmu.test.javaweb.netty.protocol;
 
-import lombok.Data;
-
-import java.util.Map;
-
 /**
+ * <pre>
  * Netty私有协议, 协议格式如下:
  * Header: 消息头
  * crcCode, int, 32位:
@@ -18,21 +15,25 @@ import java.util.Map;
  * Attachment, Map<String, Object>, 变长, 可选字段, 用于扩展消息头
  * <p>
  * Body: 消息体; body编解码, 使用JSON将body序列化为byte数组
+ * </pre>
  */
-@Data
 public class NettyMessage {
     Header header;
-
     Object body;
 
+    public Header getHeader() {
+        return header;
+    }
 
-    @Data
-    public final static class Header {
-        private int crcCode = 0Xabef0101;
-        private int length;
-        private long sessionId;
-        private byte type;
-        private byte priority;
-        private Map<String, Object> attachment;
+    public void setHeader(Header header) {
+        this.header = header;
+    }
+
+    public Object getBody() {
+        return body;
+    }
+
+    public void setBody(Object body) {
+        this.body = body;
     }
 }

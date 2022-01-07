@@ -1,22 +1,25 @@
 package edu.xmu.test.javaweb.netty.protocol;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-
 /**
- * 原文源代码地址:
- * https://gitcode.net/mirrors/wuyinxian124/nettybook2/-/blob/master/src/com/phei/netty/protocol/netty/codec/NettyMessageEncoder.java
+ * <pre>
+ * 原文源代码地址: https://gitcode.net/mirrors/wuyinxian124/nettybook2/-/blob/master/src/com/phei/netty/protocol/netty/codec/NettyMessageEncoder.java
+ * </pre>
  *
+ * <pre>
  * 消息编码器, 将NettyMessage序列化成byte[];
  * 针对attachment, 编码规则:
  * - 如果attachment长度为0, 表示没有可选附件, 则将长度编码设置为0, ByteBuffer.putInt(0)
  * - 如果attachment长度>0, 则
  * -- 首先编码附件个数: ByteBuffer.putInt(attachment.size());
  * -- 再将key用ByteBuffer.writeString(key); 将value用JBoss Marshaller(用JSON吧) ByteBuffer.writeBinary(marshaller.writeObject(value));
+ * </pre>
  */
 public class NettyMessageEncoder extends MessageToByteEncoder<NettyMessage> {
     MarshallingEncoder marshallingEncoder;

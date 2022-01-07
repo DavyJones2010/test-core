@@ -1,12 +1,12 @@
 package edu.xmu.test.javaweb.netty.protocol;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+
 import com.google.common.collect.Maps;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
     MarshallingDecoder marshallingDecoder;
@@ -22,12 +22,12 @@ public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
 
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
-        ByteBuf frame = (ByteBuf) super.decode(ctx, in);
+        ByteBuf frame = (ByteBuf)super.decode(ctx, in);
         if (frame == null) {
             return null;
         }
         NettyMessage nettyMessage = new NettyMessage();
-        NettyMessage.Header h = new NettyMessage.Header();
+        Header h = new Header();
         h.setCrcCode(in.readInt());
         h.setLength(in.readInt());
         h.setSessionId(in.readLong());
@@ -53,7 +53,7 @@ public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
             h.setAttachment(attachment);
         }
         nettyMessage.setHeader(h);
-        
+
         // 反序列化body
         if (in.readableBytes() > 4) {
             nettyMessage.setBody(marshallingDecoder.decode(in));
