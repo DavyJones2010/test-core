@@ -1,11 +1,11 @@
 package edu.xmu.test.javaweb.netty.protocol;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 /**
  * <pre>
@@ -37,7 +37,7 @@ public class NettyMessageEncoder extends MessageToByteEncoder<NettyMessage> {
         sendBuf.writeLong(msg.getHeader().getSessionId());
         sendBuf.writeByte(msg.getHeader().getType());
         sendBuf.writeByte(msg.getHeader().getPriority());
-        sendBuf.writeByte(msg.getHeader().getAttachment().size());
+        sendBuf.writeInt(msg.getHeader().getAttachment().size());
         // 消息附件
         for (Map.Entry<String, Object> entry : msg.getHeader().getAttachment().entrySet()) {
             // 序列化key
@@ -54,7 +54,7 @@ public class NettyMessageEncoder extends MessageToByteEncoder<NettyMessage> {
         if (msg.getBody() != null) {
             marshallingEncoder.encode(msg.getBody(), sendBuf);
         } else {
-            // httodo: 为啥最后要写个int?
+            // 最后要写个int, 代表body长度为0
             sendBuf.writeInt(0);
         }
         // httodo: 在这里将length重写覆盖了. 为啥要减去8个字节?
