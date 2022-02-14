@@ -52,12 +52,16 @@ public class NettyMessageEncoder extends MessageToByteEncoder<NettyMessage> {
 
         // 消息体
         if (msg.getBody() != null) {
+            // 对body的反序列化, 结构是 [4个字节代表body体size; body字节]
             marshallingEncoder.encode(msg.getBody(), sendBuf);
         } else {
-            // 最后要写个int, 代表body长度为0
+            // 如果没有body, 则代表body是空, 也需要写入body体的size, 即0
             sendBuf.writeInt(0);
         }
-        // httodo: 在这里将length重写覆盖了. 为啥要减去8个字节?
+        // 在这里将length重写覆盖了. 为啥要减去8个字节?
+        // 因为 LengthFieldBasedFrameDecoder中参数length代表的是实际消息体的内容, 即length之后的内容.
+        // 参照 LengthFieldBasedFrameDecoder 说明文档. 因此减去8个字节 CRCCODE INT的4个字节, LENGTH字段本身的4个字节
         sendBuf.setInt(4, sendBuf.readableBytes() - 8);
+//        sendBuf.setInt(4, sendBuf.readableBytes());
     }
 }

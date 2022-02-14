@@ -23,8 +23,9 @@ public class NettyPrivateProtocolServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast(new NettyMessageDecoder(1024 * 1024, 4, 4))
-                                    .addLast(new NettyMessageEncoder())
+                            socketChannel.pipeline()
+                                    .addLast(new NettyMessageDecoder(1024 * 1024, 4, 4))
+//                                    .addLast(new NettyMessageEncoder())
                                     .addLast(new DefaultServerHandler());
                         }
                     });

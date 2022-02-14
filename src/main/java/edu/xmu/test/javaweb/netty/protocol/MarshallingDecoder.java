@@ -14,6 +14,11 @@ public class MarshallingDecoder {
      */
     public Object decode(ByteBuf in) {
         int length = in.readInt();
+        if(0 == length) {
+            // 长度是0, 则直接跳出.
+            System.out.println("zero length");
+            return null;
+        }
         byte[] bytes = new byte[length];
         in.readBytes(bytes);
         String bodyStr = new String(bytes, StandardCharsets.UTF_8);

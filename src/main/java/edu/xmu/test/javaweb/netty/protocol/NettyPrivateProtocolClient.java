@@ -36,7 +36,7 @@ public class NettyPrivateProtocolClient {
     public class DefaultClientHandler extends ChannelInboundHandlerAdapter {
         @Override
         public void channelActive(ChannelHandlerContext ctx) {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 20; i++) {
                 NettyMessage nettyMessage = new NettyMessage();
                 Header h = new Header();
                 h.setSessionId(1L);
