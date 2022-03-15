@@ -1,27 +1,21 @@
 package edu.xmu.test.javaweb.httpclient;
 
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import com.alibaba.fastjson.JSON;
-
 import com.beust.jcommander.internal.Lists;
-import com.ning.http.client.AsyncCompletionHandler;
-import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.*;
 import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder;
-import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.AsyncHttpClientConfig.Builder;
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Response;
 import com.ning.http.client.providers.netty.NettyAsyncHttpProviderConfig;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.junit.Test;
+
+import java.util.Calendar;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class HttpAsyncClientTest {
     private static final int DEFAULT_BOSS_COUNT = 1;
@@ -33,30 +27,39 @@ public class HttpAsyncClientTest {
     AsyncHttpClient getClient() {
         Builder builder = new AsyncHttpClientConfig.Builder();
         builder.setAllowPoolingConnections(true);
+//        builder.setAllowPoolingConnections(false);
+        // case1: 瞬时并发HTTP连接请求时, 如果TCP连接超过maxConnectionsPerHost, 则后续的请求会直接被拒绝掉, 进入到onThrowable里, 而不是放在队列里等待. 此时allowPoolingConnections其实不起作用, 因为池子里还没有连接被释放出来.
+        // 如下例子, 只有3个请求是成功的, 后续97个都是失败的.
+        // case2: 但如果HTTP连接请求中间有sleep, 这样在下个请求进来时, 连接池是有空闲的, 这样能复用池子里的连接, 从而连接数不会超过maxConnectionsPerHost, 从而所有请求都能成功.
+        // 如下例子, 100个请求都成功的
+        builder.setMaxConnectionsPerHost(3);
         builder.setRequestTimeout(30 * 1000);
         builder.setReadTimeout(30 * 1000);
+        builder.setMaxRequestRetry(20);
         builder.setConnectTimeout(30 * 1000);
-        builder.setPooledConnectionIdleTimeout(1000);
-        builder.setPooledConnectionIdleTimeout(1000);
+        builder.setPooledConnectionIdleTimeout(6 * 1000);
+//        builder.setPooledConnectionIdleTimeout(1000);
 
         // worker
         String workerThreadPoolName = "AsyncHttpClient-Callback";
-        ExecutorService workerThreadPool = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-            60L, TimeUnit.SECONDS,
-            new SynchronousQueue<Runnable>(), new DefaultThreadFactory(workerThreadPoolName));
+//        ExecutorService workerThreadPool = new ThreadPoolExecutor(5, Integer.MAX_VALUE,
+//            60L, TimeUnit.SECONDS,
+//            new SynchronousQueue<Runnable>(), new DefaultThreadFactory(workerThreadPoolName));
+//        ExecutorService workerThreadPool = Executors.newFixedThreadPool(5, new DefaultThreadFactory(workerThreadPoolName));
+        ExecutorService workerThreadPool = Executors.newCachedThreadPool(new DefaultThreadFactory(workerThreadPoolName));
         builder.setExecutorService(workerThreadPool);
 
         // boss
-        NettyAsyncHttpProviderConfig providerConfig = new NettyAsyncHttpProviderConfig();
         String bossThreadPoolName = "AsyncHttpClient-Dispatcher";
-        ExecutorService bossExecutorService = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-            60L, TimeUnit.SECONDS,
-            new SynchronousQueue<Runnable>(), new DefaultThreadFactory(bossThreadPoolName));
-        providerConfig.setBossExecutorService(bossExecutorService);
+        ExecutorService bossThreadPool = Executors.newFixedThreadPool(1, new DefaultThreadFactory(bossThreadPoolName));
 
-        // channel factory
+        // channel factory,
+        // httodo: 这里的 DEFAULT_WORKER_COUNT 如果与 builder.setExecutorService 冲突, 怎么处理?
+        // 会报错, Failed to get all worker threads ready within 10 second(s). Make sure to specify the executor which has more threads than the requested workerCount. If unsure, use Executors.newCachedThreadPool().
         NioClientSocketChannelFactory socketChannelFactory = new NioClientSocketChannelFactory(
-            providerConfig.getBossExecutorService(), workerThreadPool, DEFAULT_BOSS_COUNT, DEFAULT_WORKER_COUNT);
+                bossThreadPool, workerThreadPool, DEFAULT_BOSS_COUNT, DEFAULT_WORKER_COUNT);
+
+        NettyAsyncHttpProviderConfig providerConfig = new NettyAsyncHttpProviderConfig();
         providerConfig.setSocketChannelFactory(socketChannelFactory);
 
         builder.setAsyncHttpClientProviderConfig(providerConfig);
@@ -90,23 +93,27 @@ public class HttpAsyncClientTest {
     }
 
     @Test
-    public void postTest() {
-        String url = "https://www.baidu.com";
-        //doAsyncGet(url);
-        doGet(url);
+    public void postTest() throws InterruptedException {
+        String url = "http://www.baidu.com/";
+        for (int i = 0; i < 100; i++) {
+            doAsyncGet(url);
+            Thread.sleep(100L);
+        }
+        Thread.sleep(10000L);
+//        doGet(url);
     }
 
     public static class CommonCallback extends AsyncCompletionHandler {
 
         @Override
         public void onThrowable(Throwable t) {
-            System.out.println("error");
+            System.out.println(Thread.currentThread().getName() + " " + Calendar.getInstance().getTimeInMillis() + " error");
         }
 
         @Override
         public Object onCompleted(Response response) throws Exception {
-            System.out.println("hello");
-            System.out.println(JSON.toJSONString(response));
+            System.out.println(Thread.currentThread().getName() + " " + Calendar.getInstance().getTimeInMillis() + " hello");
+//            System.out.println(JSON.toJSONString(response));
             return response;
         }
     }

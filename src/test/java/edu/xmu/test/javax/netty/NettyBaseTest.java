@@ -30,4 +30,27 @@ public class NettyBaseTest {
         byteBuf.discardReadBytes();
         System.out.println(byteBuf.writableBytes());
     }
+
+    @Test
+    public void byteBufTest2() {
+        ByteBuf buffer = Unpooled.buffer(1024, 1024);
+        System.out.println(buffer.capacity() + " " + buffer.readableBytes() + " " + buffer.writableBytes() + " " + buffer.maxWritableBytes() + " " + buffer.readerIndex()  + " " + buffer.writerIndex());
+        buffer.writeInt(1);
+        System.out.println(buffer.capacity() + " " + buffer.readableBytes() + " " + buffer.writableBytes() + " " + buffer.maxWritableBytes()+ " " + buffer.readerIndex()  + " " + buffer.writerIndex());
+        buffer.writeLong(1L);
+        System.out.println(buffer.capacity() + " " + buffer.readableBytes() + " " + buffer.writableBytes() + " " + buffer.maxWritableBytes()+ " " + buffer.readerIndex()  + " " + buffer.writerIndex());
+
+//        buffer.readBytes();
+        int i = buffer.readInt();
+        System.out.println(i);
+        System.out.println(buffer.capacity() + " " + buffer.readableBytes() + " " + buffer.writableBytes() + " " + buffer.maxWritableBytes()+ " " + buffer.readerIndex()  + " " + buffer.writerIndex());
+
+        long j = buffer.readLong();
+        System.out.println(j);
+        System.out.println(buffer.capacity() + " " + buffer.readableBytes() + " " + buffer.writableBytes() + " " + buffer.maxWritableBytes()+ " " + buffer.readerIndex()  + " " + buffer.writerIndex());
+        buffer.writeByte(1);
+        System.out.println(buffer.capacity() + " " + buffer.readableBytes() + " " + buffer.writableBytes() + " " + buffer.maxWritableBytes()+ " " + buffer.readerIndex()  + " " + buffer.writerIndex());
+        buffer.discardReadBytes();
+        System.out.println(buffer.capacity() + " " + buffer.readableBytes() + " " + buffer.writableBytes() + " " + buffer.maxWritableBytes()+ " " + buffer.readerIndex()  + " " + buffer.writerIndex());
+    }
 }
