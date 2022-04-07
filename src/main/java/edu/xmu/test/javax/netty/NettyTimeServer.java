@@ -1,18 +1,9 @@
 package edu.xmu.test.javax.netty;
 
-import java.util.Date;
-import java.util.List;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -23,6 +14,9 @@ import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.EventExecutorGroup;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * Created by davywalker on 17/5/7.
  */
@@ -32,7 +26,7 @@ public class NettyTimeServer {
      * 业务线程池
      */
     EventExecutorGroup eventExecutorGroup = new DefaultEventExecutorGroup(16,
-        new DefaultThreadFactory("MyNettyThread"));
+            new DefaultThreadFactory("MyNettyThread"));
 
     public void bind(int port) {
         // 这个EventLoop用来监听OP_ACCEPT事件
@@ -51,32 +45,32 @@ public class NettyTimeServer {
         ServerBootstrap b = new ServerBootstrap();
         //b.group(bossGroup, workerGroup)
         b.group(bossGroup, workerGroup)
-            .channel(NioServerSocketChannel.class)
-            .option(ChannelOption.TCP_NODELAY, true)
-            .option(ChannelOption.SO_BACKLOG, 1024)
-            .handler(new ChannelInitializer() {
-                @Override
-                protected void initChannel(Channel ch) throws Exception {
-                    // 这里会在server初始化完成, 开始监听端口号之后调用. 在bossGroup线程池里.
-                    System.out.println(Thread.currentThread() + " BossChannelHandler.initChannel invoked");
-                    // hantingfixme: 如何在bossGroup线程里, 获知到client的accept事件?
-                }
+                .channel(NioServerSocketChannel.class)
+                .option(ChannelOption.TCP_NODELAY, true)
+                .option(ChannelOption.SO_BACKLOG, 1024)
+                .handler(new ChannelInitializer() {
+                    @Override
+                    protected void initChannel(Channel ch) throws Exception {
+                        // 这里会在server初始化完成, 开始监听端口号之后调用. 在bossGroup线程池里.
+                        System.out.println(Thread.currentThread() + " BossChannelHandler.initChannel invoked");
+                        // hantingfixme: 如何在bossGroup线程里, 获知到client的accept事件?
+                    }
 
-                @Override
-                public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                    System.out.println(Thread.currentThread() + " BossChannelHandler.channelRead invoked");
-                    super.channelRead(ctx, msg);
-                }
+                    @Override
+                    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                        System.out.println(Thread.currentThread() + " BossChannelHandler.channelRead invoked");
+                        super.channelRead(ctx, msg);
+                    }
 
-                @Override
-                public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                    System.out.println(Thread.currentThread() + " BossChannelHandler.channelActive invoked");
-                    super.channelActive(ctx);
-                }
-            }).childHandler(
-                // 这里会在客户端已经建立成功后执行, 整个运行在workerGroup线程池里.
-                new ChildChannelHandler()
-            );
+                    @Override
+                    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                        System.out.println(Thread.currentThread() + " BossChannelHandler.channelActive invoked");
+                        super.channelActive(ctx);
+                    }
+                }).childHandler(
+                        // 这里会在客户端已经建立成功后执行, 整个运行在workerGroup线程池里.
+                        new ChildChannelHandler()
+                );
         ChannelFuture f = null;
         try {
             f = b.bind(port).sync();
@@ -95,40 +89,40 @@ public class NettyTimeServer {
         @Override
         protected void initChannel(SocketChannel socketChannel) throws Exception {
             System.out.println(System.currentTimeMillis() + " " + Thread.currentThread()
-                + " ChildChannelHandler.initChannel invoked client: " + socketChannel.remoteAddress().toString());
+                    + " ChildChannelHandler.initChannel invoked client: " + socketChannel.remoteAddress().toString());
             //ByteBuf byteBuf = Unpooled.copiedBuffer(",".getBytes());
             // hantingtodo: socketChannel与pipeline关系是啥? 一对一么?
             socketChannel.pipeline()
-                //.addLast(new DelimiterBasedFrameDecoder(1024, byteBuf))
-                // hantingtodo: 如果实际单行长度超过maxLengh:
-                //  A TooLongFrameException is thrown if the length of the frame exceeds this value.
-                // 就不会走到这个decoder之后的handler里了. 例如StringDecoder, TimeServerHandler 等.
-                // hantingfixme: 在哪个地方可以捕获到该异常?
-                .addLast(new LineBasedFrameDecoder(2))
-                .addLast(new StringDecoder())
-                .addLast(new MessageToMessageDecoder() {
-                             @Override
-                             protected void decode(ChannelHandlerContext ctx, Object msg, List out) throws Exception {
-                                 System.out.println(
-                                     Thread.currentThread() + " MessageToMessageDecoder Current thread is: "
-                                         + Thread.currentThread().getName());
-                                 out.add(msg);
+                    //.addLast(new DelimiterBasedFrameDecoder(1024, byteBuf))
+                    // hantingtodo: 如果实际单行长度超过maxLengh:
+                    //  A TooLongFrameException is thrown if the length of the frame exceeds this value.
+                    // 就不会走到这个decoder之后的handler里了. 例如StringDecoder, TimeServerHandler 等.
+                    // hantingfixme: 在哪个地方可以捕获到该异常?
+                    .addLast(new LineBasedFrameDecoder(2))
+                    .addLast(new StringDecoder())
+                    .addLast(new MessageToMessageDecoder() {
+                                 @Override
+                                 protected void decode(ChannelHandlerContext ctx, Object msg, List out) throws Exception {
+                                     System.out.println(
+                                             Thread.currentThread() + " MessageToMessageDecoder Current thread is: "
+                                                     + Thread.currentThread().getName());
+                                     out.add(msg);
+                                 }
                              }
-                         }
-                ).addLast(new ChannelInboundHandlerAdapter() {
-                    @Override
-                    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                        System.out.println("tmp read: " + msg);
-                        super.channelRead(ctx, msg);
-                    }
+                    ).addLast(new ChannelInboundHandlerAdapter() {
+                        @Override
+                        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                            System.out.println("tmp read: " + msg);
+                            super.channelRead(ctx, msg);
+                        }
 
-                    @Override
-                    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-                        System.out.println("CC caught exception:");
-                        cause.printStackTrace();
-                    }
-                })
-                .addLast(new TimeServerHandler());
+                        @Override
+                        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                            System.out.println("CC caught exception:");
+                            cause.printStackTrace();
+                        }
+                    })
+                    .addLast(new TimeServerHandler());
         }
 
         @Override
@@ -140,7 +134,6 @@ public class NettyTimeServer {
     }
 
     private class TimeServerHandler extends ChannelInboundHandlerAdapter {
-
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             super.channelActive(ctx);
@@ -148,10 +141,10 @@ public class NettyTimeServer {
 
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-            String body = (String)msg;
+            String body = (String) msg;
             System.out.println(Thread.currentThread() + " The time server receive order: " + body);
             System.out.println(
-                Thread.currentThread() + " TimeServerHandler Current thread is: " + Thread.currentThread().getName());
+                    Thread.currentThread() + " TimeServerHandler Current thread is: " + Thread.currentThread().getName());
             String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body) ? new Date().toString() : "BAD ORDER";
             currentTime = currentTime + ',';
             Thread.sleep(10000L);
