@@ -27,8 +27,9 @@ public class ProducerConsumerTest {
         @Override
         public void run() {
             try {
-                synchronized (lock) {
-                    while (true) {
+                while (true) {
+                    synchronized (lock) {
+
                         while (isEmpty) {
                             System.out.println("consumer is waiting");
                             lock.wait();
@@ -57,8 +58,8 @@ public class ProducerConsumerTest {
         @Override
         public void run() {
             try {
-                synchronized (lock) {
-                    while (true) {
+                while (true) {
+                    synchronized (lock) {
                         while (!isEmpty) {
                             System.out.println("producer is waiting");
                             lock.wait();
