@@ -29,16 +29,16 @@ public class ProducerConsumerTest {
             try {
                 while (true) {
                     synchronized (lock) {
-
                         while (isEmpty) {
                             System.out.println("consumer is waiting");
                             lock.wait();
                         }
+                        lock.notify();
+
                         System.out.println("start consuming");
                         Thread.sleep((long) (Math.random() * 10000L));
                         System.out.println("finished consuming");
                         isEmpty = true;
-                        lock.notify();
                     }
                 }
             } catch (InterruptedException e) {
@@ -64,13 +64,12 @@ public class ProducerConsumerTest {
                             System.out.println("producer is waiting");
                             lock.wait();
                         }
+                        lock.notify();
 
                         System.out.println("start producing");
                         Thread.sleep((long) (Math.random() * 10000L));
                         isEmpty = false;
                         System.out.println("finished producing");
-
-                        lock.notify();
                     }
                 }
             } catch (InterruptedException e) {
